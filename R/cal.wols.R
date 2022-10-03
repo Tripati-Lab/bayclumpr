@@ -7,7 +7,7 @@
 #'
 #' @export
 
-simulateLM_inverseweights <- function(data, replicates) {
+cal.wols <- function(data, replicates) {
   reps <- lapply(1:replicates, function(x) {
     dataSub <- data[sample(seq_along(data[, 1]), nrow(data), replace = TRUE), ]
     Reg0 <- lm(D47 ~ Temperature, dataSub)

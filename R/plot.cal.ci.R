@@ -13,7 +13,7 @@
 #' @export
 
 
-RegressionSingleCI <- function(data, from, to, length.out = 100) {
+plot.cal.ci <- function(data, from, to, length.out = 100) {
   sampleDataReplicates <- as.data.frame(data)
 
   Theta_mat <- sampleDataReplicates

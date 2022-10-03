@@ -6,7 +6,7 @@
 #'
 #' @export
 
-predictTc <- function(recData,
+rec.clumped <- function(recData,
                        obCal) {
 
   temp <- sqrt((mean(obCal$beta) * 10^6) /
@@ -15,7 +15,7 @@ predictTc <- function(recData,
   temp_SE <- sqrt((mean(obCal$beta) * 10^6) /
     (recData$D47 + recData$D47error - mean(obCal$alpha))) - 273.15
   error <- (temp - temp_SE)
-  error <- error/sqrt(recData$n)
+  error <- error/sqrt(recData$N)
 
   recTempS <- cbind.data.frame(
     Sample = recData$Sample,

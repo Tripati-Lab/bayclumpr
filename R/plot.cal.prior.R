@@ -7,9 +7,7 @@
 #'
 #' @export
 
-
-generatePriorReconstructions <- function(prior, n = 1000) {
-
+plot.cal.prior <- function(prior, n = 1000) {
   if (prior == "Informative") {
     params <- cbind.data.frame(
       parameter = c("alpha", "beta"),
@@ -25,14 +23,12 @@ generatePriorReconstructions <- function(prior, n = 1000) {
     )
     params
   }
-  x <- rnorm(n, 11, 0.0001)
-  xC <- sqrt(10 ^ 6 / x) - 273.15
 
-  data <- cbind.data.frame(alpha = rnorm(n, params[1, 2], params[1, 3]),
-                           beta = rnorm(n, params[2, 2], params[2, 3]),
-                           x,
-                           xC)
+  data <- cbind.data.frame(
+    alpha = rnorm(n, params[1, 2], params[1, 3]),
+    beta = rnorm(n, params[2, 2], params[2, 3])
+  )
   attr(data, "priors") <- prior
   attr(data, "params") <- params
-  return(data)
+  data
 }

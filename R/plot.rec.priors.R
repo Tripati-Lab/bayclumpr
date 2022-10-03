@@ -7,7 +7,9 @@
 #'
 #' @export
 
-generatePriorDistCalibration <- function(prior, n = 1000) {
+
+plot.rec.priors <- function(prior, n = 1000) {
+
   if (prior == "Informative") {
     params <- cbind.data.frame(
       parameter = c("alpha", "beta"),
@@ -23,12 +25,14 @@ generatePriorDistCalibration <- function(prior, n = 1000) {
     )
     params
   }
+  x <- rnorm(n, 11, 0.0001)
+  xC <- sqrt(10 ^ 6 / x) - 273.15
 
-  data <- cbind.data.frame(
-    alpha = rnorm(n, params[1, 2], params[1, 3]),
-    beta = rnorm(n, params[2, 2], params[2, 3])
-  )
+  data <- cbind.data.frame(alpha = rnorm(n, params[1, 2], params[1, 3]),
+                           beta = rnorm(n, params[2, 2], params[2, 3]),
+                           x,
+                           xC)
   attr(data, "priors") <- prior
   attr(data, "params") <- params
-  data
+  return(data)
 }

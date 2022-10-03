@@ -16,7 +16,7 @@
 #'
 #' @export
 
-BayesianPredictions <- function(calModel,
+rec.bayesian <- function(calModel,
                                 recData,
                                 iter = 1000,
                                 priors = "Uninformative",

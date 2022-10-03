@@ -14,7 +14,7 @@
 #' @export
 
 
-fitClumpedRegressions <- function(calibrationData, numSavedSteps = 3000,
+cal.bayesian <- function(calibrationData, numSavedSteps = 3000,
                                   priors = "Informative") {
 
   if (!priors %in% c("Informative", "Weak", "Uninformative")) {

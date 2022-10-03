@@ -6,7 +6,7 @@
 #'
 #' @export
 
-sim.clumped <- function(error = "S1", nobs = 1000){
+cal.dataset <- function(error = "S1", nobs = 1000){
   set.seed(3)
 
   if(error == 'S1'){

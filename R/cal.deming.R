@@ -7,7 +7,7 @@
 #'
 #' @export
 
-simulateDeming <- function(data, replicates) {
+cal.deming <- function(data, replicates) {
   reps <-
   do.call(rbind, lapply(1:replicates, function(x) {
     y_SE <- x_SE <- NULL

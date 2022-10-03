@@ -7,7 +7,7 @@
 #'
 #' @export
 
-simulateYork_measured <- function(data,
+cal.york <- function(data,
                                    replicates) {
   reps <-
     do.call(rbind, lapply(1:replicates, function(x) {

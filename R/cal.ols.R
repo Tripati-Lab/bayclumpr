@@ -7,7 +7,7 @@
 #'
 #' @export
 
-simulateLM_measured <- function(data, replicates) {
+cal.ols <- function(data, replicates) {
   reps <- lapply(1:replicates, function(x) {
     dataSub <- data[sample(seq_along(data[, 1]), nrow(data), replace = TRUE), ]
     Reg <- summary(lm(D47 ~ Temperature, dataSub))
