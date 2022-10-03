@@ -3,6 +3,8 @@
 #' @param prior Informative or not
 #' @param n number of observations to simulate
 #'
+#' @importFrom stats rnorm
+#'
 #' @export
 
 

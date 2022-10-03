@@ -10,6 +10,7 @@
 simulateDeming <- function(data, replicates) {
   reps <-
   do.call(rbind, lapply(1:replicates, function(x) {
+    y_SE <- x_SE <- NULL
     dataSub <- data[sample(seq_along(data[, 1]), nrow(data), replace = TRUE), ]
     dataSub$y_SE <- abs(dataSub[, "D47error"])
     dataSub$x_SE <- abs(dataSub$TempError)

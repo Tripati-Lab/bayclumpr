@@ -2,6 +2,8 @@
 #' @param error Error scenario: low (S1), Intermediate (S2), or High (S3)
 #' @param nobs Number of observations in the simulated dataset
 #'
+#' @importFrom stats rnorm
+#'
 #' @export
 
 sim.clumped <- function(error = "S1", nobs = 1000){

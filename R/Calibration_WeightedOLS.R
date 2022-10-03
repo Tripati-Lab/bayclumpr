@@ -3,6 +3,8 @@
 #' @param data The calibration dataset
 #' @param replicates Number of bootstrap replicates
 #'
+#' @importFrom stats lm
+#'
 #' @export
 
 simulateLM_inverseweights <- function(data, replicates) {

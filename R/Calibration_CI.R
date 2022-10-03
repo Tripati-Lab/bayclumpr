@@ -8,6 +8,8 @@
 #' @param to the upper limit in x.
 #' @param length.out the number of breaks.
 #'
+#' @importFrom stats median quantile
+#'
 #' @export
 
 

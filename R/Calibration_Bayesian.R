@@ -5,11 +5,11 @@
 #' @param numSavedSteps Number of MCMC iterations to save.
 #' @param priors Either \code{Informative}, \code{Weak}, or
 #'               \code{Uninformative} on the slope and intercept.
-#' @param samples Number of samples in the \code{calibrationData} to analyze.
 #'
 #' @importFrom loo extract_log_lik relative_eff loo_compare
 #' @import parallel
 #' @import rstan
+#' @importFrom stats sd
 #'
 #' @export
 

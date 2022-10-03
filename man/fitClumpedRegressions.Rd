@@ -18,8 +18,6 @@ fitClumpedRegressions(
 
 \item{priors}{Either \code{Informative}, \code{Weak}, or
 \code{Uninformative} on the slope and intercept.}
-
-\item{samples}{Number of samples in the \code{calibrationData} to analyze.}
 }
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using

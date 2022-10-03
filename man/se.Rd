@@ -8,6 +8,8 @@ se(x, iter)
 }
 \arguments{
 \item{x}{Numeric vector}
+
+\item{iter}{Number of iterations}
 }
 \description{
 Standard error
