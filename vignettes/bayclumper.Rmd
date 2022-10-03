@@ -1,0 +1,95 @@
+---
+title: "A brief intro to the bayclumper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A brief intro to the bayclumper}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+library(cmdstanr)
+check_cmdstan_toolchain(fix = TRUE, quiet = TRUE)
+register_knitr_engine()
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bayclumpr)
+library(rstan)
+library(loo)
+```
+
+Generate a dataset
+
+```{r}
+ds <- bayclumpr::sim.clumped(error = "S1", nobs = 50)
+head(ds)
+```
+
+
+Fit a deming regression
+
+```{r}
+simulateDeming(data = ds, replicates = 10)
+```
+
+Fit an OLS regression
+
+```{r}
+simulateLM_measured(data = ds, replicates = 10)
+```
+
+Fit a weighted OLS 
+
+
+```{r}
+simulateLM_inverseweights(data = ds, replicates = 10)
+```
+
+Fit a York regression 
+
+```{r}
+simulateYork_measured(data = ds, replicates = 10)
+```
+
+Fit Bayesian models
+
+```{r}
+BayesCal <- fitClumpedRegressions(calibrationData = ds, 
+                                  numSavedSteps = 3000,
+                                  priors = "Informative")
+```
+
+Predict for OLS model
+
+```{r}
+paramdist <- simulateLM_measured(data = ds, replicates = 10)
+recData <- data.frame(Sample = c("Sample 1", "Sample 2"), 
+                      D47 = c(0.6, 0.7), 
+                      D47error = c(0.005, 0.005))
+
+predictTc(recData = recData, obCal = paramdist)
+```
+
+
+Predict based on Bayesian models
+
+
+```{r}
+PredsBay <- BayesianPredictions(calModel = BayesCal$BLM1_fit,
+                                recData = recData,
+                                iter = 1000)
+PredsBay
+```
+
+
+
+
+
+
+
+

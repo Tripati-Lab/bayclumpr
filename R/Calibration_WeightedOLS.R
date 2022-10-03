@@ -1,0 +1,19 @@
+#' Fit weighted OLS regression models on a given calibration dataset
+#'
+#' @param data The calibration dataset
+#' @param replicates Number of bootstrap replicates
+#'
+#' @export
+
+simulateLM_inverseweights <- function(data, replicates) {
+  reps <- lapply(1:replicates, function(x) {
+    dataSub <- data[sample(seq_along(data[, 1]), nrow(data), replace = TRUE), ]
+    Reg0 <- lm(D47 ~ Temperature, dataSub)
+    wt <- 1 / lm(abs(Reg0$residuals) ~ Reg0$fitted.values)$fitted.values^2
+    Reg <- summary(lm(D47 ~ Temperature, dataSub, weights = wt))
+    res <- cbind.data.frame("alpha" = Reg$coefficients[1, 1], "beta" = Reg$coefficients[2, 1])
+    return(res)
+  })
+  reps <- do.call(rbind, reps)
+  return(reps)
+}
