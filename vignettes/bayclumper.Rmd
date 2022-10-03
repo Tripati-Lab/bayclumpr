@@ -8,9 +8,6 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-library(cmdstanr)
-check_cmdstan_toolchain(fix = TRUE, quiet = TRUE)
-register_knitr_engine()
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
