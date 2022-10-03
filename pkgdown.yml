@@ -1,0 +1,10 @@
+pandoc: 2.14.2
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  bayclumper: bayclumper.html
+last_built: 2022-10-03T02:25Z
+urls:
+  reference: https://tripati-lab.github.io/bayclumpr/reference
+  article: https://tripati-lab.github.io/bayclumpr/articles
+
