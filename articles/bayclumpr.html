@@ -74,11 +74,15 @@
 
     
     
+<p>Welcome to <code>bayclumpr</code>! Before we get started with this tutorial, we would like to remind you that there is an associated shiny app that accompanies this <code>R</code> package. You can access <code>BayClump</code> directly from your browser using by clicking <a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">here</a>. Now, let’s go ahead and discuss some of the basic functions in <code>bayclumpr</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">bayclumpr</a></span><span class="op">)</span></span></code></pre></div>
-<p>Generate a dataset</p>
+<div class="section level2">
+<h2 id="performing-calibrations-using-bayclumpr">Performing calibrations using <code>bayclumpr</code><a class="anchor" aria-label="anchor" href="#performing-calibrations-using-bayclumpr"></a>
+</h2>
+<p>First, we will need some data to work with. We can use <code>bayclumpr</code> to generate simulated datasets with uncertainty values described in Roman-Palacios et al. (2022). For this example, we will simulate 50 observations under a low-eror scenario. <strong>Note that the functions in <code>bayclumpr</code> expect users to provide uncertainty in terms of standard deviation.</strong> The resulting dataset will be stored in the <code>ds</code> object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.clumped.html">sim.clumped</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      x_TRUE Temperature    TempError    y_TRUE     D47error       D47 Material</span></span>
 <span><span class="co">#&gt; 1  9.621020    9.634830  0.013809939 0.6197873  0.007716876 0.6275041        1</span></span>
@@ -87,9 +91,9 @@
 <span><span class="co">#&gt; 4  9.145524    9.112516 -0.033008011 0.6076046  0.007528553 0.6151331        1</span></span>
 <span><span class="co">#&gt; 5 12.515311   12.488494 -0.026817078 0.7325361  0.012718265 0.7452543        1</span></span>
 <span><span class="co">#&gt; 6 12.101163   12.092546 -0.008617473 0.7150980  0.007602091 0.7227001        1</span></span></code></pre></div>
-<p>Fit a deming regression</p>
+<p>Now, let’s start by fitting different models in the simulated dataset. For instance, let’s fit a Deming regression model using the <code>cal.deming</code> function in <code>bayclumpr</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/simulateDeming.html">simulateDeming</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.deming.html">cal.deming</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        alpha       beta</span></span>
 <span><span class="co">#&gt; 1  0.2610362 0.03757038</span></span>
 <span><span class="co">#&gt; 2  0.2744925 0.03657942</span></span>
@@ -101,9 +105,9 @@
 <span><span class="co">#&gt; 8  0.2742689 0.03657743</span></span>
 <span><span class="co">#&gt; 9  0.2605953 0.03763314</span></span>
 <span><span class="co">#&gt; 10 0.2613174 0.03744631</span></span></code></pre></div>
-<p>Fit an OLS regression</p>
+<p>Alternatively, you can fit an unweighted or weighted OLS regression using <code>cal.ols</code> and <code>cal.wols</code> functions, respectively:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/simulateLM_measured.html">simulateLM_measured</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        alpha       beta</span></span>
 <span><span class="co">#&gt; 1  0.2807151 0.03581374</span></span>
 <span><span class="co">#&gt; 2  0.2833936 0.03560239</span></span>
@@ -114,10 +118,8 @@
 <span><span class="co">#&gt; 7  0.2659865 0.03688178</span></span>
 <span><span class="co">#&gt; 8  0.2791944 0.03572168</span></span>
 <span><span class="co">#&gt; 9  0.2687309 0.03668977</span></span>
-<span><span class="co">#&gt; 10 0.2807427 0.03544070</span></span></code></pre></div>
-<p>Fit a weighted OLS</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/simulateLM_inverseweights.html">simulateLM_inverseweights</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 10 0.2807427 0.03544070</span></span>
+<span><span class="fu"><a href="../reference/cal.wols.html">cal.wols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        alpha       beta</span></span>
 <span><span class="co">#&gt; 1  0.2581159 0.03769787</span></span>
 <span><span class="co">#&gt; 2  0.2721114 0.03644095</span></span>
@@ -129,9 +131,9 @@
 <span><span class="co">#&gt; 8  0.2730909 0.03633564</span></span>
 <span><span class="co">#&gt; 9  0.2701180 0.03658784</span></span>
 <span><span class="co">#&gt; 10 0.2697856 0.03686051</span></span></code></pre></div>
-<p>Fit a York regression</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/simulateYork_measured.html">simulateYork_measured</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<p>York regression models are also implemented in <code>bayclumpr</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.york.html">cal.york</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        alpha       beta</span></span>
 <span><span class="co">#&gt; 1  0.2604107 0.03765476</span></span>
 <span><span class="co">#&gt; 2  0.2754831 0.03646564</span></span>
@@ -143,407 +145,50 @@
 <span><span class="co">#&gt; 8  0.2751992 0.03650266</span></span>
 <span><span class="co">#&gt; 9  0.2724576 0.03675413</span></span>
 <span><span class="co">#&gt; 10 0.2633915 0.03740793</span></span></code></pre></div>
-<p>Fit Bayesian models</p>
+<p>Finally, <code>bayclumpr</code> implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. Let’s fit all three models using the <code>cal.bayesian</code> function:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Informative"</span><span class="op">)</span></span></code></pre></div>
+<p>The results are here stored in the <code>BayesCal</code> object and corresponds to <code>stan</code> objects summarizing posterior distributions of the parameters:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitClumpedRegressions.html">fitClumpedRegressions</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, </span>
-<span>                                  numSavedSteps <span class="op">=</span> <span class="fl">3000</span>,</span>
-<span>                                  priors <span class="op">=</span> <span class="st">"Informative"</span><span class="op">)</span></span></code></pre></div>
-<p>Results…</p>
+<code class="sourceCode R"><span><span class="va">BayesCal</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="reconstructing-temperatures-in-bayclumpr">Reconstructing temperatures in <code>bayclumpr</code><a class="anchor" aria-label="anchor" href="#reconstructing-temperatures-in-bayclumpr"></a>
+</h2>
+<p><code>bayclumpr</code> implements two functions to perform temperature reconstructions under frequentist (<code>rec.clumped</code>) and Bayesian frameworks (<code>rec.bayesian</code>). Let’s review how each of these functions work by generating a synthetic dataset for two samples.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">BayesCal</span></span>
-<span><span class="co">#&gt; $BLM1_fit</span></span>
-<span><span class="co">#&gt; Inference for Stan model: cc8e49c029f748bb6dab815288864757.</span></span>
-<span><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
-<span><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                 mean se_mean     sd     2.5%      25%      50%      75%</span></span>
-<span><span class="co">#&gt; alpha           0.27    0.00   0.01     0.25     0.26     0.27     0.27</span></span>
-<span><span class="co">#&gt; beta            0.04    0.00   0.00     0.04     0.04     0.04     0.04</span></span>
-<span><span class="co">#&gt; sigma           0.01    0.00   0.00     0.01     0.01     0.01     0.01</span></span>
-<span><span class="co">#&gt; log_lik[1]  -1084.61    8.24 228.09 -1589.92 -1228.23 -1067.97  -920.80</span></span>
-<span><span class="co">#&gt; log_lik[2]  -1298.02    9.86 272.85 -1902.48 -1469.83 -1278.11 -1102.07</span></span>
-<span><span class="co">#&gt; log_lik[3]  -1550.88   11.78 325.89 -2272.84 -1756.09 -1527.11 -1316.84</span></span>
-<span><span class="co">#&gt; log_lik[4]  -1042.14    7.92 219.18 -1527.71 -1180.15 -1026.14  -884.73</span></span>
-<span><span class="co">#&gt; log_lik[5]  -1531.24   11.63 321.77 -2244.07 -1733.85 -1507.77 -1300.16</span></span>
-<span><span class="co">#&gt; log_lik[6]  -1439.76   10.94 302.58 -2110.08 -1630.28 -1417.68 -1222.46</span></span>
-<span><span class="co">#&gt; log_lik[7]  -1438.52   10.93 302.32 -2108.26 -1628.88 -1416.46 -1221.40</span></span>
-<span><span class="co">#&gt; log_lik[8]  -1714.85   13.02 360.28 -2512.98 -1941.71 -1688.56 -1456.11</span></span>
-<span><span class="co">#&gt; log_lik[9]   -950.33    7.23 199.93 -1393.25 -1076.21  -935.74  -806.75</span></span>
-<span><span class="co">#&gt; log_lik[10] -1950.17   14.81 409.64 -2857.64 -2208.11 -1920.29 -1655.99</span></span>
-<span><span class="co">#&gt; log_lik[11] -1112.85    8.46 234.02 -1631.29 -1260.20 -1095.78  -944.79</span></span>
-<span><span class="co">#&gt; log_lik[12] -1011.94    7.69 212.85 -1483.48 -1145.96  -996.40  -859.08</span></span>
-<span><span class="co">#&gt; log_lik[13] -1138.69    8.65 239.43 -1669.13 -1289.45 -1121.22  -966.74</span></span>
-<span><span class="co">#&gt; log_lik[14] -1589.70   12.07 334.03 -2329.68 -1800.03 -1565.33 -1349.81</span></span>
-<span><span class="co">#&gt; log_lik[15] -1434.39   10.90 301.46 -2102.22 -1624.21 -1412.40 -1217.90</span></span>
-<span><span class="co">#&gt; log_lik[16] -1272.26    9.67 267.45 -1864.75 -1440.66 -1252.74 -1080.18</span></span>
-<span><span class="co">#&gt; log_lik[17] -1083.08    8.23 227.77 -1587.67 -1226.49 -1066.45  -919.50</span></span>
-<span><span class="co">#&gt; log_lik[18] -1170.64    8.90 246.14 -1715.92 -1325.62 -1152.68  -993.88</span></span>
-<span><span class="co">#&gt; log_lik[19] -1894.27   14.38 397.91 -2775.77 -2144.83 -1865.24 -1608.51</span></span>
-<span><span class="co">#&gt; log_lik[20] -1479.57   11.24 310.93 -2168.39 -1675.35 -1456.89 -1256.27</span></span>
-<span><span class="co">#&gt; log_lik[21] -1129.37    8.58 237.48 -1655.48 -1278.91 -1112.05  -958.82</span></span>
-<span><span class="co">#&gt; log_lik[22] -1087.64    8.27 228.73 -1594.36 -1231.66 -1070.95  -923.38</span></span>
-<span><span class="co">#&gt; log_lik[23] -1350.60   10.26 283.88 -1979.50 -1529.35 -1329.89 -1146.73</span></span>
-<span><span class="co">#&gt; log_lik[24]  -834.25    6.35 175.58 -1223.23  -944.80  -821.43  -708.15</span></span>
-<span><span class="co">#&gt; log_lik[25] -1252.74    9.52 263.36 -1836.16 -1418.56 -1233.52 -1063.61</span></span>
-<span><span class="co">#&gt; log_lik[26] -1116.98    8.49 234.88 -1637.32 -1264.87 -1099.84  -948.29</span></span>
-<span><span class="co">#&gt; log_lik[27] -1895.68   14.39 398.21 -2777.83 -2146.42 -1866.63 -1609.70</span></span>
-<span><span class="co">#&gt; log_lik[28] -1732.18   13.15 363.91 -2538.36 -1961.32 -1705.63 -1470.83</span></span>
-<span><span class="co">#&gt; log_lik[29] -1272.57    9.67 267.51 -1865.21 -1441.01 -1253.05 -1080.45</span></span>
-<span><span class="co">#&gt; log_lik[30] -1054.44    8.02 221.76 -1545.74 -1194.08 -1038.26  -895.18</span></span>
-<span><span class="co">#&gt; log_lik[31] -1784.10   13.55 374.80 -2614.42 -2020.11 -1756.76 -1514.94</span></span>
-<span><span class="co">#&gt; log_lik[32] -1720.60   13.07 361.49 -2521.41 -1948.22 -1694.23 -1461.00</span></span>
-<span><span class="co">#&gt; log_lik[33] -1758.49   13.35 369.43 -2576.91 -1991.11 -1731.54 -1493.18</span></span>
-<span><span class="co">#&gt; log_lik[34] -1592.09   12.09 334.53 -2333.19 -1802.73 -1567.68 -1351.84</span></span>
-<span><span class="co">#&gt; log_lik[35] -1273.48    9.68 267.71 -1866.55 -1442.05 -1253.95 -1081.23</span></span>
-<span><span class="co">#&gt; log_lik[36] -1531.93   11.64 321.91 -2245.08 -1734.63 -1508.45 -1300.75</span></span>
-<span><span class="co">#&gt; log_lik[37] -1976.32   15.00 415.12 -2895.95 -2237.71 -1946.04 -1678.20</span></span>
-<span><span class="co">#&gt; log_lik[38] -1373.84   10.44 288.76 -2013.54 -1555.66 -1352.77 -1166.47</span></span>
-<span><span class="co">#&gt; log_lik[39] -1026.42    7.80 215.89 -1504.69 -1162.35 -1010.66  -871.37</span></span>
-<span><span class="co">#&gt; log_lik[40] -1647.51   12.51 346.16 -2414.36 -1865.48 -1622.26 -1398.92</span></span>
-<span><span class="co">#&gt; log_lik[41] -1619.40   12.30 340.26 -2373.18 -1833.65 -1594.57 -1375.04</span></span>
-<span><span class="co">#&gt; log_lik[42] -1188.05    9.03 249.79 -1741.42 -1345.33 -1169.82 -1008.66</span></span>
-<span><span class="co">#&gt; log_lik[43] -2029.40   15.41 426.25 -2973.68 -2297.80 -1998.30 -1723.28</span></span>
-<span><span class="co">#&gt; log_lik[44] -1123.02    8.54 236.15 -1646.18 -1271.72 -1105.79  -953.43</span></span>
-<span><span class="co">#&gt; log_lik[45] -1600.96   12.16 336.39 -2346.18 -1812.78 -1576.42 -1359.38</span></span>
-<span><span class="co">#&gt; log_lik[46]  -699.71    5.33 147.36 -1026.18  -792.49  -688.95  -593.88</span></span>
-<span><span class="co">#&gt; log_lik[47] -1279.56    9.72 268.98 -1875.45 -1448.93 -1259.93 -1086.39</span></span>
-<span><span class="co">#&gt; log_lik[48] -1798.52   13.66 377.83 -2635.53 -2036.43 -1770.96 -1527.18</span></span>
-<span><span class="co">#&gt; log_lik[49] -1314.80    9.99 276.37 -1927.07 -1488.83 -1294.64 -1116.32</span></span>
-<span><span class="co">#&gt; log_lik[50] -1101.23    8.37 231.58 -1614.25 -1247.04 -1084.33  -934.92</span></span>
-<span><span class="co">#&gt; lp__          136.21    0.15   5.38   124.68   132.82   136.54   140.09</span></span>
-<span><span class="co">#&gt;                97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; alpha           0.29   698    1</span></span>
-<span><span class="co">#&gt; beta            0.04   732    1</span></span>
-<span><span class="co">#&gt; sigma           0.02   721    1</span></span>
-<span><span class="co">#&gt; log_lik[1]   -684.61   765    1</span></span>
-<span><span class="co">#&gt; log_lik[2]   -819.51   765    1</span></span>
-<span><span class="co">#&gt; log_lik[3]   -979.36   765    1</span></span>
-<span><span class="co">#&gt; log_lik[4]   -657.76   765    1</span></span>
-<span><span class="co">#&gt; log_lik[5]   -966.94   765    1</span></span>
-<span><span class="co">#&gt; log_lik[6]   -909.11   765    1</span></span>
-<span><span class="co">#&gt; log_lik[7]   -908.33   765    1</span></span>
-<span><span class="co">#&gt; log_lik[8]  -1083.01   765    1</span></span>
-<span><span class="co">#&gt; log_lik[9]   -599.72   765    1</span></span>
-<span><span class="co">#&gt; log_lik[10] -1231.77   765    1</span></span>
-<span><span class="co">#&gt; log_lik[11]  -702.46   765    1</span></span>
-<span><span class="co">#&gt; log_lik[12]  -638.67   765    1</span></span>
-<span><span class="co">#&gt; log_lik[13]  -718.80   765    1</span></span>
-<span><span class="co">#&gt; log_lik[14] -1003.90   765    1</span></span>
-<span><span class="co">#&gt; log_lik[15]  -905.72   765    1</span></span>
-<span><span class="co">#&gt; log_lik[16]  -803.23   765    1</span></span>
-<span><span class="co">#&gt; log_lik[17]  -683.64   765    1</span></span>
-<span><span class="co">#&gt; log_lik[18]  -738.99   765    1</span></span>
-<span><span class="co">#&gt; log_lik[19] -1196.43   765    1</span></span>
-<span><span class="co">#&gt; log_lik[20]  -934.28   765    1</span></span>
-<span><span class="co">#&gt; log_lik[21]  -712.91   765    1</span></span>
-<span><span class="co">#&gt; log_lik[22]  -686.53   765    1</span></span>
-<span><span class="co">#&gt; log_lik[23]  -852.75   765    1</span></span>
-<span><span class="co">#&gt; log_lik[24]  -526.34   765    1</span></span>
-<span><span class="co">#&gt; log_lik[25]  -790.89   765    1</span></span>
-<span><span class="co">#&gt; log_lik[26]  -705.07   765    1</span></span>
-<span><span class="co">#&gt; log_lik[27] -1197.32   765    1</span></span>
-<span><span class="co">#&gt; log_lik[28] -1093.97   765    1</span></span>
-<span><span class="co">#&gt; log_lik[29]  -803.42   765    1</span></span>
-<span><span class="co">#&gt; log_lik[30]  -665.54   765    1</span></span>
-<span><span class="co">#&gt; log_lik[31] -1126.79   765    1</span></span>
-<span><span class="co">#&gt; log_lik[32] -1086.65   765    1</span></span>
-<span><span class="co">#&gt; log_lik[33] -1110.60   765    1</span></span>
-<span><span class="co">#&gt; log_lik[34] -1005.41   765    1</span></span>
-<span><span class="co">#&gt; log_lik[35]  -804.00   765    1</span></span>
-<span><span class="co">#&gt; log_lik[36]  -967.38   765    1</span></span>
-<span><span class="co">#&gt; log_lik[37] -1248.30   765    1</span></span>
-<span><span class="co">#&gt; log_lik[38]  -867.44   765    1</span></span>
-<span><span class="co">#&gt; log_lik[39]  -647.82   765    1</span></span>
-<span><span class="co">#&gt; log_lik[40] -1040.45   765    1</span></span>
-<span><span class="co">#&gt; log_lik[41] -1022.67   765    1</span></span>
-<span><span class="co">#&gt; log_lik[42]  -750.00   765    1</span></span>
-<span><span class="co">#&gt; log_lik[43] -1281.85   765    1</span></span>
-<span><span class="co">#&gt; log_lik[44]  -708.89   765    1</span></span>
-<span><span class="co">#&gt; log_lik[45] -1011.02   765    1</span></span>
-<span><span class="co">#&gt; log_lik[46]  -441.29   765    1</span></span>
-<span><span class="co">#&gt; log_lik[47]  -807.84   765    1</span></span>
-<span><span class="co">#&gt; log_lik[48] -1135.90   765    1</span></span>
-<span><span class="co">#&gt; log_lik[49]  -830.12   765    1</span></span>
-<span><span class="co">#&gt; log_lik[50]  -695.11   765    1</span></span>
-<span><span class="co">#&gt; lp__          145.70  1313    1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Oct  3 04:25:03 2022.</span></span>
-<span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
-<span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
-<span><span class="co">#&gt; convergence, Rhat=1).</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $BLM1_fit_NoErrors</span></span>
-<span><span class="co">#&gt; Inference for Stan model: 7f9086b208f04841e16d509c43ea0782.</span></span>
-<span><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
-<span><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                 mean se_mean     sd     2.5%      25%      50%      75%</span></span>
-<span><span class="co">#&gt; alpha           0.27    0.00   0.01     0.25     0.26     0.27     0.27</span></span>
-<span><span class="co">#&gt; beta            0.04    0.00   0.00     0.04     0.04     0.04     0.04</span></span>
-<span><span class="co">#&gt; sigma           0.01    0.00   0.00     0.01     0.01     0.01     0.01</span></span>
-<span><span class="co">#&gt; log_lik[1]  -1100.20    6.20 214.79 -1576.89 -1234.91 -1079.18  -952.33</span></span>
-<span><span class="co">#&gt; log_lik[2]  -1316.66    7.41 256.94 -1886.90 -1477.82 -1291.52 -1139.78</span></span>
-<span><span class="co">#&gt; log_lik[3]  -1573.15    8.85 306.89 -2254.22 -1765.63 -1543.13 -1361.89</span></span>
-<span><span class="co">#&gt; log_lik[4]  -1057.11    5.95 206.40 -1515.19 -1186.56 -1036.91  -915.02</span></span>
-<span><span class="co">#&gt; log_lik[5]  -1553.23    8.74 303.01 -2225.69 -1743.27 -1523.58 -1344.64</span></span>
-<span><span class="co">#&gt; log_lik[6]  -1460.44    8.22 284.94 -2092.80 -1639.15 -1432.56 -1264.28</span></span>
-<span><span class="co">#&gt; log_lik[7]  -1459.17    8.21 284.69 -2090.99 -1637.73 -1431.32 -1263.19</span></span>
-<span><span class="co">#&gt; log_lik[8]  -1739.47    9.79 339.27 -2492.40 -1952.26 -1706.27 -1505.91</span></span>
-<span><span class="co">#&gt; log_lik[9]   -963.99    5.43 188.27 -1381.82 -1082.07  -945.56  -834.38</span></span>
-<span><span class="co">#&gt; log_lik[10] -1978.16   11.13 385.75 -2834.24 -2220.10 -1940.42 -1712.61</span></span>
-<span><span class="co">#&gt; log_lik[11] -1128.84    6.36 220.37 -1617.92 -1267.06 -1107.28  -977.14</span></span>
-<span><span class="co">#&gt; log_lik[12] -1026.48    5.78 200.44 -1471.32 -1152.19 -1006.87  -888.50</span></span>
-<span><span class="co">#&gt; log_lik[13] -1155.05    6.50 225.47 -1655.45 -1296.47 -1132.99  -999.83</span></span>
-<span><span class="co">#&gt; log_lik[14] -1612.52    9.07 314.55 -2310.60 -1809.81 -1581.75 -1395.99</span></span>
-<span><span class="co">#&gt; log_lik[15] -1454.99    8.19 283.88 -2085.00 -1633.04 -1427.22 -1259.57</span></span>
-<span><span class="co">#&gt; log_lik[16] -1290.53    7.27 251.85 -1849.47 -1448.49 -1265.89 -1117.15</span></span>
-<span><span class="co">#&gt; log_lik[17] -1098.64    6.19 214.49 -1574.66 -1233.16 -1077.65  -950.98</span></span>
-<span><span class="co">#&gt; log_lik[18] -1187.46    6.69 231.78 -1701.86 -1332.83 -1164.78 -1027.90</span></span>
-<span><span class="co">#&gt; log_lik[19] -1921.46   10.81 374.71 -2753.04 -2156.48 -1884.80 -1663.51</span></span>
-<span><span class="co">#&gt; log_lik[20] -1500.82    8.45 292.80 -2150.63 -1684.46 -1472.17 -1299.25</span></span>
-<span><span class="co">#&gt; log_lik[21] -1145.60    6.45 223.63 -1641.91 -1285.86 -1123.72  -991.65</span></span>
-<span><span class="co">#&gt; log_lik[22] -1103.27    6.21 215.39 -1581.30 -1238.36 -1082.20  -955.00</span></span>
-<span><span class="co">#&gt; log_lik[23] -1370.00    7.71 267.33 -1963.28 -1537.67 -1343.84 -1185.97</span></span>
-<span><span class="co">#&gt; log_lik[24]  -846.24    4.77 165.34 -1213.20  -949.94  -830.06  -732.42</span></span>
-<span><span class="co">#&gt; log_lik[25] -1270.73    7.15 248.00 -1821.12 -1426.28 -1246.47 -1100.01</span></span>
-<span><span class="co">#&gt; log_lik[26] -1133.03    6.38 221.18 -1623.91 -1271.75 -1111.38  -980.76</span></span>
-<span><span class="co">#&gt; log_lik[27] -1922.89   10.82 374.99 -2755.09 -2158.08 -1886.20 -1664.75</span></span>
-<span><span class="co">#&gt; log_lik[28] -1757.05    9.89 342.69 -2517.58 -1971.98 -1723.52 -1521.14</span></span>
-<span><span class="co">#&gt; log_lik[29] -1290.85    7.27 251.92 -1849.92 -1448.85 -1266.20 -1117.43</span></span>
-<span><span class="co">#&gt; log_lik[30] -1069.60    6.02 208.83 -1533.07 -1200.57 -1049.16  -925.83</span></span>
-<span><span class="co">#&gt; log_lik[31] -1809.72   10.18 352.95 -2593.01 -2031.09 -1775.18 -1566.75</span></span>
-<span><span class="co">#&gt; log_lik[32] -1745.31    9.82 340.41 -2500.76 -1958.81 -1712.00 -1510.97</span></span>
-<span><span class="co">#&gt; log_lik[33] -1783.74   10.04 347.89 -2555.80 -2001.93 -1749.70 -1544.25</span></span>
-<span><span class="co">#&gt; log_lik[34] -1614.95    9.09 315.02 -2314.08 -1812.53 -1584.13 -1398.09</span></span>
-<span><span class="co">#&gt; log_lik[35] -1291.78    7.27 252.10 -1851.25 -1449.89 -1267.11 -1118.23</span></span>
-<span><span class="co">#&gt; log_lik[36] -1553.93    8.75 303.14 -2226.69 -1744.06 -1524.27 -1345.25</span></span>
-<span><span class="co">#&gt; log_lik[37] -2004.69   11.28 390.91 -2872.23 -2249.87 -1966.45 -1735.59</span></span>
-<span><span class="co">#&gt; log_lik[38] -1393.57    7.84 271.92 -1997.04 -1564.12 -1366.97 -1206.38</span></span>
-<span><span class="co">#&gt; log_lik[39] -1041.17    5.86 203.30 -1492.35 -1168.67 -1021.27  -901.22</span></span>
-<span><span class="co">#&gt; log_lik[40] -1671.17    9.40 325.97 -2394.59 -1875.62 -1639.28 -1446.77</span></span>
-<span><span class="co">#&gt; log_lik[41] -1642.65    9.24 320.42 -2353.75 -1843.61 -1611.30 -1422.07</span></span>
-<span><span class="co">#&gt; log_lik[42] -1205.12    6.79 235.22 -1727.15 -1352.65 -1182.10 -1043.19</span></span>
-<span><span class="co">#&gt; log_lik[43] -2058.53   11.58 401.40 -2949.33 -2310.28 -2019.25 -1782.20</span></span>
-<span><span class="co">#&gt; log_lik[44] -1139.16    6.42 222.38 -1632.69 -1278.63 -1117.40  -986.07</span></span>
-<span><span class="co">#&gt; log_lik[45] -1623.95    9.14 316.78 -2326.96 -1822.63 -1592.95 -1405.88</span></span>
-<span><span class="co">#&gt; log_lik[46]  -709.78    4.00 138.77 -1017.76  -796.81  -696.20  -614.25</span></span>
-<span><span class="co">#&gt; log_lik[47] -1297.94    7.31 253.30 -1860.08 -1456.80 -1273.15 -1123.57</span></span>
-<span><span class="co">#&gt; log_lik[48] -1824.34   10.26 355.80 -2613.95 -2047.49 -1789.53 -1579.41</span></span>
-<span><span class="co">#&gt; log_lik[49] -1333.69    7.51 260.26 -1911.28 -1496.92 -1308.22 -1154.53</span></span>
-<span><span class="co">#&gt; log_lik[50] -1117.05    6.29 218.07 -1601.03 -1253.82 -1095.71  -966.93</span></span>
-<span><span class="co">#&gt; lp__          185.93    0.04   1.21   183.01   185.40   186.25   186.81</span></span>
-<span><span class="co">#&gt;                97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; alpha           0.29  1046    1</span></span>
-<span><span class="co">#&gt; beta            0.04  1061    1</span></span>
-<span><span class="co">#&gt; sigma           0.02  1197    1</span></span>
-<span><span class="co">#&gt; log_lik[1]   -725.86  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[2]   -868.86  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[3]  -1038.30  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[4]   -697.39  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[5]  -1025.14  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[6]   -963.84  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[7]   -963.00  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[8]  -1148.17  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[9]   -635.87  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[10] -1305.85  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[11]  -744.78  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[12]  -677.16  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[13]  -762.09  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[14] -1064.31  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[15]  -960.24  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[16]  -851.59  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[17]  -724.83  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[18]  -783.50  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[19] -1268.40  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[20]  -990.51  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[21]  -755.85  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[22]  -727.89  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[23]  -904.09  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[24]  -558.09  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[25]  -838.52  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[26]  -747.54  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[27] -1269.34  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[28] -1159.78  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[29]  -851.80  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[30]  -705.64  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[31] -1194.58  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[32] -1152.02  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[33] -1177.41  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[34] -1065.91  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[35]  -852.42  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[36] -1025.60  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[37] -1323.38  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[38]  -919.66  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[39]  -686.86  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[40] -1103.05  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[41] -1084.21  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[42]  -795.17  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[43] -1358.94  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[44]  -751.59  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[45] -1071.85  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[46]  -467.94  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[47]  -856.49  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[48] -1204.24  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[49]  -880.11  1202    1</span></span>
-<span><span class="co">#&gt; log_lik[50]  -736.99  1202    1</span></span>
-<span><span class="co">#&gt; lp__          187.29  1108    1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Oct  3 04:25:45 2022.</span></span>
-<span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
-<span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
-<span><span class="co">#&gt; convergence, Rhat=1).</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $BLM3_fit</span></span>
-<span><span class="co">#&gt; Inference for Stan model: 006ab23433c79b9b7b0940468909174a.</span></span>
-<span><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
-<span><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                 mean se_mean     sd     2.5%      25%      50%      75%</span></span>
-<span><span class="co">#&gt; alpha[1]        0.27    0.00   0.01     0.25     0.26     0.27     0.27</span></span>
-<span><span class="co">#&gt; beta[1]         0.04    0.00   0.00     0.04     0.04     0.04     0.04</span></span>
-<span><span class="co">#&gt; sigma           0.01    0.00   0.00     0.01     0.01     0.01     0.01</span></span>
-<span><span class="co">#&gt; log_lik[1]  -1085.46    6.98 223.12 -1563.58 -1224.48 -1069.08  -935.57</span></span>
-<span><span class="co">#&gt; log_lik[2]  -1299.04    8.35 266.91 -1870.97 -1465.34 -1279.45 -1119.73</span></span>
-<span><span class="co">#&gt; log_lik[3]  -1552.10    9.97 318.79 -2235.20 -1750.72 -1528.70 -1337.94</span></span>
-<span><span class="co">#&gt; log_lik[4]  -1042.96    6.70 214.41 -1502.40 -1176.54 -1027.21  -898.92</span></span>
-<span><span class="co">#&gt; log_lik[5]  -1532.44    9.84 314.75 -2206.91 -1728.55 -1509.34 -1320.99</span></span>
-<span><span class="co">#&gt; log_lik[6]  -1440.89    9.26 295.99 -2075.14 -1625.31 -1419.16 -1242.05</span></span>
-<span><span class="co">#&gt; log_lik[7]  -1439.65    9.25 295.73 -2073.35 -1623.90 -1417.94 -1240.97</span></span>
-<span><span class="co">#&gt; log_lik[8]  -1716.20   11.02 352.43 -2471.38 -1935.78 -1690.33 -1479.44</span></span>
-<span><span class="co">#&gt; log_lik[9]   -951.08    6.12 195.57 -1370.16 -1072.92  -936.71  -819.69</span></span>
-<span><span class="co">#&gt; log_lik[10] -1951.70   12.53 400.71 -2810.34 -2201.37 -1922.29 -1682.51</span></span>
-<span><span class="co">#&gt; log_lik[11] -1113.73    7.16 228.91 -1604.26 -1256.35 -1096.92  -959.94</span></span>
-<span><span class="co">#&gt; log_lik[12] -1012.73    6.51 208.21 -1458.90 -1142.46  -997.45  -872.86</span></span>
-<span><span class="co">#&gt; log_lik[13] -1139.59    7.32 234.22 -1641.48 -1285.51 -1122.39  -982.24</span></span>
-<span><span class="co">#&gt; log_lik[14] -1590.95   10.22 326.75 -2291.11 -1794.53 -1566.96 -1371.44</span></span>
-<span><span class="co">#&gt; log_lik[15] -1435.52    9.22 294.89 -2067.41 -1619.25 -1413.87 -1237.42</span></span>
-<span><span class="co">#&gt; log_lik[16] -1273.26    8.18 261.62 -1833.86 -1436.26 -1254.05 -1097.50</span></span>
-<span><span class="co">#&gt; log_lik[17] -1083.93    6.97 222.80 -1561.37 -1222.75 -1067.57  -934.24</span></span>
-<span><span class="co">#&gt; log_lik[18] -1171.56    7.53 240.77 -1687.50 -1321.58 -1153.89 -1009.81</span></span>
-<span><span class="co">#&gt; log_lik[19] -1895.76   12.17 389.24 -2729.82 -2138.28 -1867.19 -1634.27</span></span>
-<span><span class="co">#&gt; log_lik[20] -1480.73    9.51 304.15 -2132.48 -1670.24 -1458.41 -1276.40</span></span>
-<span><span class="co">#&gt; log_lik[21] -1130.26    7.26 232.30 -1628.06 -1275.00 -1113.21  -974.20</span></span>
-<span><span class="co">#&gt; log_lik[22] -1088.50    7.00 223.74 -1567.95 -1227.90 -1072.07  -938.19</span></span>
-<span><span class="co">#&gt; log_lik[23] -1351.66    8.68 277.69 -1946.71 -1524.68 -1331.28 -1165.11</span></span>
-<span><span class="co">#&gt; log_lik[24]  -834.90    5.37 171.75 -1202.95  -941.91  -822.29  -719.52</span></span>
-<span><span class="co">#&gt; log_lik[25] -1253.72    8.06 257.61 -1805.75 -1414.23 -1234.81 -1080.66</span></span>
-<span><span class="co">#&gt; log_lik[26] -1117.86    7.18 229.76 -1610.20 -1261.01 -1100.99  -963.50</span></span>
-<span><span class="co">#&gt; log_lik[27] -1897.17   12.18 389.53 -2731.85 -2139.87 -1868.58 -1635.48</span></span>
-<span><span class="co">#&gt; log_lik[28] -1733.54   11.13 355.98 -2496.34 -1955.34 -1707.41 -1494.39</span></span>
-<span><span class="co">#&gt; log_lik[29] -1273.57    8.18 261.68 -1834.31 -1436.61 -1254.36 -1097.77</span></span>
-<span><span class="co">#&gt; log_lik[30] -1055.27    6.78 216.93 -1520.13 -1190.43 -1039.35  -909.54</span></span>
-<span><span class="co">#&gt; log_lik[31] -1785.51   11.46 366.64 -2571.14 -2013.94 -1758.59 -1539.20</span></span>
-<span><span class="co">#&gt; log_lik[32] -1721.96   11.06 353.61 -2479.67 -1942.27 -1696.00 -1484.40</span></span>
-<span><span class="co">#&gt; log_lik[33] -1759.88   11.30 361.38 -2534.24 -1985.04 -1733.35 -1517.10</span></span>
-<span><span class="co">#&gt; log_lik[34] -1593.34   10.23 327.24 -2294.56 -1797.23 -1569.32 -1373.50</span></span>
-<span><span class="co">#&gt; log_lik[35] -1274.48    8.19 261.87 -1835.63 -1437.64 -1255.26 -1098.56</span></span>
-<span><span class="co">#&gt; log_lik[36] -1533.14    9.85 314.90 -2207.90 -1729.34 -1510.02 -1321.59</span></span>
-<span><span class="co">#&gt; log_lik[37] -1977.88   12.70 406.07 -2848.01 -2230.89 -1948.07 -1705.08</span></span>
-<span><span class="co">#&gt; log_lik[38] -1374.92    8.83 282.46 -1980.19 -1550.91 -1354.19 -1185.16</span></span>
-<span><span class="co">#&gt; log_lik[39] -1027.22    6.60 211.18 -1479.75 -1158.80 -1011.72  -885.35</span></span>
-<span><span class="co">#&gt; log_lik[40] -1648.81   10.59 338.61 -2374.39 -1859.78 -1623.95 -1421.33</span></span>
-<span><span class="co">#&gt; log_lik[41] -1620.67   10.41 332.84 -2333.89 -1828.05 -1596.24 -1397.07</span></span>
-<span><span class="co">#&gt; log_lik[42] -1188.98    7.64 244.34 -1712.57 -1341.22 -1171.04 -1024.83</span></span>
-<span><span class="co">#&gt; log_lik[43] -2030.99   13.04 416.96 -2924.46 -2290.78 -2000.39 -1750.88</span></span>
-<span><span class="co">#&gt; log_lik[44] -1123.91    7.22 231.00 -1618.91 -1267.83 -1106.94  -968.72</span></span>
-<span><span class="co">#&gt; log_lik[45] -1602.22   10.29 329.06 -2307.33 -1807.24 -1578.06 -1381.16</span></span>
-<span><span class="co">#&gt; log_lik[46]  -700.26    4.51 144.15 -1009.16  -790.07  -689.67  -603.42</span></span>
-<span><span class="co">#&gt; log_lik[47] -1280.57    8.23 263.12 -1844.38 -1444.50 -1261.25 -1103.80</span></span>
-<span><span class="co">#&gt; log_lik[48] -1799.93   11.56 369.59 -2591.90 -2030.21 -1772.80 -1551.64</span></span>
-<span><span class="co">#&gt; log_lik[49] -1315.84    8.45 270.35 -1895.15 -1484.28 -1295.99 -1134.22</span></span>
-<span><span class="co">#&gt; log_lik[50] -1102.09    7.08 226.53 -1587.51 -1243.23 -1085.46  -949.91</span></span>
-<span><span class="co">#&gt; lp__          185.85    0.04   1.25   182.44   185.28   186.16   186.76</span></span>
-<span><span class="co">#&gt;                97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; alpha[1]        0.29  1017    1</span></span>
-<span><span class="co">#&gt; beta[1]         0.04  1036    1</span></span>
-<span><span class="co">#&gt; sigma           0.02   968    1</span></span>
-<span><span class="co">#&gt; log_lik[1]   -676.32  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[2]   -809.60  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[3]   -967.52  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[4]   -649.80  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[5]   -955.25  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[6]   -898.12  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[7]   -897.34  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[8]  -1069.92  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[9]   -592.46  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[10] -1216.89  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[11]  -693.96  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[12]  -630.94  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[13]  -710.10  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[14]  -991.76  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[15]  -894.77  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[16]  -793.51  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[17]  -675.36  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[18]  -730.05  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[19] -1181.98  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[20]  -922.99  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[21]  -704.28  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[22]  -678.22  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[23]  -842.44  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[24]  -519.96  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[25]  -781.32  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[26]  -696.54  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[27] -1182.85  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[28] -1080.74  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[29]  -793.71  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[30]  -657.48  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[31] -1113.17  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[32] -1073.52  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[33] -1097.18  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[34]  -993.26  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[35]  -794.28  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[36]  -955.69  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[37] -1233.22  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[38]  -856.95  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[39]  -639.98  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[40] -1027.87  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[41] -1010.31  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[42]  -740.92  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[43] -1266.37  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[44]  -700.31  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[45]  -998.80  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[46]  -435.94  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[47]  -798.07  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[48] -1122.18  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[49]  -820.08  1023    1</span></span>
-<span><span class="co">#&gt; log_lik[50]  -686.70  1023    1</span></span>
-<span><span class="co">#&gt; lp__          187.30   954    1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Mon Oct  3 04:26:28 2022.</span></span>
-<span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
-<span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
-<span><span class="co">#&gt; convergence, Rhat=1).</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; attr(,"loo")</span></span>
-<span><span class="co">#&gt;         elpd_diff se_diff </span></span>
-<span><span class="co">#&gt; BLM1_NE      0.0       0.0</span></span>
-<span><span class="co">#&gt; BLM1_E   -6892.6     326.5</span></span>
-<span><span class="co">#&gt; BLM3    -14577.8     911.2</span></span></code></pre></div>
-<p>Predict for OLS model</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">paramdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulateLM_measured.html">simulateLM_measured</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sample 1"</span>, <span class="st">"Sample 2"</span><span class="op">)</span>, </span>
+<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sample 1"</span>, <span class="st">"Sample 2"</span><span class="op">)</span>, </span>
 <span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span><span class="op">)</span>, </span>
 <span>                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span>,</span>
-<span>                      n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,</span>
-<span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/predictTc.html">predictTc</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">paramdist</span><span class="op">)</span></span>
+<span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,</span>
+<span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>As for the calibration step, <code>bayclumpr</code> expects uncertainty to be expressed in terms of standard deviation. Note that the <code>recData</code> object generated above includes the smallest number of columns that are needed to perform reconstrictions in <code>bayclumpr</code>.</p>
+<p>From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let’s assume that we were interested in reconstructing temperatures for our <code>recData</code> under an OLS model. First, we would have to run our calibration analyses:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">paramdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<p>From this point, we can use the <code>rec.clumped</code> to reconstruct temperatures based on the reconstruction dataset (<code>recData</code> argument) and the observed calibration object (<code>obCal</code> argument):</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rec.clumped.html">rec.clumped</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">paramdist</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     Sample D47 D47error meanTemp    error</span></span>
 <span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.74079 1.774099</span></span>
 <span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.26387 1.193300</span></span></code></pre></div>
-<p>Predict based on Bayesian models</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BayesianPredictions.html">BayesianPredictions</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit</span>,</span>
-<span>                                recData <span class="op">=</span> <span class="va">recData</span>,</span>
-<span>                                iter <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
-<p>Results</p>
+<p>The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (<code>1 SE</code>). Let’s now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the <code>BayesCal</code> created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (<code>BayesCal$BLM1_fit_NoErrors</code>).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
+<p>The associated reconstructions to this Bayesian model are shown below:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span></span>
 <span><span class="co">#&gt;     Sample D47 D47error meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.82976 0.2236191</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.77946 0.1482649</span></span></code></pre></div>
-  </main>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.82143 0.2212216</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.76847 0.1469527</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>
+</h2>
+<p>We have reviewed the most fundamental aspects of using <code>bayclumpr</code>. More advances analyses involving alternative priors in Bayesian models are an option.</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

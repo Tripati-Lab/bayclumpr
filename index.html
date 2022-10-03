@@ -71,28 +71,20 @@
 <div class="section level2">
 <h2 id="what-is-bayclumpr">What is <code>bayclumpr</code>?<a class="anchor" aria-label="anchor" href="#what-is-bayclumpr"></a>
 </h2>
-<p>To support the use of Bayesian models and the analytical framework developed in Román-Palacios et al. (2022) for clumped isotope calibration and for temperature reconstructions, and to facilitate comparisons of Bayesian and classical models, we present a self-contained R package and associated Shiny Dashboard application, <code>bayclumpr</code> and <code>BayClump</code>, respectively. <code>bayclumpr</code> (and <code>BayClump</code>) fits both classical and Bayesian linear regressions to calibration datasets and performs temperature reconstructions under frequentist and Bayesian frameworks.</p>
+<p>To support the use of Bayesian models and the analytical framework developed in Román-Palacios et al. (2022) for clumped isotope calibration and for temperature reconstructions, and to facilitate comparisons of Bayesian and classical models, we present a self-contained <code>R</code> package and associated Shiny Dashboard application, <code>bayclumpr</code> and <code>BayClump</code>, respectively. <code>bayclumpr</code> (and <code>BayClump</code>) fits both frequentist and Bayesian linear regressions to calibration datasets and performs temperature reconstructions under both frameworks. You can find more details on how to use <code>bayclumpr</code> in this <a href="https://tripati-lab.github.io/bayclumpr/">website</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="what-is-bayclump">What is <code>BayClump</code>?<a class="anchor" aria-label="anchor" href="#what-is-bayclump"></a>
 </h2>
-<p>[Placeholder]</p>
-</div>
-<div class="section level2">
-<h2 id="who-should-consider-using-bayclumpr">Who should consider using <code>bayclumpr</code>?<a class="anchor" aria-label="anchor" href="#who-should-consider-using-bayclumpr"></a>
-</h2>
-<p>[Placeholder]</p>
-</div>
-<div class="section level2">
-<h2 id="how-is-bayclumpr-different-from-other-software">How is <code>bayclumpr</code> different from other software?<a class="anchor" aria-label="anchor" href="#how-is-bayclumpr-different-from-other-software"></a>
-</h2>
-<p>[Placeholder]</p>
+<p><code>BayClump</code> is an associated Shiny Dashboard application that is associated with the <code>bayclumpr</code> <code>R</code> package. All the functions implemented in <code>BayClump</code> are sourced from <code>bayclumpr</code>. We eveloped <code>BayClump</code> to allow users with less coding experience to be able to access standarized resources to calibrate and derive reconstructions using clumped isotope datasets. You can access BayClump directly from <a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">here</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="installing-bayclumpr">Installing <code>bayclumpr</code>
 <a class="anchor" aria-label="anchor" href="#installing-bayclumpr"></a>
 </h2>
-<p>[Placeholder]</p>
+<p>The latest version of <code>bayclumpr</code> can be installed directly from our GitHub repository using the following lines of code from <code>R</code></p>
+<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Tripati-Lab/bayclumpr"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
