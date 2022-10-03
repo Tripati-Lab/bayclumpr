@@ -30,7 +30,8 @@ rec.bayesian <- function(calModel,
   ununfpredMod <- "
 data {
   int<lower=0> n;
-  vector[n] y;
+  vector[n] y_mes;
+  vector[n] y_err;
 
   int<lower=0> posts;
   vector[posts] alpha;
@@ -40,11 +41,13 @@ data {
 
 parameters {
   matrix[n, posts] x_new;
+  vector[n] y;
 }
 
 model {
   vector[posts] y_new_hat;
   for(i in 1:n){
+    y_mes[i] ~ normal(y[i], y_err[i]);
     y_new_hat = alpha + beta .* x_new[i,]';
     y[i] ~ normal(y_new_hat, sigma);
 }
@@ -54,7 +57,8 @@ model {
 predMod <- "
 data {
   int<lower=0> n;
-  vector[n] y;
+  vector[n] y_mes;
+  vector[n] y_err;
 
   int<lower=0> posts;
   vector[posts] alpha;
@@ -66,11 +70,13 @@ data {
 
 parameters {
   matrix[n, posts] x_new;
+  vector[n] y;
 }
 
 model {
   vector[posts] y_new_hat;
   for(i in 1:n){
+    y_mes[i] ~ normal(y[i], y_err[i]);
     x_new[i,] ~ normal(prior_mu, prior_sig);
     y_new_hat = alpha + beta .* x_new[i,]';
     y[i] ~ normal(y_new_hat, sigma);
@@ -86,7 +92,8 @@ if (mixed) {
   recs <- lapply(partMat, function(x) {
     stan_date <- list(
       n = nrow(x),
-      y = x$D47,
+      y_mes = x$D47,
+      y_err = x$D47error,
       posts = length(vects.params$alpha[, 1]),
       alpha = vects.params$alpha[, x$Material[1]],
       beta = vects.params$beta[, x$Material[1]],
@@ -115,7 +122,7 @@ if (mixed) {
     recs <- lapply(1:Xdims2[2], function(x) {
       test <- as.vector(Xouts2[, x,])
       test <- sqrt(10 ^ 6 / test) - 273.15
-      cbind.data.frame(mean(test), se(test, iter))
+      cbind.data.frame(mean(test, na.rm = TRUE), se(test, iter))
     })
 
     recs <- do.call(rbind, recs)
@@ -136,7 +143,8 @@ if (mixed) {
 } else {
   stan_date <- list(
     n = nrow(recData),
-    y = recData$D47,
+    y_mes = recData$D47,
+    y_err = recData$D47error,
     posts = length(vects.params$alpha),
     alpha = vects.params$alpha,
     beta = vects.params$beta,
@@ -166,7 +174,7 @@ if (mixed) {
   recs <- lapply(1:Xdims2[2], function(x) {
     test <- as.vector(Xouts2[, x,])
     test <- sqrt(10 ^ 6 / test) - 273.15
-    indrec <- cbind.data.frame(mean(test), se(test, iter))
+    indrec <- cbind.data.frame(mean(test, na.rm = TRUE), se(test, iter))
     return(indrec)
   })
 

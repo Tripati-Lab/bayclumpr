@@ -5,5 +5,5 @@
 #' @importFrom stats var
 
 se <- function(x, iter){
-  sqrt(var(x) / iter)
+  sqrt(var(x, na.rm = TRUE) / iter)
 }

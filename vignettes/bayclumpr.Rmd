@@ -67,14 +67,14 @@ BayesCal
 `bayclumpr` implements two functions to perform temperature reconstructions under frequentist (`rec.clumped`) and Bayesian frameworks (`rec.bayesian`). Let's review how each of these functions work by generating a synthetic dataset for two samples.
 
 ```{r}
-recData <- data.frame(Sample = c("Sample 1", "Sample 2"), 
-                      D47 = c(0.6, 0.7), 
-                      D47error = c(0.005, 0.005),
-                      N = c(2,2),
-                      Material = c(1,1))
+recData <- data.frame(Sample = paste("Sample", 1:6), 
+                      D47 = c(0.6, 0.7, 0.8, 0.6, 0.7, 0.8), 
+                      D47error = c(0.005, 0.005, 0.005, 0.01, 0.01, 0.01),
+                      N = c(2, 2, 2, 2, 2, 2),
+                      Material = c(1, 1, 1, 1, 1, 1))
 ```
 
-As for the calibration step, `bayclumpr` expects uncertainty to be expressed in terms of standard deviation. Note that the `recData` object generated above includes the smallest number of columns that are needed to perform reconstrictions in `bayclumpr`.
+As for the calibration step, `bayclumpr` expects uncertainty to be expressed in terms of standard deviation. Note that the `recData` object generated above includes the smallest number of columns that are needed to perform reconstructions in `bayclumpr`.
 
 From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let's assume that we were interested in reconstructing temperatures for our `recData` under an OLS model. First, we would have to run our calibration analyses:
 
