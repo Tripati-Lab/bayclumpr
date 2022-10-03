@@ -52,7 +52,7 @@ cal.york(data = ds, replicates = 10)
 
 Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. Let's fit all three models using the `cal.bayesian` function:
 
-```{r  message=FALSE, warning=FALSE}
+```{r  message=FALSE, warning=FALSE, error =FALSE}
 BayesCal <- cal.bayesian(calibrationData = ds, numSavedSteps = 3000, priors = "Informative")
 ```
 
@@ -90,7 +90,7 @@ rec.clumped(recData = recData, obCal = paramdist)
 
 The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SE`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, error =FALSE}
 PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000)
 ```
 
