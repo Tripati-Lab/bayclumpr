@@ -55,11 +55,18 @@ simulateYork_measured(data = ds, replicates = 10)
 
 Fit Bayesian models
 
-```{r}
+```{r  message=FALSE, warning=FALSE}
 BayesCal <- fitClumpedRegressions(calibrationData = ds, 
                                   numSavedSteps = 3000,
                                   priors = "Informative")
 ```
+
+Results...
+
+```{r}
+BayesCal
+```
+
 
 Predict for OLS model
 
@@ -76,13 +83,17 @@ predictTc(recData = recData, obCal = paramdist)
 Predict based on Bayesian models
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 PredsBay <- BayesianPredictions(calModel = BayesCal$BLM1_fit,
                                 recData = recData,
                                 iter = 1000)
-PredsBay
 ```
 
+Results
+
+```{r}
+PredsBay
+```
 
 
 
