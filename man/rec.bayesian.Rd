@@ -12,7 +12,8 @@ rec.bayesian(
   priors = "Uninformative",
   prior_mu = 11,
   prior_sig = 5,
-  mixed = FALSE
+  mixed = FALSE,
+  postcalsamples = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ rec.bayesian(
 \code{priors} are not Uninformative.}
 
 \item{mixed}{whether the model \code{calModel} is mixed or not.}
+
+\item{postcalsamples}{Number of posterior samples to analyze from the calibration step.}
 }
 \description{
 This function generate temperature predictions (in 10^6/T2) based on a

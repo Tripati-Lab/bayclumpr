@@ -67,11 +67,11 @@ BayesCal
 `bayclumpr` implements two functions to perform temperature reconstructions under frequentist (`rec.clumped`) and Bayesian frameworks (`rec.bayesian`). Let's review how each of these functions work by generating a synthetic dataset for two samples.
 
 ```{r}
-recData <- data.frame(Sample = paste("Sample", 1:6), 
-                      D47 = c(0.6, 0.7, 0.8, 0.6, 0.7, 0.8), 
-                      D47error = c(0.005, 0.005, 0.005, 0.01, 0.01, 0.01),
-                      N = c(2, 2, 2, 2, 2, 2),
-                      Material = c(1, 1, 1, 1, 1, 1))
+recData <- data.frame(Sample = paste("Sample", 1:9), 
+                      D47 = rep(c(0.6, 0.7, 0.8), 3), 
+                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
+                      N = rep(2, 9),
+                      Material = rep(1, 9))
 ```
 
 As for the calibration step, `bayclumpr` expects uncertainty to be expressed in terms of standard deviation. Note that the `recData` object generated above includes the smallest number of columns that are needed to perform reconstructions in `bayclumpr`.
@@ -91,7 +91,7 @@ rec.clumped(recData = recData, obCal = paramdist)
 The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SE`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
 
 ```{r message=FALSE, warning=FALSE, error =FALSE}
-PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000)
+PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 3000, postcalsamples = 100)
 ```
 
 The associated reconstructions to this Bayesian model are shown below:

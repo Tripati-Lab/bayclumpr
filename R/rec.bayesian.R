@@ -10,6 +10,7 @@
 #' @param prior_sig Prior on the sd temperature (scale = 10^6/T2, T in K) when
 #'                  \code{priors} are not Uninformative.
 #' @param mixed whether the model \code{calModel} is mixed or not.
+#' @param postcalsamples Number of posterior samples to analyze from the calibration step.
 #'
 #' @import rstan
 #' @import parallel
@@ -22,7 +23,8 @@ rec.bayesian <- function(calModel,
                                 priors = "Uninformative",
                                 prior_mu = 11,
                                 prior_sig = 5,
-                                mixed = FALSE) {
+                                mixed = FALSE,
+                         postcalsamples = NULL) {
 
   vects.params <- extract(calModel)
 
@@ -83,6 +85,12 @@ model {
 }
 }
 "
+totsamp <- length(vects.params[[1]])
+seqSamples <- if(!is.null(postcalsamples) ){
+  sample(1:totsamp, postcalsamples, replace = TRUE)
+  }else{
+    1:length(vects.params[[1]])
+  }
 
 ##If mixed perform analysis per material
 
@@ -94,9 +102,9 @@ if (mixed) {
       n = nrow(x),
       y_mes = x$D47,
       y_err = x$D47error,
-      posts = length(vects.params$alpha[, 1]),
-      alpha = vects.params$alpha[, x$Material[1]],
-      beta = vects.params$beta[, x$Material[1]],
+      posts = length(seqSamples),
+      alpha = vects.params$alpha[seqSamples, x$Material[1]],
+      beta = vects.params$beta[seqSamples, x$Material[1]],
       sigma = vects.params$sigma,
       prior_mu = prior_mu,
       prior_sig = prior_sig
@@ -145,10 +153,10 @@ if (mixed) {
     n = nrow(recData),
     y_mes = recData$D47,
     y_err = recData$D47error,
-    posts = length(vects.params$alpha),
-    alpha = vects.params$alpha,
-    beta = vects.params$beta,
-    sigma = vects.params$sigma,
+    posts = length(seqSamples),
+    alpha = vects.params$alpha[seqSamples],
+    beta = vects.params$beta[seqSamples],
+    sigma = vects.params$sigma[seqSamples],
     prior_mu = prior_mu,
     prior_sig = prior_sig
   )
