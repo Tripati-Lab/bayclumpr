@@ -157,30 +157,38 @@
 </h2>
 <p><code>bayclumpr</code> implements two functions to perform temperature reconstructions under frequentist (<code>rec.clumped</code>) and Bayesian frameworks (<code>rec.bayesian</code>). Let’s review how each of these functions work by generating a synthetic dataset for two samples.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sample 1"</span>, <span class="st">"Sample 2"</span><span class="op">)</span>, </span>
-<span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span><span class="op">)</span>, </span>
-<span>                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.005</span><span class="op">)</span>,</span>
-<span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,</span>
-<span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>As for the calibration step, <code>bayclumpr</code> expects uncertainty to be expressed in terms of standard deviation. Note that the <code>recData</code> object generated above includes the smallest number of columns that are needed to perform reconstrictions in <code>bayclumpr</code>.</p>
+<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>, </span>
+<span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, </span>
+<span>                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.005</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span><span class="op">)</span>,</span>
+<span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>As for the calibration step, <code>bayclumpr</code> expects uncertainty to be expressed in terms of standard deviation. Note that the <code>recData</code> object generated above includes the smallest number of columns that are needed to perform reconstructions in <code>bayclumpr</code>.</p>
 <p>From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let’s assume that we were interested in reconstructing temperatures for our <code>recData</code> under an OLS model. First, we would have to run our calibration analyses:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">paramdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>From this point, we can use the <code>rec.clumped</code> to reconstruct temperatures based on the reconstruction dataset (<code>recData</code> argument) and the observed calibration object (<code>obCal</code> argument):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rec.clumped.html">rec.clumped</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">paramdist</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error meanTemp    error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.74079 1.774099</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.26387 1.193300</span></span></code></pre></div>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.74079 1.7740994</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.26387 1.1932996</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.78189 0.8722999</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.74079 3.5086806</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.26387 2.3661051</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.78189 1.7324101</span></span></code></pre></div>
 <p>The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (<code>1 SE</code>). Let’s now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the <code>BayesCal</code> created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (<code>BayesCal$BLM1_fit_NoErrors</code>).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 <p>The associated reconstructions to this Bayesian model are shown below:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.81721 0.2215990</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.76273 0.1468467</span></span></code></pre></div>
+<span><span class="co">#&gt;     Sample D47 D47error   meanTemp     error</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.354679 0.2301118</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  19.299938 0.1546797</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005  -9.280677 0.1194503</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010 106.913562 1.2977743</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  27.324172 0.5297406</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010  -8.132113 0.1835554</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>
