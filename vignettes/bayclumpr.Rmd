@@ -1,8 +1,8 @@
 ---
-title: "A brief intro to the bayclumper"
+title: "bayclumpr"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{A brief intro to the bayclumper}
+  %\VignetteIndexEntry{bayclumpr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,14 +16,12 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(bayclumpr)
-library(rstan)
-library(loo)
 ```
 
 Generate a dataset
 
 ```{r}
-ds <- bayclumpr::sim.clumped(error = "S1", nobs = 50)
+ds <- sim.clumped(error = "S1", nobs = 50)
 head(ds)
 ```
 
@@ -74,7 +72,9 @@ Predict for OLS model
 paramdist <- simulateLM_measured(data = ds, replicates = 10)
 recData <- data.frame(Sample = c("Sample 1", "Sample 2"), 
                       D47 = c(0.6, 0.7), 
-                      D47error = c(0.005, 0.005))
+                      D47error = c(0.005, 0.005),
+                      n = c(2,2),
+                      Material = c(1,1))
 
 predictTc(recData = recData, obCal = paramdist)
 ```

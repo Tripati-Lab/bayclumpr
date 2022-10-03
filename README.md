@@ -7,25 +7,25 @@
 <!-- badges: end -->
 
 
-# The `clumpedr` `R` Package
+# The `bayclumpr` `R` Package
 
 ### Bayesian methods for clumped isotope paleothermometry
 
 
-## What is `clumpedr`?
+## What is `bayclumpr`?
 
 To support the use of Bayesian models and the analytical framework developed in Román-Palacios et al. (2022) for clumped isotope calibration and for temperature reconstructions, and to facilitate comparisons of Bayesian and classical models, we present a self-contained R package and associated Shiny Dashboard application, `bayclumpr` and `BayClump`, respectively. `bayclumpr` (and `BayClump`) fits both classical and Bayesian linear regressions to calibration datasets and performs temperature reconstructions under frequentist and Bayesian frameworks.
 
 ## What is `BayClump`?
 [Placeholder]
 
-## Who should consider using `clumpedr`?
+## Who should consider using `bayclumpr`?
 [Placeholder]
 
-## How is `clumpedr` different from other software?
+## How is `bayclumpr` different from other software?
 [Placeholder]
 
-## Installing `clumpedr`
+## Installing `bayclumpr`
 [Placeholder]
 
 ## Contributing
