@@ -105,7 +105,7 @@ if (mixed) {
       posts = length(seqSamples),
       alpha = vects.params$alpha[seqSamples, x$Material[1]],
       beta = vects.params$beta[seqSamples, x$Material[1]],
-      sigma = vects.params$sigma,
+      sigma = vects.params$sigma[seqSamples],
       prior_mu = prior_mu,
       prior_sig = prior_sig
     )
