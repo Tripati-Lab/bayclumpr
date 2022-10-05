@@ -7,7 +7,7 @@
 #'
 #' @export
 
-plot.cal.prior <- function(prior, n = 1000) {
+cal.prior <- function(prior, n = 1000) {
   if (prior == "Informative") {
     params <- cbind.data.frame(
       parameter = c("alpha", "beta"),

@@ -8,7 +8,7 @@
 #' @export
 
 
-plot.rec.priors <- function(prior, n = 1000) {
+rec.prior <- function(prior, n = 1000) {
 
   if (prior == "Informative") {
     params <- cbind.data.frame(
