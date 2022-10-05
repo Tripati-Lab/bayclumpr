@@ -14,6 +14,7 @@
 #'
 #' @import rstan
 #' @import parallel
+#' @import coda
 #'
 #' @export
 
@@ -70,6 +71,7 @@ parameters {
   matrix[n, posts] x_new;
 }
 
+
 model {
   vector[posts] y_new_hat;
   for(i in 1:n){
@@ -125,11 +127,13 @@ if (mixed) {
     params2 <- extract(data.rstan)
     Xouts2 <- params2$x_new
     Xdims2 <- dim(Xouts2)
-    recs <- lapply(1:Xdims2[2], function(x) {
-      test <- as.vector(Xouts2[, x,])
-      test <- sqrt(10 ^ 6 / test) - 273.15
-      cbind.data.frame(mean(test, na.rm = TRUE), se(test, iter))
+    recs <- sapply(1:iter, function(x){
+      rowMeans(Xouts2[x,,])
     })
+    recs <- sqrt(10 ^ 6 / recs) - 273.15
+    recs <- apply(recs, 1, function(x){
+      data.frame(mean(x), sd(x))}
+    )
 
     recs <- do.call(rbind, recs)
 
@@ -168,20 +172,20 @@ if (mixed) {
     },
     chains = 2,
     iter = iter,
-    warmup = floor(iter / 2),
-    control = list(adapt_delta = 0.90, max_treedepth = 10)
+    warmup = floor(iter / 2)
   )
 
   params2 <- extract(data.rstan)
   Xouts2 <- params2$x_new
   Xdims2 <- dim(Xouts2)
 
-  recs <- lapply(1:Xdims2[2], function(x) {
-    test <- as.vector(Xouts2[, x,])
-    test <- sqrt(10 ^ 6 / test) - 273.15
-    indrec <- cbind.data.frame(mean(test, na.rm = TRUE), se(test, iter))
-    return(indrec)
+  recs <- sapply(1:iter, function(x){
+    rowMeans(Xouts2[x,,])
   })
+  recs <- sqrt(10 ^ 6 / recs) - 273.15
+  recs <- apply(recs, 1, function(x){
+    data.frame(mean(x), sd(x))}
+  )
 
   recs <- do.call(rbind, recs)
 

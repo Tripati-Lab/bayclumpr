@@ -166,7 +166,7 @@ linear models that are used for calibrations and temperature
 reconstructions. Let’s fit all three models using the
 <code>cal.bayesian</code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Informative"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Weak"</span><span class="op">)</span>
 <span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span>
 <span class="co">#&gt; clang -mmacosx-version-min=10.13 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG   -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/Rcpp/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/RcppEigen/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/RcppEigen/include/unsupported"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/BH/include" -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/StanHeaders/include/src/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/StanHeaders/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/RcppParallel/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DBOOST_NO_AUTO_PTR  -include '/Library/Frameworks/R.framework/Versions/4.2/Resources/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1   -I/usr/local/include   -fPIC  -Wall -g -O2  -c foo.c -o foo.o</span>
 <span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span>
@@ -268,16 +268,16 @@ reconstruct temperatures based on the reconstruction dataset
 (<code>obCal</code> argument):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/rec.clumped.html">rec.clumped</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">paramdist</span><span class="op">)</span>
-<span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span>
-<span class="co">#&gt; 1 Sample 1 0.6    0.005  59.61720 1.7656652</span>
-<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.30671 1.1894503</span>
-<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.65875 0.8703184</span>
-<span class="co">#&gt; 4 Sample 4 0.6    0.010  59.61720 3.4921700</span>
-<span class="co">#&gt; 5 Sample 5 0.7    0.010  18.30671 2.3585409</span>
-<span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.65875 1.7285077</span>
-<span class="co">#&gt; 7 Sample 7 0.6    0.020  59.61720 6.8333326</span>
-<span class="co">#&gt; 8 Sample 8 0.7    0.020  18.30671 4.6379174</span>
-<span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.65875 3.4096070</span></code></pre></div>
+<span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span>
+<span class="co">#&gt; 1 Sample 1 0.6    0.005  59.61720 2.497028</span>
+<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.30671 1.682137</span>
+<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.65875 1.230816</span>
+<span class="co">#&gt; 4 Sample 4 0.6    0.010  59.61720 4.938674</span>
+<span class="co">#&gt; 5 Sample 5 0.7    0.010  18.30671 3.335481</span>
+<span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.65875 2.444479</span>
+<span class="co">#&gt; 7 Sample 7 0.6    0.020  59.61720 9.663792</span>
+<span class="co">#&gt; 8 Sample 8 0.7    0.020  18.30671 6.559006</span>
+<span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.65875 4.821912</span></code></pre></div>
 <p>The resulting object includes information from the template
 reconstruction dataset but also information on the reconstructed
 temperature and associated uncertainty (<code>1 SE</code>). Let’s now
@@ -288,7 +288,7 @@ reconstructions under only a single of the Bayesian models equivalent to
 the OLS but fit under a Bayesian framework
 (<code>BayesCal$BLM1_fit_NoErrors</code>).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">3000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">1000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 <span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span>
 <span class="co">#&gt; clang -mmacosx-version-min=10.13 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG   -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/Rcpp/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/RcppEigen/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/RcppEigen/include/unsupported"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/BH/include" -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/StanHeaders/include/src/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/StanHeaders/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/RcppParallel/include/"  -I"/Library/Frameworks/R.framework/Versions/4.2/Resources/library/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DBOOST_NO_AUTO_PTR  -include '/Library/Frameworks/R.framework/Versions/4.2/Resources/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1   -I/usr/local/include   -fPIC  -Wall -g -O2  -c foo.c -o foo.o</span>
 <span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span>
@@ -314,16 +314,16 @@ the OLS but fit under a Bayesian framework
 below:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">PredsBay</span>
-<span class="co">#&gt;     Sample D47 D47error   meanTemp      error</span>
-<span class="co">#&gt; 1 Sample 1 0.6    0.005  59.878986 0.13542063</span>
-<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.723690 0.08987994</span>
-<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.042812 0.06654889</span>
-<span class="co">#&gt; 4 Sample 4 0.6    0.010  59.961628 0.15981356</span>
-<span class="co">#&gt; 5 Sample 5 0.7    0.010  18.985266 0.10443148</span>
-<span class="co">#&gt; 6 Sample 6 0.8    0.010  -9.874891 0.07978609</span>
-<span class="co">#&gt; 7 Sample 7 0.6    0.020  62.440395 0.21168623</span>
-<span class="co">#&gt; 8 Sample 8 0.7    0.020  20.540012 0.16525217</span>
-<span class="co">#&gt; 9 Sample 9 0.8    0.020 -11.283395 0.12017687</span></code></pre></div>
+<span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span>
+<span class="co">#&gt; 1 Sample 1 0.6    0.005  59.80742 0.7182452</span>
+<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.68100 0.4661567</span>
+<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.21177 0.3437173</span>
+<span class="co">#&gt; 4 Sample 4 0.6    0.010  59.80756 0.6636361</span>
+<span class="co">#&gt; 5 Sample 5 0.7    0.010  18.66949 0.4918619</span>
+<span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.19772 0.3389935</span>
+<span class="co">#&gt; 7 Sample 7 0.6    0.020  59.77752 0.6668041</span>
+<span class="co">#&gt; 8 Sample 8 0.7    0.020  18.67415 0.5067366</span>
+<span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.20396 0.3460783</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>
