@@ -80,7 +80,11 @@ model {
 }
 "
 
-totsamp <- length(vects.params[[1]])
+totsamp <- if(!mixed){
+  length(vects.params[[1]])}else{
+    nrow(vects.params[[1]])
+}
+
 seqSamples <- if(!is.null(postcalsamples) ){
   sample(1:totsamp, postcalsamples, replace = TRUE)
   }else{
