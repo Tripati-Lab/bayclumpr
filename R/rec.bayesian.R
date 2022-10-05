@@ -134,9 +134,9 @@ if (mixed) {
     recs <- do.call(rbind, recs)
 
     cbind.data.frame(
-      Sample = recData$Sample,
-      D47 = recData$D47,
-      D47error = recData$D47error,
+      Sample = x$Sample,
+      D47 = x$D47,
+      D47error = x$D47error,
       meanTemp = recs[, 1],
       error = recs[, 2]
     )
