@@ -25,6 +25,9 @@
     <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.bayesian.html</loc>
   </url>
   <url>
+    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.ci.html</loc>
+  </url>
+  <url>
     <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.dataset.html</loc>
   </url>
   <url>
@@ -32,6 +35,9 @@
   </url>
   <url>
     <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.ols.html</loc>
+  </url>
+  <url>
+    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.prior.html</loc>
   </url>
   <url>
     <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.wols.html</loc>
@@ -43,19 +49,13 @@
     <loc>https://tripati-lab.github.io/bayclumpr/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/plot.cal.ci.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/plot.cal.prior.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/plot.rec.priors.html</loc>
-  </url>
-  <url>
     <loc>https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.html</loc>
   </url>
   <url>
     <loc>https://tripati-lab.github.io/bayclumpr/reference/rec.clumped.html</loc>
+  </url>
+  <url>
+    <loc>https://tripati-lab.github.io/bayclumpr/reference/rec.prior.html</loc>
   </url>
   <url>
     <loc>https://tripati-lab.github.io/bayclumpr/reference/se.html</loc>
