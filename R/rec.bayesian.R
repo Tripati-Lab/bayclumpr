@@ -18,12 +18,12 @@
 #' @export
 
 rec.bayesian <- function(calModel,
-                                recData,
-                                iter = 1000,
-                                priors = "Uninformative",
-                                prior_mu = 11,
-                                prior_sig = 5,
-                                mixed = FALSE,
+                         recData,
+                         iter = 1000,
+                         priors = "Uninformative",
+                         prior_mu = 11,
+                         prior_sig = 5,
+                         mixed = FALSE,
                          postcalsamples = NULL) {
 
   vects.params <- extract(calModel)
@@ -32,8 +32,7 @@ rec.bayesian <- function(calModel,
   ununfpredMod <- "
 data {
   int<lower=0> n;
-  vector[n] y_mes;
-  vector[n] y_err;
+  vector[n] y;
 
   int<lower=0> posts;
   vector[posts] alpha;
@@ -43,13 +42,11 @@ data {
 
 parameters {
   matrix[n, posts] x_new;
-  vector[n] y;
 }
 
 model {
   vector[posts] y_new_hat;
   for(i in 1:n){
-    y_mes[i] ~ normal(y[i], y_err[i]);
     y_new_hat = alpha + beta .* x_new[i,]';
     y[i] ~ normal(y_new_hat, sigma);
 }
@@ -59,8 +56,7 @@ model {
 predMod <- "
 data {
   int<lower=0> n;
-  vector[n] y_mes;
-  vector[n] y_err;
+  vector[n] y;
 
   int<lower=0> posts;
   vector[posts] alpha;
@@ -72,19 +68,18 @@ data {
 
 parameters {
   matrix[n, posts] x_new;
-  vector[n] y;
 }
 
 model {
   vector[posts] y_new_hat;
   for(i in 1:n){
-    y_mes[i] ~ normal(y[i], y_err[i]);
     x_new[i,] ~ normal(prior_mu, prior_sig);
     y_new_hat = alpha + beta .* x_new[i,]';
     y[i] ~ normal(y_new_hat, sigma);
 }
 }
 "
+
 totsamp <- length(vects.params[[1]])
 seqSamples <- if(!is.null(postcalsamples) ){
   sample(1:totsamp, postcalsamples, replace = TRUE)
@@ -100,8 +95,7 @@ if (mixed) {
   recs <- lapply(partMat, function(x) {
     stan_date <- list(
       n = nrow(x),
-      y_mes = x$D47,
-      y_err = x$D47error,
+      y = x$D47,
       posts = length(seqSamples),
       alpha = vects.params$alpha[seqSamples, x$Material[1]],
       beta = vects.params$beta[seqSamples, x$Material[1]],
@@ -151,8 +145,7 @@ if (mixed) {
 } else {
   stan_date <- list(
     n = nrow(recData),
-    y_mes = recData$D47,
-    y_err = recData$D47error,
+    y = recData$D47,
     posts = length(seqSamples),
     alpha = vects.params$alpha[seqSamples],
     beta = vects.params$beta[seqSamples],
