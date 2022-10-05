@@ -14,7 +14,6 @@
 #'
 #' @import rstan
 #' @import parallel
-#' @import coda
 #'
 #' @export
 

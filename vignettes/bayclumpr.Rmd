@@ -74,7 +74,7 @@ recData <- data.frame(Sample = paste("Sample", 1:9),
                       Material = rep(1, 9))
 ```
 
-As for the calibration step, `bayclumpr` expects uncertainty to be expressed in terms of standard deviation. Note that the `recData` object generated above includes the smallest number of columns that are needed to perform reconstructions in `bayclumpr`.
+As for the calibration step, `bayclumpr` expects uncertainty (`D47error`) to be expressed in terms of standard deviation. Note that the `recData` object generated above includes the smallest number of columns that are needed to perform reconstructions in `bayclumpr`.
 
 From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let's assume that we were interested in reconstructing temperatures for our `recData` under an OLS model. First, we would have to run our calibration analyses:
 
@@ -88,7 +88,7 @@ From this point, we can use the `rec.clumped` to reconstruct temperatures based 
 rec.clumped(recData = recData, obCal = paramdist)
 ```
 
-The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SE`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
+The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
 
 ```{r message=FALSE, warning=FALSE, error =FALSE}
 PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000, postcalsamples = 100)
