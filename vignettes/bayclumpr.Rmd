@@ -91,13 +91,26 @@ rec.clumped(recData = recData, obCal = paramdist)
 The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
 
 ```{r message=FALSE, warning=FALSE, error =FALSE}
-PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000, postcalsamples = 100)
+PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 10000, postcalsamples = 100)
 ```
 
 The associated reconstructions to this Bayesian model are shown below:
 
 ```{r}
 PredsBay
+```
+
+Alternatively, we could explicitly account for uncertainty in the measured $delta_{47}$ performing reconstructions:
+
+
+```{r message=FALSE, warning=FALSE, error =FALSE}
+PredsBay.alt <- rec.bayesian.alt(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 20000, postcalsamples = 100)
+```
+
+Results for the same model are as follow,
+
+```{r}
+PredsBay.alt
 ```
 
 
