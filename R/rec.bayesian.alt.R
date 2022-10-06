@@ -66,8 +66,8 @@ data {
   vector[posts] alpha;
   vector[posts] beta;
   vector[posts] sigma;
-  real prior_mu;
-  real prior_sig;
+  vector[n] prior_mu;
+  vector[n] prior_sig;
 }
 
 parameters {
@@ -79,7 +79,7 @@ model {
   vector[posts] y_new_hat;
   for(i in 1:n){
     y_mes[i] ~ normal(y[i], y_err[i]);
-    x_new[i,] ~ normal(prior_mu, prior_sig);
+    x_new[i,] ~ normal(prior_mu[i], prior_sig[i]);
     y_new_hat = alpha + beta .* x_new[i,]';
     y[i] ~ normal(y_new_hat, sigma);
 }
@@ -112,8 +112,8 @@ if (mixed) {
       alpha = vects.params$alpha[seqSamples, x$Material[1]],
       beta = vects.params$beta[seqSamples, x$Material[1]],
       sigma = vects.params$sigma[seqSamples],
-      prior_mu = prior_mu,
-      prior_sig = prior_sig
+      prior_mu = rep(prior_mu, nrow(x)),
+      prior_sig = rep(prior_sig, nrow(x))
     )
 
     options(mc.cores = parallel::detectCores())
@@ -165,8 +165,8 @@ if (mixed) {
     alpha = vects.params$alpha[seqSamples],
     beta = vects.params$beta[seqSamples],
     sigma = vects.params$sigma[seqSamples],
-    prior_mu = prior_mu,
-    prior_sig = prior_sig
+    prior_mu = rep(prior_mu, nrow(recData)),
+    prior_sig = rep(prior_sig, nrow(recData))
   )
 
   options(mc.cores = parallel::detectCores())
