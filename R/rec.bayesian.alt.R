@@ -1,5 +1,6 @@
 #' This function generate temperature predictions (in 10^6/T2) based on a
-#' calibration dataset and target D47.
+#' calibration dataset and target D47. Note that this approach additionally
+#' accounts for measured error in the target D47.
 #'
 #' @param calModel The stan model to be analyzed.
 #' @param recData The reconstruction dataset.

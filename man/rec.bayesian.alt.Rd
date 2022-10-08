@@ -3,7 +3,8 @@
 \name{rec.bayesian.alt}
 \alias{rec.bayesian.alt}
 \title{This function generate temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47.}
+calibration dataset and target D47. Note that this approach additionally
+accounts for measured error in the target D47.}
 \usage{
 rec.bayesian.alt(
   calModel,
@@ -37,5 +38,6 @@ rec.bayesian.alt(
 }
 \description{
 This function generate temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47.
+calibration dataset and target D47. Note that this approach additionally
+accounts for measured error in the target D47.
 }

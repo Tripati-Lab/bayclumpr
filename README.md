@@ -6,8 +6,7 @@
 
 <!-- badges: end -->
 
-
-# The `bayclumpr` `R` Package
+# The `bayclumpr` `R` Package <a href="https://tripati-lab.github.io/bayclumpr/"><img src="man/figures/logo.png" align="right" height="300" /></a>
 
 ### Bayesian methods for clumped isotope paleothermometry
 
