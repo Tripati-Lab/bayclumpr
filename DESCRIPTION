@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: c(person("Cristian", "Roman Palacios", email = "cromanpa@arizona.edu",
                   role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-1696-4886")),
-    person("Hannah M.", "Caroll", email = "hcarroll@epss.ucla.edu",
+    person("Hannah M.", "Carroll", email = "hcarroll@epss.ucla.edu",
                   role = c("aut"),
            comment = c(ORCID = "0000-0003-3343-3358")),
     person("Aradhna", "Tripati", email = "atripati@g.ucla.edu",
