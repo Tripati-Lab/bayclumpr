@@ -193,31 +193,31 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span></span>
 <span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.74229 0.6600497</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.69427 0.4599933</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.16136 0.3269203</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.74562 0.6608066</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.69405 0.4415581</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.15919 0.3203601</span></span>
-<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.74284 0.6493753</span></span>
-<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.68907 0.4548570</span></span>
-<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.16159 0.3225832</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.79498 0.6892513</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.60283 0.4661106</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.30992 0.3315339</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.79701 0.6811841</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.60519 0.4606477</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.30876 0.3430773</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.80424 0.6785773</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.61136 0.4628234</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.30910 0.3405760</span></span></code></pre></div>
 <p>Alternatively, we could explicitly account for uncertainty in the measured <span class="math inline">\(delta_{47}\)</span> performing reconstructions:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay.alt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.alt.html">rec.bayesian.alt</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">20000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p>Results for the same model are as follow,</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay.alt</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error   meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.289411  2.610826</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.979853  1.772618</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.095800  1.270105</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.104010  5.110133</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.860840  3.491942</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.303402  2.511008</span></span>
-<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.804442 10.001315</span></span>
-<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  19.153557  7.109669</span></span>
-<span><span class="co">#&gt; 9 Sample 9 0.8    0.020  -9.855001  4.928613</span></span></code></pre></div>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.80277 2.665655</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.75848 1.771971</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.26699 1.281532</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.11138 5.167910</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.65804 3.324394</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.22106 2.542444</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.26599 9.508281</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.56541 7.078966</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.06707 5.113887</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>
