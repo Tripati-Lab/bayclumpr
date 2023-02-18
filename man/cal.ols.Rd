@@ -4,12 +4,14 @@
 \alias{cal.ols}
 \title{Fit OLS regression models on a given calibration dataset}
 \usage{
-cal.ols(data, replicates)
+cal.ols(data, replicates, samples = NULL)
 }
 \arguments{
 \item{data}{The calibration dataset}
 
 \item{replicates}{Number of bootstrap replicates}
+
+\item{samples}{Number of samples per bootstrap replicate}
 }
 \description{
 Fit OLS regression models on a given calibration dataset

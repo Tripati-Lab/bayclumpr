@@ -4,12 +4,14 @@
 \alias{cal.deming}
 \title{Fit Deming regression models on a given calibration dataset}
 \usage{
-cal.deming(data, replicates)
+cal.deming(data, replicates, samples = NULL)
 }
 \arguments{
 \item{data}{The calibration dataset}
 
 \item{replicates}{Number of bootstrap replicates}
+
+\item{samples}{Number of samples per bootstrap replicate}
 }
 \description{
 Fit Deming regression models on a given calibration dataset

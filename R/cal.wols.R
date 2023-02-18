@@ -2,12 +2,14 @@
 #'
 #' @param data The calibration dataset
 #' @param replicates Number of bootstrap replicates
+#' @param samples Number of samples per bootstrap replicate
 #'
 #' @importFrom stats lm
 #'
 #' @export
 
-cal.wols <- function(data, replicates) {
+cal.wols <- function(data, replicates, samples = NULL) {
+  if(is.null(samples)){samples = nrow(data)}
   reps <- lapply(1:replicates, function(x) {
     dataSub <- data[sample(seq_along(data[, 1]), nrow(data), replace = TRUE), ]
     Reg0 <- lm(D47 ~ Temperature, dataSub)

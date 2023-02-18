@@ -4,12 +4,14 @@
 \alias{cal.wols}
 \title{Fit weighted OLS regression models on a given calibration dataset}
 \usage{
-cal.wols(data, replicates)
+cal.wols(data, replicates, samples = NULL)
 }
 \arguments{
 \item{data}{The calibration dataset}
 
 \item{replicates}{Number of bootstrap replicates}
+
+\item{samples}{Number of samples per bootstrap replicate}
 }
 \description{
 Fit weighted OLS regression models on a given calibration dataset
