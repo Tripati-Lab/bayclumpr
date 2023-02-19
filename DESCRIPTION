@@ -23,6 +23,5 @@ LazyData: true
 RoxygenNote: 7.2.0
 Imports: parallel, loo, deming, IsoplotR, rstan, stats
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
-Remotes: ncahill89/EIVmodels
 VignetteBuilder: knitr
 Config/testthat/edition: 3
