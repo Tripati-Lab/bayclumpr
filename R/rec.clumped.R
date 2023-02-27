@@ -15,7 +15,6 @@ rec.clumped <- function(recData,
   temp_E <- sqrt((mean(obCal$beta) * 10^6) /
     (recData$D47 + recData$D47error - mean(obCal$alpha))) - 273.15
   error <- (temp - temp_E)
-  #error <- error/sqrt(recData$N)
 
   recTempS <- cbind.data.frame(
     Sample = recData$Sample,

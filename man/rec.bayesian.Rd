@@ -3,15 +3,13 @@
 \name{rec.bayesian}
 \alias{rec.bayesian}
 \title{This function generate temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47.}
+calibration dataset and target D47. Note that this approach additionally
+accounts for measured error in the target D47.}
 \usage{
 rec.bayesian(
   calModel,
   recData,
   iter = 1000,
-  priors = "Uninformative",
-  prior_mu = 11,
-  prior_sig = 5,
   mixed = FALSE,
   postcalsamples = NULL
 )
@@ -23,19 +21,12 @@ rec.bayesian(
 
 \item{iter}{Number of replicates to retain.}
 
-\item{priors}{Whether priors are \code{Uninformative} or not for the temperature.}
-
-\item{prior_mu}{Prior on mean temperature (scale = 10^6/T2, T in K) when
-\code{priors} are not Uninformative.}
-
-\item{prior_sig}{Prior on the sd temperature (scale = 10^6/T2, T in K) when
-\code{priors} are not Uninformative.}
-
 \item{mixed}{whether the model \code{calModel} is mixed or not.}
 
 \item{postcalsamples}{Number of posterior samples to analyze from the calibration step.}
 }
 \description{
 This function generate temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47.
+calibration dataset and target D47. Note that this approach additionally
+accounts for measured error in the target D47.
 }

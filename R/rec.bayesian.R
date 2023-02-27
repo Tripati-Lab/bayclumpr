@@ -1,14 +1,10 @@
 #' This function generate temperature predictions (in 10^6/T2) based on a
-#' calibration dataset and target D47.
+#' calibration dataset and target D47. Note that this approach additionally
+#' accounts for measured error in the target D47.
 #'
 #' @param calModel The stan model to be analyzed.
 #' @param recData The reconstruction dataset.
 #' @param iter Number of replicates to retain.
-#' @param priors Whether priors are \code{Uninformative} or not for the temperature.
-#' @param prior_mu Prior on mean temperature (scale = 10^6/T2, T in K) when
-#'                  \code{priors} are not Uninformative.
-#' @param prior_sig Prior on the sd temperature (scale = 10^6/T2, T in K) when
-#'                  \code{priors} are not Uninformative.
 #' @param mixed whether the model \code{calModel} is mixed or not.
 #' @param postcalsamples Number of posterior samples to analyze from the calibration step.
 #'
@@ -20,20 +16,16 @@
 rec.bayesian <- function(calModel,
                          recData,
                          iter = 1000,
-                         priors = "Uninformative",
-                         prior_mu = 11,
-                         prior_sig = 5,
                          mixed = FALSE,
                          postcalsamples = NULL) {
 
   vects.params <- extract(calModel)
 
   ## Define models
-  ununfpredMod <- "
+Model <- "
 data {
   int<lower=0> n;
-  vector[n] y;
-
+  vector[n] y_mes;
   int<lower=0> posts;
   vector[posts] alpha;
   vector[posts] beta;
@@ -48,35 +40,7 @@ model {
   vector[posts] y_new_hat;
   for(i in 1:n){
     y_new_hat = alpha + beta .* x_new[i,]';
-    y[i] ~ normal(y_new_hat, sigma);
-}
-}
-"
-
-predMod <- "
-data {
-  int<lower=0> n;
-  vector[n] y;
-
-  int<lower=0> posts;
-  vector[posts] alpha;
-  vector[posts] beta;
-  vector[posts] sigma;
-  vector[n] prior_mu;
-  vector[n] prior_sig;
-}
-
-parameters {
-  matrix[n, posts] x_new;
-}
-
-
-model {
-  vector[posts] y_new_hat;
-  for(i in 1:n){
-    x_new[i,] ~ normal(prior_mu[i], prior_sig[i]);
-    y_new_hat = alpha + beta .* x_new[i,]';
-    y[i] ~ normal(y_new_hat, sigma);
+    y_mes[i] ~ normal(y_new_hat, sigma);
 }
 }
 "
@@ -100,23 +64,18 @@ if (mixed) {
   recs <- lapply(partMat, function(x) {
     stan_date <- list(
       n = nrow(x),
-      y = x$D47,
+      y_mes = x$D47,
+      y_err = x$D47error,
       posts = length(seqSamples),
       alpha = vects.params$alpha[seqSamples, x$Material[1]],
       beta = vects.params$beta[seqSamples, x$Material[1]],
-      sigma = vects.params$sigma[seqSamples],
-      prior_mu = rep(prior_mu, nrow(x)),
-      prior_sig = rep(prior_sig, nrow(x))
+      sigma = vects.params$sigma[seqSamples]
     )
 
     options(mc.cores = parallel::detectCores())
     data.rstan <- stan(
       data = stan_date,
-      model_code = if (priors == "Uninformative") {
-        ununfpredMod
-      } else {
-        predMod
-      },
+      model_code = Model,
       chains = 2,
       iter = iter,
       warmup = floor(iter / 2),
@@ -152,23 +111,18 @@ if (mixed) {
 } else {
   stan_date <- list(
     n = nrow(recData),
-    y = recData$D47,
+    y_mes = recData$D47,
+    y_err = recData$D47error,
     posts = length(seqSamples),
     alpha = vects.params$alpha[seqSamples],
     beta = vects.params$beta[seqSamples],
-    sigma = vects.params$sigma[seqSamples],
-    prior_mu = rep(prior_mu, nrow(recData)),
-    prior_sig = rep(prior_sig, nrow(recData))
+    sigma = vects.params$sigma[seqSamples]
   )
 
   options(mc.cores = parallel::detectCores())
   data.rstan <- stan(
     data = stan_date,
-    model_code = if (priors == "Uninformative") {
-      ununfpredMod
-    } else {
-      predMod
-    },
+    model_code = Model,
     chains = 2,
     iter = iter,
     warmup = floor(iter / 2)

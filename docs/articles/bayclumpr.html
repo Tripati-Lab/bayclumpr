@@ -71,7 +71,7 @@
 
 
 <div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>bayclumpr</h1>
             
       
@@ -88,7 +88,7 @@ app that accompanies this <code>R</code> package. You can access
 go ahead and discuss some of the basic functions in
 <code>bayclumpr</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">bayclumpr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">bayclumpr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="performing-calibrations-using-bayclumpr">Performing calibrations using <code>bayclumpr</code><a class="anchor" aria-label="anchor" href="#performing-calibrations-using-bayclumpr"></a>
 </h2>
@@ -100,92 +100,148 @@ that the functions in <code>bayclumpr</code> expect users to provide
 uncertainty in terms of standard deviation.</strong> The resulting
 dataset will be stored in the <code>ds</code> object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span>
-<span class="co">#&gt;      x_TRUE Temperature     TempError    y_TRUE      D47error       D47</span>
-<span class="co">#&gt; 1 10.076133   10.089943 -0.0032283733 0.6475262 -0.0032283733 0.6442978</span>
-<span class="co">#&gt; 2 11.414949   11.399569  0.0065876134 0.6841481  0.0065876134 0.6907357</span>
-<span class="co">#&gt; 3 12.517576   12.522651  0.0012176807 0.7430624  0.0012176807 0.7442800</span>
-<span class="co">#&gt; 4  9.695736    9.662728  0.0021347308 0.6333012  0.0021347308 0.6354360</span>
-<span class="co">#&gt; 5 12.391566   12.364749  0.0027211068 0.7379670  0.0027211068 0.7406881</span>
-<span class="co">#&gt; 6 12.060248   12.051630  0.0005650349 0.7206252  0.0005650349 0.7211903</span>
-<span class="co">#&gt;   Material</span>
-<span class="co">#&gt; 1        1</span>
-<span class="co">#&gt; 2        1</span>
-<span class="co">#&gt; 3        1</span>
-<span class="co">#&gt; 4        1</span>
-<span class="co">#&gt; 5        1</span>
-<span class="co">#&gt; 6        1</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      x_TRUE Temperature    TempError    y_TRUE      D47error       D47 Material</span></span>
+<span><span class="co">#&gt; 1 10.076133   10.089943  0.013809939 0.6475262 -0.0032283733 0.6442978        1</span></span>
+<span><span class="co">#&gt; 2 11.414949   11.399569 -0.015379377 0.6841481  0.0065876134 0.6907357        1</span></span>
+<span><span class="co">#&gt; 3 12.517576   12.522651  0.005074617 0.7430624  0.0012176807 0.7442800        1</span></span>
+<span><span class="co">#&gt; 4  9.695736    9.662728 -0.033008011 0.6333012  0.0021347308 0.6354360        1</span></span>
+<span><span class="co">#&gt; 5 12.391566   12.364749 -0.026817078 0.7379670  0.0027211068 0.7406881        1</span></span>
+<span><span class="co">#&gt; 6 12.060248   12.051630 -0.008617473 0.7206252  0.0005650349 0.7211903        1</span></span></code></pre></div>
 <p>Now, let’s start by fitting different models in the simulated
 dataset. For instance, let’s fit a Deming regression model using the
 <code>cal.deming</code> function in <code>bayclumpr</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/cal.deming.html">cal.deming</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt;        alpha       beta</span>
-<span class="co">#&gt; 1  0.2497454 0.03868320</span>
-<span class="co">#&gt; 2  0.2273112 0.03955871</span>
-<span class="co">#&gt; 3  0.2814700 0.03528024</span>
-<span class="co">#&gt; 4  0.2369045 0.03856599</span>
-<span class="co">#&gt; 5  0.2615729 0.03711022</span>
-<span class="co">#&gt; 6  0.2534955 0.03722722</span>
-<span class="co">#&gt; 7  0.2340829 0.03872930</span>
-<span class="co">#&gt; 8  0.2740257 0.03632065</span>
-<span class="co">#&gt; 9  0.2612741 0.03705682</span>
-<span class="co">#&gt; 10 0.1788687 0.04369164</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.deming.html">cal.deming</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        alpha       beta</span></span>
+<span><span class="co">#&gt; 1  0.2440497 0.03906877</span></span>
+<span><span class="co">#&gt; 2  0.2614754 0.03670698</span></span>
+<span><span class="co">#&gt; 3  0.2760968 0.03574009</span></span>
+<span><span class="co">#&gt; 4  0.2419661 0.03857797</span></span>
+<span><span class="co">#&gt; 5  0.2752911 0.03585697</span></span>
+<span><span class="co">#&gt; 6  0.2526154 0.03764163</span></span>
+<span><span class="co">#&gt; 7  0.2497403 0.03784485</span></span>
+<span><span class="co">#&gt; 8  0.2505127 0.03785190</span></span>
+<span><span class="co">#&gt; 9  0.2590315 0.03708834</span></span>
+<span><span class="co">#&gt; 10 0.2057244 0.04158558</span></span></code></pre></div>
 <p>Alternatively, you can fit an unweighted or weighted OLS regression
 using <code>cal.ols</code> and <code>cal.wols</code> functions,
 respectively:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt;        alpha       beta</span>
-<span class="co">#&gt; 1  0.2839352 0.03554307</span>
-<span class="co">#&gt; 2  0.2872762 0.03527608</span>
-<span class="co">#&gt; 3  0.2733101 0.03642586</span>
-<span class="co">#&gt; 4  0.2640842 0.03709674</span>
-<span class="co">#&gt; 5  0.2652946 0.03701428</span>
-<span class="co">#&gt; 6  0.2668595 0.03679151</span>
-<span class="co">#&gt; 7  0.2660233 0.03687870</span>
-<span class="co">#&gt; 8  0.2826984 0.03542715</span>
-<span class="co">#&gt; 9  0.2693398 0.03663859</span>
-<span class="co">#&gt; 10 0.2850873 0.03507551</span>
-<span class="fu"><a href="../reference/cal.wols.html">cal.wols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt;        alpha       beta</span>
-<span class="co">#&gt; 1  0.2557905 0.03789321</span>
-<span class="co">#&gt; 2  0.2734807 0.03632590</span>
-<span class="co">#&gt; 3  0.2716440 0.03643221</span>
-<span class="co">#&gt; 4  0.2711929 0.03621119</span>
-<span class="co">#&gt; 5  0.2743809 0.03625556</span>
-<span class="co">#&gt; 6  0.2716777 0.03629290</span>
-<span class="co">#&gt; 7  0.2765445 0.03604140</span>
-<span class="co">#&gt; 8  0.2747726 0.03619440</span>
-<span class="co">#&gt; 9  0.2710448 0.03650991</span>
-<span class="co">#&gt; 10 0.2699076 0.03685035</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        alpha       beta</span></span>
+<span><span class="co">#&gt; 1  0.2839352 0.03554307</span></span>
+<span><span class="co">#&gt; 2  0.2872762 0.03527608</span></span>
+<span><span class="co">#&gt; 3  0.2733101 0.03642586</span></span>
+<span><span class="co">#&gt; 4  0.2640842 0.03709674</span></span>
+<span><span class="co">#&gt; 5  0.2652946 0.03701428</span></span>
+<span><span class="co">#&gt; 6  0.2668595 0.03679151</span></span>
+<span><span class="co">#&gt; 7  0.2660233 0.03687870</span></span>
+<span><span class="co">#&gt; 8  0.2826984 0.03542715</span></span>
+<span><span class="co">#&gt; 9  0.2693398 0.03663859</span></span>
+<span><span class="co">#&gt; 10 0.2850873 0.03507551</span></span>
+<span><span class="fu"><a href="../reference/cal.wols.html">cal.wols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        alpha       beta</span></span>
+<span><span class="co">#&gt; 1  0.2557905 0.03789321</span></span>
+<span><span class="co">#&gt; 2  0.2734807 0.03632590</span></span>
+<span><span class="co">#&gt; 3  0.2716440 0.03643221</span></span>
+<span><span class="co">#&gt; 4  0.2711929 0.03621119</span></span>
+<span><span class="co">#&gt; 5  0.2743809 0.03625556</span></span>
+<span><span class="co">#&gt; 6  0.2716777 0.03629290</span></span>
+<span><span class="co">#&gt; 7  0.2765445 0.03604140</span></span>
+<span><span class="co">#&gt; 8  0.2747726 0.03619440</span></span>
+<span><span class="co">#&gt; 9  0.2710448 0.03650991</span></span>
+<span><span class="co">#&gt; 10 0.2699076 0.03685035</span></span></code></pre></div>
 <p>York regression models are also implemented in
 <code>bayclumpr</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/cal.york.html">cal.york</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#&gt;        alpha       beta</span>
-<span class="co">#&gt; 1  0.2215888 0.04037332</span>
-<span class="co">#&gt; 2  0.2652397 0.03722394</span>
-<span class="co">#&gt; 3  0.2502099 0.03743288</span>
-<span class="co">#&gt; 4  0.2614000 0.03684084</span>
-<span class="co">#&gt; 5  0.2596190 0.03710959</span>
-<span class="co">#&gt; 6  0.2274345 0.04009543</span>
-<span class="co">#&gt; 7  0.2928369 0.03501096</span>
-<span class="co">#&gt; 8  0.2919337 0.03496352</span>
-<span class="co">#&gt; 9  0.2833465 0.03576036</span>
-<span class="co">#&gt; 10 0.2618940 0.03664655</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.york.html">cal.york</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        alpha       beta</span></span>
+<span><span class="co">#&gt; 1  0.2502012 0.03822585</span></span>
+<span><span class="co">#&gt; 2  0.2417208 0.03889872</span></span>
+<span><span class="co">#&gt; 3  0.2430982 0.03835195</span></span>
+<span><span class="co">#&gt; 4  0.2689329 0.03625636</span></span>
+<span><span class="co">#&gt; 5  0.2714125 0.03611063</span></span>
+<span><span class="co">#&gt; 6  0.2638400 0.03685362</span></span>
+<span><span class="co">#&gt; 7  0.2897728 0.03520313</span></span>
+<span><span class="co">#&gt; 8  0.2755461 0.03600768</span></span>
+<span><span class="co">#&gt; 9  0.2630668 0.03715828</span></span>
+<span><span class="co">#&gt; 10 0.2678943 0.03654801</span></span></code></pre></div>
 <p>Finally, <code>bayclumpr</code> implements three types of Bayesian
 linear models that are used for calibrations and temperature
 reconstructions. Let’s fit all three models using the
 <code>cal.bayesian</code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Weak"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Weak"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running /usr/local/Cellar/r/4.2.2/lib/R/bin/R CMD SHLIB foo.c</span></span>
+<span><span class="co">#&gt; clang -I"/usr/local/Cellar/r/4.2.2/lib/R/include" -DNDEBUG   -I"/usr/local/lib/R/4.2/site-library/Rcpp/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/unsupported"  -I"/usr/local/lib/R/4.2/site-library/BH/include" -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/src/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/RcppParallel/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DBOOST_NO_AUTO_PTR  -include '/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1   -I/usr/local/opt/gettext/include -I/usr/local/opt/readline/include -I/usr/local/opt/xz/include -I/usr/local/include   -fPIC  -Wno-implicit-function-declaration  -c foo.c -o foo.o</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:88:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:1: error: unknown type name 'namespace'</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt; ^</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:16: error: expected ';' after top level declarator</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt;                ^</span></span>
+<span><span class="co">#&gt;                ;</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:96:10: fatal error: 'complex' file not found</span></span>
+<span><span class="co">#&gt; #include &lt;complex&gt;</span></span>
+<span><span class="co">#&gt;          ^~~~~~~~~</span></span>
+<span><span class="co">#&gt; 3 errors generated.</span></span>
+<span><span class="co">#&gt; make: *** [foo.o] Error 1</span></span>
+<span><span class="co">#&gt; Running /usr/local/Cellar/r/4.2.2/lib/R/bin/R CMD SHLIB foo.c</span></span>
+<span><span class="co">#&gt; clang -I"/usr/local/Cellar/r/4.2.2/lib/R/include" -DNDEBUG   -I"/usr/local/lib/R/4.2/site-library/Rcpp/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/unsupported"  -I"/usr/local/lib/R/4.2/site-library/BH/include" -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/src/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/RcppParallel/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DBOOST_NO_AUTO_PTR  -include '/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1   -I/usr/local/opt/gettext/include -I/usr/local/opt/readline/include -I/usr/local/opt/xz/include -I/usr/local/include   -fPIC  -Wno-implicit-function-declaration  -c foo.c -o foo.o</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:88:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:1: error: unknown type name 'namespace'</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt; ^</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:16: error: expected ';' after top level declarator</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt;                ^</span></span>
+<span><span class="co">#&gt;                ;</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:96:10: fatal error: 'complex' file not found</span></span>
+<span><span class="co">#&gt; #include &lt;complex&gt;</span></span>
+<span><span class="co">#&gt;          ^~~~~~~~~</span></span>
+<span><span class="co">#&gt; 3 errors generated.</span></span>
+<span><span class="co">#&gt; make: *** [foo.o] Error 1</span></span>
+<span><span class="co">#&gt; Running /usr/local/Cellar/r/4.2.2/lib/R/bin/R CMD SHLIB foo.c</span></span>
+<span><span class="co">#&gt; clang -I"/usr/local/Cellar/r/4.2.2/lib/R/include" -DNDEBUG   -I"/usr/local/lib/R/4.2/site-library/Rcpp/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/unsupported"  -I"/usr/local/lib/R/4.2/site-library/BH/include" -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/src/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/RcppParallel/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DBOOST_NO_AUTO_PTR  -include '/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1   -I/usr/local/opt/gettext/include -I/usr/local/opt/readline/include -I/usr/local/opt/xz/include -I/usr/local/include   -fPIC  -Wno-implicit-function-declaration  -c foo.c -o foo.o</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:88:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:1: error: unknown type name 'namespace'</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt; ^</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:16: error: expected ';' after top level declarator</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt;                ^</span></span>
+<span><span class="co">#&gt;                ;</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:96:10: fatal error: 'complex' file not found</span></span>
+<span><span class="co">#&gt; #include &lt;complex&gt;</span></span>
+<span><span class="co">#&gt;          ^~~~~~~~~</span></span>
+<span><span class="co">#&gt; 3 errors generated.</span></span>
+<span><span class="co">#&gt; make: *** [foo.o] Error 1</span></span></code></pre></div>
 <p>The results are here stored in the <code>BayesCal</code> object and
 corresponds to <code>stan</code> objects summarizing posterior
 distributions of the parameters:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">BayesCal</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">BayesCal</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reconstructing-temperatures-in-bayclumpr">Reconstructing temperatures in <code>bayclumpr</code><a class="anchor" aria-label="anchor" href="#reconstructing-temperatures-in-bayclumpr"></a>
@@ -196,11 +252,11 @@ and Bayesian frameworks (<code>rec.bayesian</code>). Let’s review how
 each of these functions work by generating a synthetic dataset for two
 samples.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>, 
-                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, 
-                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.02</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>,
-                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span>,
-                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>, </span>
+<span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, </span>
+<span>                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.02</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span>,</span>
+<span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>As for the calibration step, <code>bayclumpr</code> expects
 uncertainty (<code>D47error</code>) to be expressed in terms of standard
 deviation. Note that the <code>recData</code> object generated above
@@ -212,23 +268,23 @@ assume that we were interested in reconstructing temperatures for our
 <code>recData</code> under an OLS model. First, we would have to run our
 calibration analyses:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">paramdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">paramdist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p>From this point, we can use the <code>rec.clumped</code> to
 reconstruct temperatures based on the reconstruction dataset
 (<code>recData</code> argument) and the observed calibration object
 (<code>obCal</code> argument):</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/rec.clumped.html">rec.clumped</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">paramdist</span><span class="op">)</span>
-<span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span>
-<span class="co">#&gt; 1 Sample 1 0.6    0.005  59.94623 2.523192</span>
-<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.26970 1.694160</span>
-<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.87382 1.237067</span>
-<span class="co">#&gt; 4 Sample 4 0.6    0.010  59.94623 4.989901</span>
-<span class="co">#&gt; 5 Sample 5 0.7    0.010  18.26970 3.359113</span>
-<span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.87382 2.456793</span>
-<span class="co">#&gt; 7 Sample 7 0.6    0.020  59.94623 9.762065</span>
-<span class="co">#&gt; 8 Sample 8 0.7    0.020  18.26970 6.604682</span>
-<span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.87382 4.845815</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rec.clumped.html">rec.clumped</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">paramdist</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.77199 2.507727</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.31126 1.687099</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.72799 1.233423</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.77199 4.959627</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.31126 3.345235</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.72799 2.449616</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.77199 9.704005</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.31126 6.577868</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.72799 4.831889</span></span></code></pre></div>
 <p>The resulting object includes information from the template
 reconstruction dataset but also information on the reconstructed
 temperature and associated uncertainty (<code>1 SD</code>). Let’s now
@@ -239,39 +295,42 @@ reconstructions under only a single of the Bayesian models equivalent to
 the OLS but fit under a Bayesian framework
 (<code>BayesCal$BLM1_fit_NoErrors</code>).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">10000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">1000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Running /usr/local/Cellar/r/4.2.2/lib/R/bin/R CMD SHLIB foo.c</span></span>
+<span><span class="co">#&gt; clang -I"/usr/local/Cellar/r/4.2.2/lib/R/include" -DNDEBUG   -I"/usr/local/lib/R/4.2/site-library/Rcpp/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/"  -I"/usr/local/lib/R/4.2/site-library/RcppEigen/include/unsupported"  -I"/usr/local/lib/R/4.2/site-library/BH/include" -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/src/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/RcppParallel/include/"  -I"/Users/updates1/Library/R/x86_64/4.2/library/rstan/include" -DEIGEN_NO_DEBUG  -DBOOST_DISABLE_ASSERTS  -DBOOST_PENDING_INTEGER_LOG2_HPP  -DSTAN_THREADS  -DBOOST_NO_AUTO_PTR  -include '/Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp'  -D_REENTRANT -DRCPP_PARALLEL_USE_TBB=1   -I/usr/local/opt/gettext/include -I/usr/local/opt/readline/include -I/usr/local/opt/xz/include -I/usr/local/include   -fPIC  -Wno-implicit-function-declaration  -c foo.c -o foo.o</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:88:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:1: error: unknown type name 'namespace'</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt; ^</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/src/Core/util/Macros.h:628:16: error: expected ';' after top level declarator</span></span>
+<span><span class="co">#&gt; namespace Eigen {</span></span>
+<span><span class="co">#&gt;                ^</span></span>
+<span><span class="co">#&gt;                ;</span></span>
+<span><span class="co">#&gt; In file included from &lt;built-in&gt;:1:</span></span>
+<span><span class="co">#&gt; In file included from /Users/updates1/Library/R/x86_64/4.2/library/StanHeaders/include/stan/math/prim/mat/fun/Eigen.hpp:13:</span></span>
+<span><span class="co">#&gt; In file included from /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span><span class="co">#&gt; /usr/local/lib/R/4.2/site-library/RcppEigen/include/Eigen/Core:96:10: fatal error: 'complex' file not found</span></span>
+<span><span class="co">#&gt; #include &lt;complex&gt;</span></span>
+<span><span class="co">#&gt;          ^~~~~~~~~</span></span>
+<span><span class="co">#&gt; 3 errors generated.</span></span>
+<span><span class="co">#&gt; make: *** [foo.o] Error 1</span></span></code></pre></div>
 <p>The associated reconstructions to this Bayesian model are shown
 below:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">PredsBay</span>
-<span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span>
-<span class="co">#&gt; 1 Sample 1 0.6    0.005  59.89276 0.6903864</span>
-<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.66776 0.4693409</span>
-<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.25944 0.3473660</span>
-<span class="co">#&gt; 4 Sample 4 0.6    0.010  59.88185 0.6890416</span>
-<span class="co">#&gt; 5 Sample 5 0.7    0.010  18.67441 0.4608294</span>
-<span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.25884 0.3457080</span>
-<span class="co">#&gt; 7 Sample 7 0.6    0.020  59.89104 0.7014403</span>
-<span class="co">#&gt; 8 Sample 8 0.7    0.020  18.67172 0.4669714</span>
-<span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.25710 0.3410280</span></code></pre></div>
-<p>Alternatively, we could explicitly account for uncertainty in the
-measured <span class="math inline">\(delta_{47}\)</span> performing
-reconstructions:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">PredsBay.alt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.alt.html">rec.bayesian.alt</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">20000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
-<p>Results for the same model are as follow,</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">PredsBay.alt</span>
-<span class="co">#&gt;     Sample D47 D47error   meanTemp     error</span>
-<span class="co">#&gt; 1 Sample 1 0.6    0.005  60.047540  2.612517</span>
-<span class="co">#&gt; 2 Sample 2 0.7    0.005  18.857524  1.786614</span>
-<span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.183096  1.297792</span>
-<span class="co">#&gt; 4 Sample 4 0.6    0.010  60.465626  4.938937</span>
-<span class="co">#&gt; 5 Sample 5 0.7    0.010  19.062163  3.442886</span>
-<span class="co">#&gt; 6 Sample 6 0.8    0.010  -9.976470  2.473277</span>
-<span class="co">#&gt; 7 Sample 7 0.6    0.020  60.285335 10.445729</span>
-<span class="co">#&gt; 8 Sample 8 0.7    0.020  18.890667  6.604028</span>
-<span class="co">#&gt; 9 Sample 9 0.8    0.020  -9.759741  4.829141</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">PredsBay</span></span>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.49529 0.6643441</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.71751 0.4616614</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.49659 0.3501191</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.49497 0.6945072</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.72043 0.5008817</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.47722 0.3336206</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  60.46846 0.7002444</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.71039 0.4631739</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.48986 0.3419537</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>
@@ -293,7 +352,7 @@ priors in Bayesian models are an option.</p>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>
