@@ -1,0 +1,108 @@
+---
+title: "bayclumpr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{bayclumpr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Welcome to `bayclumpr`! Before we get started with this tutorial, we would like to remind you that there is an associated shiny app that accompanies this `R` package. You can access `BayClump` directly from your browser using by clicking [here](https://bayclump.tripatilab.epss.ucla.edu/). Now, let's go ahead and discuss some of the basic functions in `bayclumpr`. 
+
+```{r setup}
+library(bayclumpr)
+```
+
+
+## Performing calibrations using `bayclumpr`
+
+First, we will need some data to work with. We can use `bayclumpr` to generate simulated datasets with uncertainty values described in Roman-Palacios et al. (2022). For this example, we will simulate 50 observations under a low-eror scenario. __Note that the functions in `bayclumpr` expect users to provide uncertainty in terms of standard deviation.__ The resulting dataset will be stored in the `ds` object.
+
+```{r}
+ds <- cal.dataset(error = "S1", nobs = 50)
+head(ds)
+```
+
+Now, let's start by fitting different models in the simulated dataset. For instance, let's fit a Deming regression model using  the `cal.deming` function in `bayclumpr`:
+
+```{r}
+cal.deming(data = ds, replicates = 10)
+```
+
+Alternatively, you can fit an unweighted or weighted OLS regression using `cal.ols` and `cal.wols` functions, respectively:
+
+```{r}
+cal.ols(data = ds, replicates = 10)
+cal.wols(data = ds, replicates = 10)
+```
+
+York regression models are also implemented in `bayclumpr`:
+
+```{r}
+cal.york(data = ds, replicates = 10)
+```
+
+Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. Let's fit all three models using the `cal.bayesian` function:
+
+```{r  message=FALSE, warning=FALSE, error =FALSE}
+BayesCal <- cal.bayesian(calibrationData = ds, numSavedSteps = 3000, priors = "Weak", MC = FALSE)
+```
+
+The results are here stored in the `BayesCal` object and corresponds to `stan` objects summarizing posterior distributions of the parameters:
+
+```{r eval=FALSE}
+BayesCal
+```
+
+## Reconstructing temperatures in `bayclumpr`
+
+`bayclumpr` implements two functions to perform temperature reconstructions under frequentist (`rec.clumped`) and Bayesian frameworks (`rec.bayesian`). Let's review how each of these functions work by generating a synthetic dataset for two samples.
+
+```{r}
+recData <- data.frame(Sample = paste("Sample", 1:9), 
+                      D47 = rep(c(0.6, 0.7, 0.8), 3), 
+                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
+                      N = rep(2, 9),
+                      Material = rep(1, 9))
+```
+
+As for the calibration step, `bayclumpr` expects uncertainty (`D47error`) to be expressed in terms of standard deviation. Note that the `recData` object generated above includes the smallest number of columns that are needed to perform reconstructions in `bayclumpr`.
+
+From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let's assume that we were interested in reconstructing temperatures for our `recData` under an OLS model. First, we would have to run our calibration analyses:
+
+```{r}
+paramdist <- cal.ols(data = ds, replicates = 10)
+```
+
+From this point, we can use the `rec.clumped` to reconstruct temperatures based on the reconstruction dataset (`recData` argument) and the observed calibration object (`obCal` argument):
+
+```{r}
+rec.clumped(recData = recData, obCal = paramdist)
+```
+
+The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
+
+```{r message=FALSE, warning=FALSE, error =FALSE}
+PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000, postcalsamples = 100, MC = FALSE)
+```
+
+The associated reconstructions to this Bayesian model are shown below:
+
+```{r}
+PredsBay
+```
+
+## Outlook
+
+We have reviewed the most fundamental aspects of using `bayclumpr`. More advances analyses involving alternative priors in Bayesian models are an option.
+
+
+

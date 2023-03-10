@@ -7,17 +7,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+
 
 
 Welcome to `bayclumpr`! Before we get started with this tutorial, we would like to remind you that there is an associated shiny app that accompanies this `R` package. You can access `BayClump` directly from your browser using by clicking [here](https://bayclump.tripatilab.epss.ucla.edu/). Now, let's go ahead and discuss some of the basic functions in `bayclumpr`. 
 
-```{r setup}
+
+```r
 library(bayclumpr)
 ```
 
@@ -26,39 +22,246 @@ library(bayclumpr)
 
 First, we will need some data to work with. We can use `bayclumpr` to generate simulated datasets with uncertainty values described in Roman-Palacios et al. (2022). For this example, we will simulate 50 observations under a low-eror scenario. __Note that the functions in `bayclumpr` expect users to provide uncertainty in terms of standard deviation.__ The resulting dataset will be stored in the `ds` object.
 
-```{r}
+
+```r
 ds <- cal.dataset(error = "S1", nobs = 50)
 head(ds)
+#>      x_TRUE Temperature    TempError    y_TRUE      D47error       D47 Material
+#> 1 10.076133   10.089943  0.013809939 0.6475262 -0.0032283733 0.6442978        1
+#> 2 11.414949   11.399569 -0.015379377 0.6841481  0.0065876134 0.6907357        1
+#> 3 12.517576   12.522651  0.005074617 0.7430624  0.0012176807 0.7442800        1
+#> 4  9.695736    9.662728 -0.033008011 0.6333012  0.0021347308 0.6354360        1
+#> 5 12.391566   12.364749 -0.026817078 0.7379670  0.0027211068 0.7406881        1
+#> 6 12.060248   12.051630 -0.008617473 0.7206252  0.0005650349 0.7211903        1
 ```
 
 Now, let's start by fitting different models in the simulated dataset. For instance, let's fit a Deming regression model using  the `cal.deming` function in `bayclumpr`:
 
-```{r}
+
+```r
 cal.deming(data = ds, replicates = 10)
+#>        alpha       beta
+#> 1  0.2440497 0.03906877
+#> 2  0.2614754 0.03670698
+#> 3  0.2760968 0.03574009
+#> 4  0.2419661 0.03857797
+#> 5  0.2752911 0.03585697
+#> 6  0.2526154 0.03764163
+#> 7  0.2497403 0.03784485
+#> 8  0.2505127 0.03785190
+#> 9  0.2590315 0.03708834
+#> 10 0.2057244 0.04158558
 ```
 
 Alternatively, you can fit an unweighted or weighted OLS regression using `cal.ols` and `cal.wols` functions, respectively:
 
-```{r}
+
+```r
 cal.ols(data = ds, replicates = 10)
+#>        alpha       beta
+#> 1  0.2839352 0.03554307
+#> 2  0.2872762 0.03527608
+#> 3  0.2733101 0.03642586
+#> 4  0.2640842 0.03709674
+#> 5  0.2652946 0.03701428
+#> 6  0.2668595 0.03679151
+#> 7  0.2660233 0.03687870
+#> 8  0.2826984 0.03542715
+#> 9  0.2693398 0.03663859
+#> 10 0.2850873 0.03507551
 cal.wols(data = ds, replicates = 10)
+#>        alpha       beta
+#> 1  0.2557905 0.03789321
+#> 2  0.2734807 0.03632590
+#> 3  0.2716440 0.03643221
+#> 4  0.2711929 0.03621119
+#> 5  0.2743809 0.03625556
+#> 6  0.2716777 0.03629290
+#> 7  0.2765445 0.03604140
+#> 8  0.2747726 0.03619440
+#> 9  0.2710448 0.03650991
+#> 10 0.2699076 0.03685035
 ```
 
 York regression models are also implemented in `bayclumpr`:
 
-```{r}
+
+```r
 cal.york(data = ds, replicates = 10)
+#>        alpha       beta
+#> 1  0.2502012 0.03822585
+#> 2  0.2417208 0.03889872
+#> 3  0.2430982 0.03835195
+#> 4  0.2689329 0.03625636
+#> 5  0.2714125 0.03611063
+#> 6  0.2638400 0.03685362
+#> 7  0.2897728 0.03520313
+#> 8  0.2755461 0.03600768
+#> 9  0.2630668 0.03715828
+#> 10 0.2678943 0.03654801
 ```
 
 Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. Let's fit all three models using the `cal.bayesian` function:
 
-```{r  message=FALSE, warning=FALSE, error =FALSE}
+
+```r
 BayesCal <- cal.bayesian(calibrationData = ds, numSavedSteps = 3000, priors = "Weak", MC = FALSE)
+#> 
+#> SAMPLING FOR MODEL 'cc8e49c029f748bb6dab815288864757' NOW (CHAIN 1).
+#> Chain 1: 
+#> Chain 1: Gradient evaluation took 3.2e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.32 seconds.
+#> Chain 1: Adjust your expectations accordingly!
+#> Chain 1: 
+#> Chain 1: 
+#> Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)
+#> Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)
+#> Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)
+#> Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)
+#> Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)
+#> Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)
+#> Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)
+#> Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)
+#> Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)
+#> Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)
+#> Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)
+#> Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)
+#> Chain 1: 
+#> Chain 1:  Elapsed Time: 0.717123 seconds (Warm-up)
+#> Chain 1:                0.702545 seconds (Sampling)
+#> Chain 1:                1.41967 seconds (Total)
+#> Chain 1: 
+#> 
+#> SAMPLING FOR MODEL 'cc8e49c029f748bb6dab815288864757' NOW (CHAIN 2).
+#> Chain 2: 
+#> Chain 2: Gradient evaluation took 1.3e-05 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
+#> Chain 2: Adjust your expectations accordingly!
+#> Chain 2: 
+#> Chain 2: 
+#> Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)
+#> Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)
+#> Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)
+#> Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)
+#> Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)
+#> Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)
+#> Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)
+#> Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)
+#> Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)
+#> Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)
+#> Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)
+#> Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)
+#> Chain 2: 
+#> Chain 2:  Elapsed Time: 0.326322 seconds (Warm-up)
+#> Chain 2:                0.630451 seconds (Sampling)
+#> Chain 2:                0.956773 seconds (Total)
+#> Chain 2: 
+#> 
+#> SAMPLING FOR MODEL '7f9086b208f04841e16d509c43ea0782' NOW (CHAIN 1).
+#> Chain 1: 
+#> Chain 1: Gradient evaluation took 2.7e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.27 seconds.
+#> Chain 1: Adjust your expectations accordingly!
+#> Chain 1: 
+#> Chain 1: 
+#> Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)
+#> Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)
+#> Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)
+#> Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)
+#> Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)
+#> Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)
+#> Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)
+#> Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)
+#> Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)
+#> Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)
+#> Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)
+#> Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)
+#> Chain 1: 
+#> Chain 1:  Elapsed Time: 0.339182 seconds (Warm-up)
+#> Chain 1:                0.293246 seconds (Sampling)
+#> Chain 1:                0.632428 seconds (Total)
+#> Chain 1: 
+#> 
+#> SAMPLING FOR MODEL '7f9086b208f04841e16d509c43ea0782' NOW (CHAIN 2).
+#> Chain 2: 
+#> Chain 2: Gradient evaluation took 1e-05 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#> Chain 2: Adjust your expectations accordingly!
+#> Chain 2: 
+#> Chain 2: 
+#> Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)
+#> Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)
+#> Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)
+#> Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)
+#> Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)
+#> Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)
+#> Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)
+#> Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)
+#> Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)
+#> Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)
+#> Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)
+#> Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)
+#> Chain 2: 
+#> Chain 2:  Elapsed Time: 0.356504 seconds (Warm-up)
+#> Chain 2:                0.301817 seconds (Sampling)
+#> Chain 2:                0.658321 seconds (Total)
+#> Chain 2: 
+#> 
+#> SAMPLING FOR MODEL '006ab23433c79b9b7b0940468909174a' NOW (CHAIN 1).
+#> Chain 1: 
+#> Chain 1: Gradient evaluation took 2.5e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.25 seconds.
+#> Chain 1: Adjust your expectations accordingly!
+#> Chain 1: 
+#> Chain 1: 
+#> Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)
+#> Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)
+#> Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)
+#> Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)
+#> Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)
+#> Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)
+#> Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)
+#> Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)
+#> Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)
+#> Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)
+#> Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)
+#> Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)
+#> Chain 1: 
+#> Chain 1:  Elapsed Time: 0.468873 seconds (Warm-up)
+#> Chain 1:                0.343155 seconds (Sampling)
+#> Chain 1:                0.812028 seconds (Total)
+#> Chain 1: 
+#> 
+#> SAMPLING FOR MODEL '006ab23433c79b9b7b0940468909174a' NOW (CHAIN 2).
+#> Chain 2: 
+#> Chain 2: Gradient evaluation took 1.5e-05 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.
+#> Chain 2: Adjust your expectations accordingly!
+#> Chain 2: 
+#> Chain 2: 
+#> Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)
+#> Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)
+#> Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)
+#> Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)
+#> Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)
+#> Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)
+#> Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)
+#> Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)
+#> Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)
+#> Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)
+#> Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)
+#> Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)
+#> Chain 2: 
+#> Chain 2:  Elapsed Time: 0.440366 seconds (Warm-up)
+#> Chain 2:                0.308421 seconds (Sampling)
+#> Chain 2:                0.748787 seconds (Total)
+#> Chain 2:
 ```
 
 The results are here stored in the `BayesCal` object and corresponds to `stan` objects summarizing posterior distributions of the parameters:
 
-```{r eval=FALSE}
+
+```r
 BayesCal
 ```
 
@@ -66,7 +269,8 @@ BayesCal
 
 `bayclumpr` implements two functions to perform temperature reconstructions under frequentist (`rec.clumped`) and Bayesian frameworks (`rec.bayesian`). Let's review how each of these functions work by generating a synthetic dataset for two samples.
 
-```{r}
+
+```r
 recData <- data.frame(Sample = paste("Sample", 1:9), 
                       D47 = rep(c(0.6, 0.7, 0.8), 3), 
                       D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
@@ -78,26 +282,100 @@ As for the calibration step, `bayclumpr` expects uncertainty (`D47error`) to be 
 
 From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let's assume that we were interested in reconstructing temperatures for our `recData` under an OLS model. First, we would have to run our calibration analyses:
 
-```{r}
+
+```r
 paramdist <- cal.ols(data = ds, replicates = 10)
 ```
 
 From this point, we can use the `rec.clumped` to reconstruct temperatures based on the reconstruction dataset (`recData` argument) and the observed calibration object (`obCal` argument):
 
-```{r}
+
+```r
 rec.clumped(recData = recData, obCal = paramdist)
+#>     Sample D47 D47error  meanTemp    error
+#> 1 Sample 1 0.6    0.005  59.79108 2.509437
+#> 2 Sample 2 0.7    0.005  18.30648 1.687880
+#> 3 Sample 3 0.8    0.005 -10.74432 1.233827
+#> 4 Sample 4 0.6    0.010  59.79108 4.962974
+#> 5 Sample 5 0.7    0.010  18.30648 3.346772
+#> 6 Sample 6 0.8    0.010 -10.74432 2.450411
+#> 7 Sample 7 0.6    0.020  59.79108 9.710425
+#> 8 Sample 8 0.7    0.020  18.30648 6.580837
+#> 9 Sample 9 0.8    0.020 -10.74432 4.833432
 ```
 
 The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
 
-```{r message=FALSE, warning=FALSE, error =FALSE}
+
+```r
 PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000, postcalsamples = 100, MC = FALSE)
+#> 
+#> SAMPLING FOR MODEL 'd9c8b77ff79c7cb5c71ff874a6d29fd0' NOW (CHAIN 1).
+#> Chain 1: 
+#> Chain 1: Gradient evaluation took 7.6e-05 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.76 seconds.
+#> Chain 1: Adjust your expectations accordingly!
+#> Chain 1: 
+#> Chain 1: 
+#> Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
+#> Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
+#> Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
+#> Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
+#> Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
+#> Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
+#> Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
+#> Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
+#> Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
+#> Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
+#> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
+#> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
+#> Chain 1: 
+#> Chain 1:  Elapsed Time: 0.635986 seconds (Warm-up)
+#> Chain 1:                0.531588 seconds (Sampling)
+#> Chain 1:                1.16757 seconds (Total)
+#> Chain 1: 
+#> 
+#> SAMPLING FOR MODEL 'd9c8b77ff79c7cb5c71ff874a6d29fd0' NOW (CHAIN 2).
+#> Chain 2: 
+#> Chain 2: Gradient evaluation took 5.4e-05 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.54 seconds.
+#> Chain 2: Adjust your expectations accordingly!
+#> Chain 2: 
+#> Chain 2: 
+#> Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
+#> Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
+#> Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
+#> Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
+#> Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
+#> Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
+#> Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
+#> Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
+#> Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
+#> Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
+#> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
+#> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
+#> Chain 2: 
+#> Chain 2:  Elapsed Time: 0.627802 seconds (Warm-up)
+#> Chain 2:                0.545149 seconds (Sampling)
+#> Chain 2:                1.17295 seconds (Total)
+#> Chain 2:
 ```
 
 The associated reconstructions to this Bayesian model are shown below:
 
-```{r}
+
+```r
 PredsBay
+#>     Sample D47 D47error  meanTemp     error
+#> 1 Sample 1 0.6    0.005  60.21022 0.7226459
+#> 2 Sample 2 0.7    0.005  18.70703 0.4668382
+#> 3 Sample 3 0.8    0.005 -10.36620 0.3430503
+#> 4 Sample 4 0.6    0.010  60.19585 0.6755755
+#> 5 Sample 5 0.7    0.010  18.69667 0.5170229
+#> 6 Sample 6 0.8    0.010 -10.36899 0.3411882
+#> 7 Sample 7 0.6    0.020  60.19985 0.7097546
+#> 8 Sample 8 0.7    0.020  18.71255 0.4440080
+#> 9 Sample 9 0.8    0.020 -10.37417 0.3605431
 ```
 
 ## Outlook

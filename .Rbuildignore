@@ -6,3 +6,9 @@
 ^docs$
 ^pkgdown$
 ^CONTRIBUTING
+^README.md
+vignettes/*.R$
+vignettes/*.orig$
+
+^doc$
+^Meta$

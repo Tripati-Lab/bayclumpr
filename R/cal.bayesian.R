@@ -23,7 +23,9 @@ cal.bayesian <- function(calibrationData,
   if(MC){
     options(mc.cores = parallel::detectCores())
   }else{
-    options(mc.cores = 1)
+    if(.Platform$OS.type == "unix"){
+      options(mc.cores = 1)
+    }
   }
 
   if (!priors %in% c("Informative", "Weak", "Uninformative")) {
