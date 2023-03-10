@@ -5,6 +5,7 @@
 #' @param numSavedSteps Number of MCMC iterations to save.
 #' @param priors Either \code{Informative}, \code{Weak}, or
 #'               \code{Uninformative} on the slope and intercept.
+#' @param MC Multicore (TRUE/FALSE)
 #'
 #' @importFrom loo extract_log_lik relative_eff loo_compare
 #' @import parallel
@@ -14,8 +15,16 @@
 #' @export
 
 
-cal.bayesian <- function(calibrationData, numSavedSteps = 3000,
-                                  priors = "Informative") {
+cal.bayesian <- function(calibrationData,
+                         numSavedSteps = 3000,
+                         priors = "Informative",
+                         MC = TRUE) {
+
+  if(MC){
+    options(mc.cores = parallel::detectCores())
+  }else{
+    options(mc.cores = 1)
+  }
 
   if (!priors %in% c("Informative", "Weak", "Uninformative")) {
     stop("Priors must be in `Informative`, `Difusse` or `NonInformative`")
@@ -288,8 +297,6 @@ cal.bayesian <- function(calibrationData, numSavedSteps = 3000,
   nIter <- ceiling(burnInSteps + (numSavedSteps * thinSteps) / nChains)
 
   # Fit models
-  options(mc.cores = parallel::detectCores())
-
   BLM1_E <- stan(
     data = stan_data_Err, model_code = if (priors == "Uninformative") {
       fwMod_Errors2

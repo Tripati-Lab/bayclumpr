@@ -5,7 +5,12 @@
 \title{Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 \code{stan}.}
 \usage{
-cal.bayesian(calibrationData, numSavedSteps = 3000, priors = "Informative")
+cal.bayesian(
+  calibrationData,
+  numSavedSteps = 3000,
+  priors = "Informative",
+  MC = TRUE
+)
 }
 \arguments{
 \item{calibrationData}{The target calibration dataset.}
@@ -14,6 +19,8 @@ cal.bayesian(calibrationData, numSavedSteps = 3000, priors = "Informative")
 
 \item{priors}{Either \code{Informative}, \code{Weak}, or
 \code{Uninformative} on the slope and intercept.}
+
+\item{MC}{Multicore (TRUE/FALSE)}
 }
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using

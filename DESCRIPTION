@@ -2,7 +2,7 @@ Package: bayclumpr
 Type: Package
 Title: Bayesian Analysis of Clumped Isotope Datasets
 Version: 0.1.0
-Authors@R: c(person("Cristian", "Roman Palacios", email = "cromanpa@arizona.edu",
+Authors@R: c(person("Cristian", "Roman Palacios", email = "cromanpa94@arizona.edu",
                   role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-1696-4886")),
     person("Hannah M.", "Carroll", email = "hcarroll@epss.ucla.edu",
@@ -15,8 +15,9 @@ Authors@R: c(person("Cristian", "Roman Palacios", email = "cromanpa@arizona.edu"
 URL: https://bayclump.tripatilab.epss.ucla.edu/,
     https://tripati-lab.github.io/bayclumpr/
 BugReports: https://github.com/Tripati-Lab/bayclumpr/issues
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Simulating synthetic clumped isotope dataset, fitting
+    linear regression models under Bayesian and non-Bayesian frameworks,
+    and generating temperature reconstructions for the same two approaches.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

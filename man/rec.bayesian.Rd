@@ -4,14 +4,16 @@
 \alias{rec.bayesian}
 \title{This function generate temperature predictions (in 10^6/T2) based on a
 calibration dataset and target D47. Note that this approach additionally
-accounts for measured error in the target D47.}
+accounts for measured error in the target D47. This approach is congruent
+with the one used in McClelland et al. (2022).}
 \usage{
 rec.bayesian(
   calModel,
   recData,
   iter = 1000,
   mixed = FALSE,
-  postcalsamples = NULL
+  postcalsamples = NULL,
+  MC = TRUE
 )
 }
 \arguments{
@@ -24,9 +26,12 @@ rec.bayesian(
 \item{mixed}{whether the model \code{calModel} is mixed or not.}
 
 \item{postcalsamples}{Number of posterior samples to analyze from the calibration step.}
+
+\item{MC}{Multicore (TRUE/FALSE)}
 }
 \description{
 This function generate temperature predictions (in 10^6/T2) based on a
 calibration dataset and target D47. Note that this approach additionally
-accounts for measured error in the target D47.
+accounts for measured error in the target D47. This approach is congruent
+with the one used in McClelland et al. (2022).
 }

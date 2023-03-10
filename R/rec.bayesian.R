@@ -1,12 +1,14 @@
 #' This function generate temperature predictions (in 10^6/T2) based on a
 #' calibration dataset and target D47. Note that this approach additionally
-#' accounts for measured error in the target D47.
+#' accounts for measured error in the target D47. This approach is congruent
+#' with the one used in McClelland et al. (2022).
 #'
 #' @param calModel The stan model to be analyzed.
 #' @param recData The reconstruction dataset.
 #' @param iter Number of replicates to retain.
 #' @param mixed whether the model \code{calModel} is mixed or not.
 #' @param postcalsamples Number of posterior samples to analyze from the calibration step.
+#' @param MC Multicore (TRUE/FALSE)
 #'
 #' @import rstan
 #' @import parallel
@@ -17,7 +19,14 @@ rec.bayesian <- function(calModel,
                          recData,
                          iter = 1000,
                          mixed = FALSE,
-                         postcalsamples = NULL) {
+                         postcalsamples = NULL,
+                         MC = TRUE) {
+
+  if(MC){
+    options(mc.cores = parallel::detectCores())
+  }else{
+    options(mc.cores = 1)
+  }
 
   vects.params <- extract(calModel)
 
@@ -72,7 +81,6 @@ if (mixed) {
       sigma = vects.params$sigma[seqSamples]
     )
 
-    options(mc.cores = parallel::detectCores())
     data.rstan <- stan(
       data = stan_date,
       model_code = Model,
@@ -119,7 +127,6 @@ if (mixed) {
     sigma = vects.params$sigma[seqSamples]
   )
 
-  options(mc.cores = parallel::detectCores())
   data.rstan <- stan(
     data = stan_date,
     model_code = Model,
