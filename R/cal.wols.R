@@ -11,12 +11,14 @@
 cal.wols <- function(data, replicates, samples = NULL) {
   if(is.null(samples)){samples = nrow(data)}
   reps <- lapply(1:replicates, function(x) {
+    tryCatch({
     dataSub <- data[sample(seq_along(data[, 1]), nrow(data), replace = TRUE), ]
     Reg0 <- lm(D47 ~ Temperature, dataSub)
     wt <- 1 / lm(abs(Reg0$residuals) ~ Reg0$fitted.values)$fitted.values^2
     Reg <- summary(lm(D47 ~ Temperature, dataSub, weights = wt))
     res <- cbind.data.frame("alpha" = Reg$coefficients[1, 1], "beta" = Reg$coefficients[2, 1])
     return(res)
+    }, error=function(e){})
   })
   reps <- do.call(rbind, reps)
   return(reps)
