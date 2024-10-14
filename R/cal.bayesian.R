@@ -136,7 +136,7 @@ cal.bayesian <- function(calibrationData,
     int<lower=0> J;
     vector[N] y;
     vector[N] x;
-    int Material[N];
+    array[N] int Material;
     real beta_mu;
     real beta_sd;
     real alpha_mu;
@@ -232,7 +232,7 @@ cal.bayesian <- function(calibrationData,
     int<lower=0> J;
     vector[N] y;
     vector[N] x;
-    int Material[N];
+    array[N] int Material;
   }
 
   parameters {
