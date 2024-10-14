@@ -1,60 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/404.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/articles/bayclumpr.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.bayesian.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.ci.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.dataset.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.deming.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.ols.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.prior.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.wols.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/cal.york.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/rec.clumped.html</loc>
-  </url>
-  <url>
-    <loc>https://tripati-lab.github.io/bayclumpr/reference/rec.prior.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://tripati-lab.github.io/bayclumpr/404.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/LICENSE-text.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/LICENSE.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/articles/bayclumpr.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/articles/index.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/authors.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/index.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.bayesian.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.ci.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.dataset.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.deming.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.ols.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.prior.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.wols.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/cal.york.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/index.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/rec.clumped.html</loc></url>
+<url><loc>https://tripati-lab.github.io/bayclumpr/reference/rec.prior.html</loc></url>
 </urlset>
+
