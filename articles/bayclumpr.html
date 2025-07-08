@@ -6,16 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>bayclumpr • bayclumpr</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="bayclumpr">
 </head>
 <body>
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bayclumpr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -158,10 +157,10 @@ reconstructions. Let’s fit all three models using the
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Weak"</span>, MC <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'cc8e49c029f748bb6dab815288864757' NOW (CHAIN 1).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 3.2e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.32 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 3.4e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.34 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -178,15 +177,15 @@ reconstructions. Let’s fit all three models using the
 <span><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.717123 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.702545 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                1.41967 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 1.256 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                1.193 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                2.449 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'cc8e49c029f748bb6dab815288864757' NOW (CHAIN 2).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 1.3e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 1.1e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span></span>
 <span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
@@ -203,15 +202,15 @@ reconstructions. Let’s fit all three models using the
 <span><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.326322 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.630451 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.956773 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 1.04 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.701 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                1.741 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL '7f9086b208f04841e16d509c43ea0782' NOW (CHAIN 1).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 2.7e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.27 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 2.3e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -228,15 +227,15 @@ reconstructions. Let’s fit all three models using the
 <span><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.339182 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.293246 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.632428 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.295 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.284 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.579 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL '7f9086b208f04841e16d509c43ea0782' NOW (CHAIN 2).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 1e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 7e-06 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.07 seconds.</span></span>
 <span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
@@ -253,15 +252,15 @@ reconstructions. Let’s fit all three models using the
 <span><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.356504 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.301817 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.658321 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.351 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.286 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.637 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL '006ab23433c79b9b7b0940468909174a' NOW (CHAIN 1).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 2.5e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.25 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 2.8e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.28 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -278,15 +277,15 @@ reconstructions. Let’s fit all three models using the
 <span><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.468873 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.343155 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.812028 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.454 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.323 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.777 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL '006ab23433c79b9b7b0940468909174a' NOW (CHAIN 2).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 1.5e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.15 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 8e-06 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.</span></span>
 <span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
@@ -303,9 +302,9 @@ reconstructions. Let’s fit all three models using the
 <span><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.440366 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.308421 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.748787 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.397 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.338 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.735 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>The results are here stored in the <code>BayesCal</code> object and
 corresponds to <code>stan</code> objects summarizing posterior
@@ -322,8 +321,8 @@ and Bayesian frameworks (<code>rec.bayesian</code>). Let’s review how
 each of these functions work by generating a synthetic dataset for two
 samples.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>, </span>
-<span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, </span>
+<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>,</span>
+<span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
 <span>                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.02</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span>,</span>
 <span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -367,10 +366,10 @@ the OLS but fit under a Bayesian framework
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">1000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span>, MC <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'd9c8b77ff79c7cb5c71ff874a6d29fd0' NOW (CHAIN 1).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 7.6e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.76 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.00013 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.3 seconds.</span></span>
 <span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
@@ -387,15 +386,15 @@ the OLS but fit under a Bayesian framework
 <span><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.635986 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.531588 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                1.16757 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.677 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                0.541 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                1.218 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 1: </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'd9c8b77ff79c7cb5c71ff874a6d29fd0' NOW (CHAIN 2).</span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 5.4e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.54 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 7.5e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.75 seconds.</span></span>
 <span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
@@ -412,24 +411,189 @@ the OLS but fit under a Bayesian framework
 <span><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
 <span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.627802 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.545149 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                1.17295 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.666 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                0.539 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                1.205 seconds (Total)</span></span>
 <span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>The associated reconstructions to this Bayesian model are shown
 below:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span></span>
 <span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.21022 0.7226459</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.70703 0.4668382</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.36620 0.3430503</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.19585 0.6755755</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.69667 0.5170229</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.36899 0.3411882</span></span>
-<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  60.19985 0.7097546</span></span>
-<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.71255 0.4440080</span></span>
-<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.37417 0.3605431</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.96228 0.8033461</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.58978 0.5165987</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.42620 0.3780554</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.97027 0.8644890</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.56865 0.5942328</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.43481 0.4013505</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.98923 1.3046313</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.59688 0.8196340</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.42618 0.6088671</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="including-a-co-variate">Including a co-variate<a class="anchor" aria-label="anchor" href="#including-a-co-variate"></a>
+</h2>
+<p>Now, instead of having a single predictor, we will use a second
+column (i.e., Ion) and it’s error (i.e., IonError) as predictors. Let’s
+first create a calibration dataset.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<p>Note that we will be using not super informative values for Ion and
+its error. We just need to include those two new columns in the
+dataset:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ds</span><span class="op">$</span><span class="va">Ion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ds</span><span class="op">$</span><span class="va">IonError</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>At this point, we can fit the regression model that accounts for
+uncertainty in each of the two predictors</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ionmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ion.bayesian.html">cal.ion.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span><span class="op">)</span></span>
+<span><span class="va">ionmodel</span></span>
+<span><span class="co">#&gt; $BLM1_fit</span></span>
+<span><span class="co">#&gt; Inference for Stan model: anon_model.</span></span>
+<span><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
+<span><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;              mean se_mean   sd  2.5%   25%   50%    75%  97.5% n_eff Rhat</span></span>
+<span><span class="co">#&gt; alpha        0.27    0.00 0.01  0.24  0.26  0.27   0.28   0.30  5383    1</span></span>
+<span><span class="co">#&gt; beta         0.04    0.00 0.00  0.03  0.04  0.04   0.04   0.04  5304    1</span></span>
+<span><span class="co">#&gt; gamma        0.00    0.00 0.00 -0.01  0.00  0.00   0.00   0.01  1782    1</span></span>
+<span><span class="co">#&gt; sigma        0.01    0.00 0.00  0.01  0.01  0.01   0.01   0.02  3192    1</span></span>
+<span><span class="co">#&gt; log_lik[1]   3.31    0.00 0.16  2.96  3.23  3.33   3.41   3.57  2762    1</span></span>
+<span><span class="co">#&gt; log_lik[2]   3.34    0.00 0.13  3.06  3.26  3.34   3.42   3.57  3144    1</span></span>
+<span><span class="co">#&gt; log_lik[3]   2.64    0.01 0.35  1.80  2.46  2.69   2.87   3.21  2593    1</span></span>
+<span><span class="co">#&gt; log_lik[4]   3.08    0.01 0.31  2.40  2.93  3.12   3.28   3.53  2343    1</span></span>
+<span><span class="co">#&gt; log_lik[5]   2.58    0.01 0.34  1.88  2.39  2.59   2.80   3.24  2765    1</span></span>
+<span><span class="co">#&gt; log_lik[6]   3.03    0.00 0.27  2.37  2.92  3.07   3.19   3.43  2963    1</span></span>
+<span><span class="co">#&gt; log_lik[7]   3.31    0.00 0.17  2.96  3.24  3.32   3.41   3.57  2842    1</span></span>
+<span><span class="co">#&gt; log_lik[8]   1.90    0.01 0.70  0.37  1.49  1.95   2.35   3.17  2613    1</span></span>
+<span><span class="co">#&gt; log_lik[9]   2.84    0.01 0.39  1.85  2.65  2.92   3.10   3.38  2985    1</span></span>
+<span><span class="co">#&gt; log_lik[10]  2.85    0.01 0.36  2.03  2.63  2.88   3.10   3.45  2751    1</span></span>
+<span><span class="co">#&gt; log_lik[11]  3.21    0.00 0.18  2.79  3.12  3.23   3.33   3.52  3234    1</span></span>
+<span><span class="co">#&gt; log_lik[12]  3.33    0.00 0.16  2.99  3.25  3.34   3.42   3.58  3124    1</span></span>
+<span><span class="co">#&gt; log_lik[13]  3.36    0.00 0.12  3.11  3.28  3.36   3.43   3.59  2577    1</span></span>
+<span><span class="co">#&gt; log_lik[14]  1.75    0.01 0.54  0.64  1.41  1.76   2.09   2.86  3039    1</span></span>
+<span><span class="co">#&gt; log_lik[15]  3.33    0.00 0.13  3.07  3.26  3.34   3.42   3.56  2489    1</span></span>
+<span><span class="co">#&gt; log_lik[16]  3.33    0.00 0.14  3.02  3.26  3.35   3.42   3.57  3639    1</span></span>
+<span><span class="co">#&gt; log_lik[17]  3.31    0.00 0.15  2.99  3.23  3.32   3.40   3.56  3293    1</span></span>
+<span><span class="co">#&gt; log_lik[18]  3.34    0.00 0.15  3.01  3.26  3.35   3.43   3.58  2754    1</span></span>
+<span><span class="co">#&gt; log_lik[19]  3.14    0.01 0.26  2.47  3.03  3.19   3.31   3.50  2655    1</span></span>
+<span><span class="co">#&gt; log_lik[20]  3.32    0.00 0.15  3.02  3.24  3.33   3.41   3.56  2904    1</span></span>
+<span><span class="co">#&gt; log_lik[21]  2.60    0.01 0.34  1.85  2.40  2.62   2.81   3.23  3521    1</span></span>
+<span><span class="co">#&gt; log_lik[22]  3.27    0.00 0.19  2.80  3.19  3.30   3.38   3.55  3497    1</span></span>
+<span><span class="co">#&gt; log_lik[23]  3.25    0.00 0.16  2.92  3.16  3.26   3.35   3.54  2054    1</span></span>
+<span><span class="co">#&gt; log_lik[24]  3.21    0.00 0.22  2.69  3.10  3.24   3.35   3.53  3166    1</span></span>
+<span><span class="co">#&gt; log_lik[25]  3.22    0.00 0.18  2.85  3.12  3.23   3.33   3.54  2334    1</span></span>
+<span><span class="co">#&gt; log_lik[26]  3.28    0.00 0.19  2.81  3.19  3.30   3.40   3.57  2269    1</span></span>
+<span><span class="co">#&gt; log_lik[27]  3.02    0.01 0.27  2.43  2.86  3.05   3.20   3.46  2753    1</span></span>
+<span><span class="co">#&gt; log_lik[28]  3.04    0.00 0.26  2.42  2.91  3.07   3.21   3.45  3017    1</span></span>
+<span><span class="co">#&gt; log_lik[29]  2.01    0.01 0.51  1.02  1.70  2.02   2.31   3.03  3056    1</span></span>
+<span><span class="co">#&gt; log_lik[30]  2.92    0.00 0.30  2.22  2.77  2.95   3.12   3.39  4511    1</span></span>
+<span><span class="co">#&gt; log_lik[31]  3.13    0.00 0.23  2.60  3.01  3.16   3.29   3.51  2685    1</span></span>
+<span><span class="co">#&gt; log_lik[32]  3.35    0.00 0.13  3.09  3.28  3.36   3.43   3.58  2885    1</span></span>
+<span><span class="co">#&gt; log_lik[33]  2.18    0.01 0.47  1.14  1.92  2.21   2.48   2.98  3109    1</span></span>
+<span><span class="co">#&gt; log_lik[34]  2.23    0.01 0.55  0.88  1.96  2.30   2.59   3.07  2822    1</span></span>
+<span><span class="co">#&gt; log_lik[35]  3.36    0.00 0.13  3.11  3.29  3.37   3.44   3.59  3029    1</span></span>
+<span><span class="co">#&gt; log_lik[36]  1.04    0.01 0.72 -0.59  0.62  1.08   1.52   2.28  3586    1</span></span>
+<span><span class="co">#&gt; log_lik[37]  2.68    0.01 0.41  1.76  2.43  2.72   2.97   3.37  2662    1</span></span>
+<span><span class="co">#&gt; log_lik[38]  3.18    0.00 0.20  2.67  3.09  3.21   3.30   3.50  2984    1</span></span>
+<span><span class="co">#&gt; log_lik[39]  3.08    0.00 0.23  2.54  2.95  3.11   3.24   3.47  3202    1</span></span>
+<span><span class="co">#&gt; log_lik[40]  3.10    0.00 0.23  2.55  2.99  3.13   3.25   3.47  2958    1</span></span>
+<span><span class="co">#&gt; log_lik[41]  2.71    0.01 0.33  1.97  2.54  2.74   2.92   3.28  3756    1</span></span>
+<span><span class="co">#&gt; log_lik[42]  1.91    0.01 0.55  0.79  1.57  1.92   2.24   3.01  2815    1</span></span>
+<span><span class="co">#&gt; log_lik[43]  3.18    0.00 0.24  2.60  3.07  3.23   3.35   3.53  2390    1</span></span>
+<span><span class="co">#&gt; log_lik[44]  3.35    0.00 0.14  3.05  3.27  3.36   3.43   3.58  3277    1</span></span>
+<span><span class="co">#&gt; log_lik[45]  2.22    0.01 0.45  1.21  1.99  2.27   2.51   2.98  3109    1</span></span>
+<span><span class="co">#&gt; log_lik[46]  3.30    0.00 0.18  2.84  3.22  3.32   3.41   3.58  2087    1</span></span>
+<span><span class="co">#&gt; log_lik[47]  2.84    0.01 0.28  2.19  2.70  2.86   3.00   3.32  2530    1</span></span>
+<span><span class="co">#&gt; log_lik[48]  3.24    0.00 0.19  2.79  3.15  3.26   3.36   3.55  2294    1</span></span>
+<span><span class="co">#&gt; log_lik[49]  2.15    0.01 0.45  1.15  1.91  2.18   2.43   2.95  2891    1</span></span>
+<span><span class="co">#&gt; log_lik[50]  3.20    0.00 0.26  2.49  3.11  3.25   3.35   3.51  2947    1</span></span>
+<span><span class="co">#&gt; lp__        99.41    0.21 7.37 83.88 94.58 99.66 104.60 113.07  1199    1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Jul  8 13:03:17 2025.</span></span>
+<span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
+<span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
+<span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
+<p>From here, we can simply run a reconstruction based on a synthetic
+reconstruction dataset with the following structure:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span>,</span>
+<span>                      D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>                      D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.02</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                      Ion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>                      IonError <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.01</span>,<span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.02</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span>,</span>
+<span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The reconstruction can be performed as follows:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.ion.bayesian.html">rec.ion.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">ionmodel</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>                         recData <span class="op">=</span> <span class="va">recData</span>,</span>
+<span>                         iter <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>                         postcalsamples <span class="op">=</span> <span class="fl">100</span>, MC <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.000192 seconds</span></span>
+<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.92 seconds.</span></span>
+<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; Chain 1:  Elapsed Time: 9.044 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 1:                1.799 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 1:                10.843 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 1: </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span><span class="co">#&gt; Chain 2: </span></span>
+<span><span class="co">#&gt; Chain 2: Gradient evaluation took 9.6e-05 seconds</span></span>
+<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.96 seconds.</span></span>
+<span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span><span class="co">#&gt; Chain 2: </span></span>
+<span><span class="co">#&gt; Chain 2: </span></span>
+<span><span class="co">#&gt; Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2: </span></span>
+<span><span class="co">#&gt; Chain 2:  Elapsed Time: 7.515 seconds (Warm-up)</span></span>
+<span><span class="co">#&gt; Chain 2:                1.802 seconds (Sampling)</span></span>
+<span><span class="co">#&gt; Chain 2:                9.317 seconds (Total)</span></span>
+<span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
+<p>And the resulting reconstructions are as follow:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">PredsBay</span></span>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.11940  7.608069</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.36948  4.989418</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.77794  3.718707</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.20635  8.824740</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.38667  5.794015</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.75082  4.308152</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  60.56448 12.611447</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.58468  8.292557</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.64488  6.115418</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>
@@ -449,7 +613,7 @@ priors in Bayesian models are an option.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
