@@ -29,7 +29,7 @@ cal.bayesian <- function(calibrationData,
   }
 
   if (!priors %in% c("Informative", "Weak", "Uninformative")) {
-    stop("Priors must be in `Informative`, `Difusse` or `NonInformative`")
+    stop("Priors must be in `Informative`, `Weak`, or `Uninformative`")
   }
 
   if (priors == "Informative") {
@@ -91,7 +91,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | 0, sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
     }
   }
 "
@@ -124,7 +124,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | 0, sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
     }
   }
 
@@ -159,7 +159,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | 0, sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
     }
   }
 "
@@ -187,7 +187,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | 0, sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
     }
   }
 "
@@ -197,11 +197,11 @@ cal.bayesian <- function(calibrationData,
     int<lower=0> N;
     vector[N] y;
     vector[N] x_meas;
+    real<lower=0> tau;
   }
 
   parameters {
     vector[N] x;
-    real tau;
     real alpha;
     real beta;
     real mu_x;
@@ -220,7 +220,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | 0, sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
     }
   }
 "
@@ -249,7 +249,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | 0, sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
     }
   }
 "
@@ -271,7 +271,7 @@ cal.bayesian <- function(calibrationData,
     N = nrow(calibrationData),
     x_meas = calibrationData$Temperature,
     y = calibrationData$D47,
-    tau = mean(calibrationData$TempError),
+    tau = sd(calibrationData$TempError),
     beta_mu = beta_mu,
     beta_sd = beta_sd,
     alpha_mu = alpha_mu,
@@ -285,7 +285,7 @@ cal.bayesian <- function(calibrationData,
     x = calibrationData$Temperature,
     y = calibrationData$D47,
     J = length(unique(calibrationData$Material)),
-    Material = as.numeric(calibrationData$Material),
+    Material = as.integer(factor(calibrationData$Material)),
     beta_mu = beta_mu,
     beta_sd = beta_sd,
     alpha_mu = alpha_mu,

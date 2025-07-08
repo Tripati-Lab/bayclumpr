@@ -35,6 +35,7 @@ Model <- "
 data {
   int<lower=0> n;
   vector[n] y_mes;
+  vector[n] y_err;
   int<lower=0> posts;
   vector[posts] alpha;
   vector[posts] beta;
@@ -49,9 +50,10 @@ model {
   vector[posts] y_new_hat;
   for(i in 1:n){
     y_new_hat = alpha + beta .* x_new[i,]';
-    y_mes[i] ~ normal(y_new_hat, sigma);
+    y_mes[i] ~ normal(y_new_hat, sqrt(sigma^2 + y_err[i]^2));
+  }
 }
-}
+
 "
 
 totsamp <- if(!mixed){

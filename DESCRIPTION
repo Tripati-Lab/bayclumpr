@@ -1,8 +1,8 @@
 Package: bayclumpr
 Type: Package
 Title: Bayesian Analysis of Clumped Isotope Datasets
-Version: 0.1.1
-Authors@R: c(person("Cristian", "Roman Palacios", email = "cromanpa94@arizona.edu",
+Version: 0.1.2
+Authors@R: c(person("Cristian", "Roman Palacios", email = "cromanpa@arizona.edu",
                   role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-1696-4886")),
     person("Hannah M.", "Carroll", email = "hcarroll@epss.ucla.edu",
@@ -21,7 +21,7 @@ Description: Simulating synthetic clumped isotope dataset, fitting
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.3.2
 Imports: parallel, loo, deming, IsoplotR, rstan, stats
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
 VignetteBuilder: knitr

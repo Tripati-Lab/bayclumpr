@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
-Welcome to `bayclumpr`! Before we get started with this tutorial, we would like to remind you that there is an associated shiny app that accompanies this `R` package. You can access `BayClump` directly from your browser using by clicking [here](https://bayclump.tripatilab.epss.ucla.edu/). Now, let's go ahead and discuss some of the basic functions in `bayclumpr`. 
+Welcome to `bayclumpr`! Before we get started with this tutorial, we would like to remind you that there is an associated shiny app that accompanies this `R` package. You can access `BayClump` directly from your browser using by clicking [here](https://bayclump.tripatilab.epss.ucla.edu/). Now, let's go ahead and discuss some of the basic functions in `bayclumpr`.
 
 ```{r setup}
 library(bayclumpr)
@@ -67,8 +67,8 @@ BayesCal
 `bayclumpr` implements two functions to perform temperature reconstructions under frequentist (`rec.clumped`) and Bayesian frameworks (`rec.bayesian`). Let's review how each of these functions work by generating a synthetic dataset for two samples.
 
 ```{r}
-recData <- data.frame(Sample = paste("Sample", 1:9), 
-                      D47 = rep(c(0.6, 0.7, 0.8), 3), 
+recData <- data.frame(Sample = paste("Sample", 1:9),
+                      D47 = rep(c(0.6, 0.7, 0.8), 3),
                       D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
                       N = rep(2, 9),
                       Material = rep(1, 9))
@@ -88,13 +88,62 @@ From this point, we can use the `rec.clumped` to reconstruct temperatures based 
 rec.clumped(recData = recData, obCal = paramdist)
 ```
 
-The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`). 
+The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`).
 
 ```{r message=FALSE, warning=FALSE, error =FALSE}
 PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000, postcalsamples = 100, MC = FALSE)
 ```
 
 The associated reconstructions to this Bayesian model are shown below:
+
+```{r}
+PredsBay
+```
+
+## Including a co-variate
+
+Now, instead of having a single predictor, we will use a second column (i.e., Ion) and it's error (i.e., IonError) as predictors. Let's first create a calibration dataset.
+
+```{r}
+ds <- cal.dataset(error = "S1", nobs = 50)
+```
+
+Note that we will be using not super informative values for Ion and its error. We just need to include those two new columns in the dataset:
+
+```{r}
+ds$Ion <- rnorm(nrow(ds))
+ds$IonError <- rnorm(nrow(ds), 2)
+```
+
+At this point, we can fit the regression model that accounts for uncertainty in each of the two predictors
+
+```{r message=FALSE, warning=FALSE, error =FALSE}
+ionmodel <- cal.ion.bayesian(calibrationData = ds)
+ionmodel
+```
+
+From here, we can simply run a reconstruction based on a synthetic reconstruction dataset with the following structure:
+
+```{r}
+recData <- data.frame(Sample = paste("Sample", 1:9),
+                      D47 = rep(c(0.6, 0.7, 0.8), 3),
+                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
+                      Ion = rep(c(0.6, 0.7, 0.8), 3),
+                      IonError = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
+                      N = rep(2, 9),
+                      Material = rep(1, 9))
+```
+
+The reconstruction can be performed as follows:
+
+```{r message=FALSE, warning=FALSE, error =FALSE}
+PredsBay <- rec.ion.bayesian(calModel = ionmodel[[1]],
+                         recData = recData,
+                         iter = 1000,
+                         postcalsamples = 100, MC = FALSE)
+```
+
+And the resulting reconstructions are as follow:
 
 ```{r}
 PredsBay
