@@ -154,158 +154,251 @@ respectively:</p>
 linear models that are used for calibrations and temperature
 reconstructions. Let’s fit all three models using the
 <code>cal.bayesian</code> function:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">BayesCal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, numSavedSteps <span class="op">=</span> <span class="fl">3000</span>, priors <span class="op">=</span> <span class="st">"Weak"</span>, MC <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 3.4e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.34 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 1.256 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                1.193 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                2.449 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 1.1e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 1.04 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.701 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                1.741 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 2.3e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.295 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.284 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.579 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 7e-06 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.07 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.351 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.286 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.637 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 2.8e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.28 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.454 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.323 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.777 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 8e-06 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.397 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.338 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.735 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>BayesCal <span class="ot">&lt;-</span> <span class="fu">cal.bayesian</span>(<span class="at">calibrationData =</span> ds, <span class="at">numSavedSteps =</span> <span class="dv">3000</span>, <span class="at">priors =</span> <span class="st">"Weak"</span>, <span class="at">MC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>\</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>\</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="er">/</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a> </span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co">#&gt; Chain 1: Gradient evaluation took 4.4e-05 seconds</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.44 seconds.</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a><span class="co">#&gt; Chain 1:  Elapsed Time: 0.548 seconds (Warm-up)</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.415 seconds (Sampling)</span></span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.963 seconds (Total)</span></span>
+<span id="cb6-56"><a href="#cb6-56" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-57"><a href="#cb6-57" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-58"><a href="#cb6-58" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span id="cb6-59"><a href="#cb6-59" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-60"><a href="#cb6-60" tabindex="-1"></a><span class="co">#&gt; Chain 2: Gradient evaluation took 4e-06 seconds</span></span>
+<span id="cb6-61"><a href="#cb6-61" tabindex="-1"></a><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.04 seconds.</span></span>
+<span id="cb6-62"><a href="#cb6-62" tabindex="-1"></a><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span id="cb6-63"><a href="#cb6-63" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-64"><a href="#cb6-64" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-65"><a href="#cb6-65" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
+<span id="cb6-66"><a href="#cb6-66" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
+<span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
+<span id="cb6-68"><a href="#cb6-68" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
+<span id="cb6-69"><a href="#cb6-69" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
+<span id="cb6-70"><a href="#cb6-70" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
+<span id="cb6-71"><a href="#cb6-71" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
+<span id="cb6-72"><a href="#cb6-72" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
+<span id="cb6-73"><a href="#cb6-73" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
+<span id="cb6-74"><a href="#cb6-74" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
+<span id="cb6-75"><a href="#cb6-75" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
+<span id="cb6-76"><a href="#cb6-76" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
+<span id="cb6-77"><a href="#cb6-77" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-78"><a href="#cb6-78" tabindex="-1"></a><span class="co">#&gt; Chain 2:  Elapsed Time: 0.444 seconds (Warm-up)</span></span>
+<span id="cb6-79"><a href="#cb6-79" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.601 seconds (Sampling)</span></span>
+<span id="cb6-80"><a href="#cb6-80" tabindex="-1"></a><span class="co">#&gt; Chain 2:                1.045 seconds (Total)</span></span>
+<span id="cb6-81"><a href="#cb6-81" tabindex="-1"></a><span class="co">#&gt; Chain 2:</span></span>
+<span id="cb6-82"><a href="#cb6-82" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb6-83"><a href="#cb6-83" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-84"><a href="#cb6-84" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-85"><a href="#cb6-85" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" tabindex="-1"></a>\</span>
+<span id="cb6-87"><a href="#cb6-87" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb6-88"><a href="#cb6-88" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-89"><a href="#cb6-89" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb6-90"><a href="#cb6-90" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb6-91"><a href="#cb6-91" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-92"><a href="#cb6-92" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb6-93"><a href="#cb6-93" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb6-94"><a href="#cb6-94" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-95"><a href="#cb6-95" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-96"><a href="#cb6-96" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb6-97"><a href="#cb6-97" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb6-98"><a href="#cb6-98" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb6-99"><a href="#cb6-99" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb6-100"><a href="#cb6-100" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb6-101"><a href="#cb6-101" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb6-102"><a href="#cb6-102" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb6-103"><a href="#cb6-103" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-104"><a href="#cb6-104" tabindex="-1"></a>\</span>
+<span id="cb6-105"><a href="#cb6-105" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb6-106"><a href="#cb6-106" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-107"><a href="#cb6-107" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb6-108"><a href="#cb6-108" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb6-109"><a href="#cb6-109" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-110"><a href="#cb6-110" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb6-111"><a href="#cb6-111" tabindex="-1"></a></span>
+<span id="cb6-112"><a href="#cb6-112" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-113"><a href="#cb6-113" tabindex="-1"></a></span>
+<span id="cb6-114"><a href="#cb6-114" tabindex="-1"></a> </span>
+<span id="cb6-115"><a href="#cb6-115" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span id="cb6-116"><a href="#cb6-116" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-117"><a href="#cb6-117" tabindex="-1"></a><span class="co">#&gt; Chain 1: Gradient evaluation took 2e-05 seconds</span></span>
+<span id="cb6-118"><a href="#cb6-118" tabindex="-1"></a><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.</span></span>
+<span id="cb6-119"><a href="#cb6-119" tabindex="-1"></a><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span id="cb6-120"><a href="#cb6-120" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-121"><a href="#cb6-121" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-122"><a href="#cb6-122" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
+<span id="cb6-123"><a href="#cb6-123" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
+<span id="cb6-124"><a href="#cb6-124" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
+<span id="cb6-125"><a href="#cb6-125" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
+<span id="cb6-126"><a href="#cb6-126" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
+<span id="cb6-127"><a href="#cb6-127" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
+<span id="cb6-128"><a href="#cb6-128" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
+<span id="cb6-129"><a href="#cb6-129" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
+<span id="cb6-130"><a href="#cb6-130" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
+<span id="cb6-131"><a href="#cb6-131" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
+<span id="cb6-132"><a href="#cb6-132" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
+<span id="cb6-133"><a href="#cb6-133" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
+<span id="cb6-134"><a href="#cb6-134" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-135"><a href="#cb6-135" tabindex="-1"></a><span class="co">#&gt; Chain 1:  Elapsed Time: 0.106 seconds (Warm-up)</span></span>
+<span id="cb6-136"><a href="#cb6-136" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.108 seconds (Sampling)</span></span>
+<span id="cb6-137"><a href="#cb6-137" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.214 seconds (Total)</span></span>
+<span id="cb6-138"><a href="#cb6-138" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-139"><a href="#cb6-139" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-140"><a href="#cb6-140" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span id="cb6-141"><a href="#cb6-141" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-142"><a href="#cb6-142" tabindex="-1"></a><span class="co">#&gt; Chain 2: Gradient evaluation took 2e-06 seconds</span></span>
+<span id="cb6-143"><a href="#cb6-143" tabindex="-1"></a><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.</span></span>
+<span id="cb6-144"><a href="#cb6-144" tabindex="-1"></a><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span id="cb6-145"><a href="#cb6-145" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-146"><a href="#cb6-146" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-147"><a href="#cb6-147" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
+<span id="cb6-148"><a href="#cb6-148" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
+<span id="cb6-149"><a href="#cb6-149" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
+<span id="cb6-150"><a href="#cb6-150" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
+<span id="cb6-151"><a href="#cb6-151" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
+<span id="cb6-152"><a href="#cb6-152" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
+<span id="cb6-153"><a href="#cb6-153" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
+<span id="cb6-154"><a href="#cb6-154" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
+<span id="cb6-155"><a href="#cb6-155" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
+<span id="cb6-156"><a href="#cb6-156" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
+<span id="cb6-157"><a href="#cb6-157" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
+<span id="cb6-158"><a href="#cb6-158" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
+<span id="cb6-159"><a href="#cb6-159" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-160"><a href="#cb6-160" tabindex="-1"></a><span class="co">#&gt; Chain 2:  Elapsed Time: 0.158 seconds (Warm-up)</span></span>
+<span id="cb6-161"><a href="#cb6-161" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.131 seconds (Sampling)</span></span>
+<span id="cb6-162"><a href="#cb6-162" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.289 seconds (Total)</span></span>
+<span id="cb6-163"><a href="#cb6-163" tabindex="-1"></a><span class="co">#&gt; Chain 2:</span></span>
+<span id="cb6-164"><a href="#cb6-164" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb6-165"><a href="#cb6-165" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-166"><a href="#cb6-166" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-167"><a href="#cb6-167" tabindex="-1"></a></span>
+<span id="cb6-168"><a href="#cb6-168" tabindex="-1"></a>\</span>
+<span id="cb6-169"><a href="#cb6-169" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb6-170"><a href="#cb6-170" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-171"><a href="#cb6-171" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb6-172"><a href="#cb6-172" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb6-173"><a href="#cb6-173" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-174"><a href="#cb6-174" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb6-175"><a href="#cb6-175" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb6-176"><a href="#cb6-176" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-177"><a href="#cb6-177" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-178"><a href="#cb6-178" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb6-179"><a href="#cb6-179" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb6-180"><a href="#cb6-180" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb6-181"><a href="#cb6-181" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb6-182"><a href="#cb6-182" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb6-183"><a href="#cb6-183" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb6-184"><a href="#cb6-184" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb6-185"><a href="#cb6-185" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-186"><a href="#cb6-186" tabindex="-1"></a>\</span>
+<span id="cb6-187"><a href="#cb6-187" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb6-188"><a href="#cb6-188" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-189"><a href="#cb6-189" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb6-190"><a href="#cb6-190" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb6-191"><a href="#cb6-191" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-192"><a href="#cb6-192" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb6-193"><a href="#cb6-193" tabindex="-1"></a></span>
+<span id="cb6-194"><a href="#cb6-194" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb6-195"><a href="#cb6-195" tabindex="-1"></a></span>
+<span id="cb6-196"><a href="#cb6-196" tabindex="-1"></a> </span>
+<span id="cb6-197"><a href="#cb6-197" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span id="cb6-198"><a href="#cb6-198" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-199"><a href="#cb6-199" tabindex="-1"></a><span class="co">#&gt; Chain 1: Gradient evaluation took 2.7e-05 seconds</span></span>
+<span id="cb6-200"><a href="#cb6-200" tabindex="-1"></a><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.27 seconds.</span></span>
+<span id="cb6-201"><a href="#cb6-201" tabindex="-1"></a><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span id="cb6-202"><a href="#cb6-202" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-203"><a href="#cb6-203" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-204"><a href="#cb6-204" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
+<span id="cb6-205"><a href="#cb6-205" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
+<span id="cb6-206"><a href="#cb6-206" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
+<span id="cb6-207"><a href="#cb6-207" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
+<span id="cb6-208"><a href="#cb6-208" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
+<span id="cb6-209"><a href="#cb6-209" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
+<span id="cb6-210"><a href="#cb6-210" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
+<span id="cb6-211"><a href="#cb6-211" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
+<span id="cb6-212"><a href="#cb6-212" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
+<span id="cb6-213"><a href="#cb6-213" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
+<span id="cb6-214"><a href="#cb6-214" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
+<span id="cb6-215"><a href="#cb6-215" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
+<span id="cb6-216"><a href="#cb6-216" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-217"><a href="#cb6-217" tabindex="-1"></a><span class="co">#&gt; Chain 1:  Elapsed Time: 0.228 seconds (Warm-up)</span></span>
+<span id="cb6-218"><a href="#cb6-218" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.193 seconds (Sampling)</span></span>
+<span id="cb6-219"><a href="#cb6-219" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.421 seconds (Total)</span></span>
+<span id="cb6-220"><a href="#cb6-220" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb6-221"><a href="#cb6-221" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-222"><a href="#cb6-222" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span id="cb6-223"><a href="#cb6-223" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-224"><a href="#cb6-224" tabindex="-1"></a><span class="co">#&gt; Chain 2: Gradient evaluation took 5e-06 seconds</span></span>
+<span id="cb6-225"><a href="#cb6-225" tabindex="-1"></a><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.05 seconds.</span></span>
+<span id="cb6-226"><a href="#cb6-226" tabindex="-1"></a><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span id="cb6-227"><a href="#cb6-227" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-228"><a href="#cb6-228" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-229"><a href="#cb6-229" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:    1 / 2500 [  0%]  (Warmup)</span></span>
+<span id="cb6-230"><a href="#cb6-230" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  250 / 2500 [ 10%]  (Warmup)</span></span>
+<span id="cb6-231"><a href="#cb6-231" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  500 / 2500 [ 20%]  (Warmup)</span></span>
+<span id="cb6-232"><a href="#cb6-232" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:  750 / 2500 [ 30%]  (Warmup)</span></span>
+<span id="cb6-233"><a href="#cb6-233" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1000 / 2500 [ 40%]  (Warmup)</span></span>
+<span id="cb6-234"><a href="#cb6-234" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1001 / 2500 [ 40%]  (Sampling)</span></span>
+<span id="cb6-235"><a href="#cb6-235" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1250 / 2500 [ 50%]  (Sampling)</span></span>
+<span id="cb6-236"><a href="#cb6-236" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1500 / 2500 [ 60%]  (Sampling)</span></span>
+<span id="cb6-237"><a href="#cb6-237" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1750 / 2500 [ 70%]  (Sampling)</span></span>
+<span id="cb6-238"><a href="#cb6-238" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2000 / 2500 [ 80%]  (Sampling)</span></span>
+<span id="cb6-239"><a href="#cb6-239" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2250 / 2500 [ 90%]  (Sampling)</span></span>
+<span id="cb6-240"><a href="#cb6-240" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 2500 / 2500 [100%]  (Sampling)</span></span>
+<span id="cb6-241"><a href="#cb6-241" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb6-242"><a href="#cb6-242" tabindex="-1"></a><span class="co">#&gt; Chain 2:  Elapsed Time: 0.228 seconds (Warm-up)</span></span>
+<span id="cb6-243"><a href="#cb6-243" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.18 seconds (Sampling)</span></span>
+<span id="cb6-244"><a href="#cb6-244" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.408 seconds (Total)</span></span>
+<span id="cb6-245"><a href="#cb6-245" tabindex="-1"></a><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>The results are here stored in the <code>BayesCal</code> object and
 corresponds to <code>stan</code> objects summarizing posterior
 distributions of the parameters:</p>
@@ -363,75 +456,106 @@ will again need parameter estimates derived from the calibration step
 reconstructions under only a single of the Bayesian models equivalent to
 the OLS but fit under a Bayesian framework
 (<code>BayesCal$BLM1_fit_NoErrors</code>).</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">BayesCal</span><span class="op">$</span><span class="va">BLM1_fit_NoErrors</span>, recData <span class="op">=</span> <span class="va">recData</span>, iter <span class="op">=</span> <span class="fl">1000</span>, postcalsamples <span class="op">=</span> <span class="fl">100</span>, MC <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.00013 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.3 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 0.677 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                0.541 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                1.218 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 7.5e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.75 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 0.666 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                0.539 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                1.205 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>PredsBay <span class="ot">&lt;-</span> <span class="fu">rec.bayesian</span>(<span class="at">calModel =</span> BayesCal<span class="sc">$</span>BLM1_fit_NoErrors, <span class="at">recData =</span> recData, <span class="at">iter =</span> <span class="dv">1000</span>, <span class="at">postcalsamples =</span> <span class="dv">100</span>, <span class="at">MC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>\</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>\</span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a> </span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a><span class="co">#&gt; Chain 1: Gradient evaluation took 4.9e-05 seconds</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.49 seconds.</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a><span class="co">#&gt; Chain 1:  Elapsed Time: 0.356 seconds (Warm-up)</span></span>
+<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.296 seconds (Sampling)</span></span>
+<span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.652 seconds (Total)</span></span>
+<span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a><span class="co">#&gt; Chain 2: Gradient evaluation took 2.5e-05 seconds</span></span>
+<span id="cb11-63"><a href="#cb11-63" tabindex="-1"></a><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.25 seconds.</span></span>
+<span id="cb11-64"><a href="#cb11-64" tabindex="-1"></a><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span id="cb11-65"><a href="#cb11-65" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb11-66"><a href="#cb11-66" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb11-67"><a href="#cb11-67" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span id="cb11-68"><a href="#cb11-68" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span id="cb11-69"><a href="#cb11-69" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span id="cb11-70"><a href="#cb11-70" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span id="cb11-71"><a href="#cb11-71" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span id="cb11-72"><a href="#cb11-72" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span id="cb11-73"><a href="#cb11-73" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span id="cb11-74"><a href="#cb11-74" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span id="cb11-75"><a href="#cb11-75" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span id="cb11-76"><a href="#cb11-76" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span id="cb11-77"><a href="#cb11-77" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span id="cb11-78"><a href="#cb11-78" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span id="cb11-79"><a href="#cb11-79" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb11-80"><a href="#cb11-80" tabindex="-1"></a><span class="co">#&gt; Chain 2:  Elapsed Time: 0.361 seconds (Warm-up)</span></span>
+<span id="cb11-81"><a href="#cb11-81" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.287 seconds (Sampling)</span></span>
+<span id="cb11-82"><a href="#cb11-82" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.648 seconds (Total)</span></span>
+<span id="cb11-83"><a href="#cb11-83" tabindex="-1"></a><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>The associated reconstructions to this Bayesian model are shown
 below:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span></span>
 <span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.96228 0.8033461</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.58978 0.5165987</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.42620 0.3780554</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.97027 0.8644890</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.56865 0.5942328</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.43481 0.4013505</span></span>
-<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.98923 1.3046313</span></span>
-<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.59688 0.8196340</span></span>
-<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.42618 0.6088671</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.90427 0.7458333</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.79649 0.5126213</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.10401 0.3495575</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.91790 0.9299128</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.77388 0.5521208</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.10330 0.4009682</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  59.92347 1.2724674</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.78675 0.8500821</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.10630 0.5857574</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="including-a-co-variate">Including a co-variate<a class="anchor" aria-label="anchor" href="#including-a-co-variate"></a>
+<h2 id="including-a-co-variate-with-error-in-the-covariate">Including a co-variate (with error in the covariate)<a class="anchor" aria-label="anchor" href="#including-a-co-variate-with-error-in-the-covariate"></a>
 </h2>
 <p>Now, instead of having a single predictor, we will use a second
 column (i.e., Ion) and it’s error (i.e., IonError) as predictors. Let’s
@@ -446,75 +570,55 @@ dataset:</p>
 <span><span class="va">ds</span><span class="op">$</span><span class="va">IonError</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p>At this point, we can fit the regression model that accounts for
 uncertainty in each of the two predictors</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ionmodel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ion.bayesian.html">cal.ion.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span><span class="op">)</span></span>
-<span><span class="va">ionmodel</span></span>
-<span><span class="co">#&gt; $BLM1_fit</span></span>
-<span><span class="co">#&gt; Inference for Stan model: anon_model.</span></span>
-<span><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
-<span><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;              mean se_mean   sd  2.5%   25%   50%    75%  97.5% n_eff Rhat</span></span>
-<span><span class="co">#&gt; alpha        0.27    0.00 0.01  0.24  0.26  0.27   0.28   0.30  5383    1</span></span>
-<span><span class="co">#&gt; beta         0.04    0.00 0.00  0.03  0.04  0.04   0.04   0.04  5304    1</span></span>
-<span><span class="co">#&gt; gamma        0.00    0.00 0.00 -0.01  0.00  0.00   0.00   0.01  1782    1</span></span>
-<span><span class="co">#&gt; sigma        0.01    0.00 0.00  0.01  0.01  0.01   0.01   0.02  3192    1</span></span>
-<span><span class="co">#&gt; log_lik[1]   3.31    0.00 0.16  2.96  3.23  3.33   3.41   3.57  2762    1</span></span>
-<span><span class="co">#&gt; log_lik[2]   3.34    0.00 0.13  3.06  3.26  3.34   3.42   3.57  3144    1</span></span>
-<span><span class="co">#&gt; log_lik[3]   2.64    0.01 0.35  1.80  2.46  2.69   2.87   3.21  2593    1</span></span>
-<span><span class="co">#&gt; log_lik[4]   3.08    0.01 0.31  2.40  2.93  3.12   3.28   3.53  2343    1</span></span>
-<span><span class="co">#&gt; log_lik[5]   2.58    0.01 0.34  1.88  2.39  2.59   2.80   3.24  2765    1</span></span>
-<span><span class="co">#&gt; log_lik[6]   3.03    0.00 0.27  2.37  2.92  3.07   3.19   3.43  2963    1</span></span>
-<span><span class="co">#&gt; log_lik[7]   3.31    0.00 0.17  2.96  3.24  3.32   3.41   3.57  2842    1</span></span>
-<span><span class="co">#&gt; log_lik[8]   1.90    0.01 0.70  0.37  1.49  1.95   2.35   3.17  2613    1</span></span>
-<span><span class="co">#&gt; log_lik[9]   2.84    0.01 0.39  1.85  2.65  2.92   3.10   3.38  2985    1</span></span>
-<span><span class="co">#&gt; log_lik[10]  2.85    0.01 0.36  2.03  2.63  2.88   3.10   3.45  2751    1</span></span>
-<span><span class="co">#&gt; log_lik[11]  3.21    0.00 0.18  2.79  3.12  3.23   3.33   3.52  3234    1</span></span>
-<span><span class="co">#&gt; log_lik[12]  3.33    0.00 0.16  2.99  3.25  3.34   3.42   3.58  3124    1</span></span>
-<span><span class="co">#&gt; log_lik[13]  3.36    0.00 0.12  3.11  3.28  3.36   3.43   3.59  2577    1</span></span>
-<span><span class="co">#&gt; log_lik[14]  1.75    0.01 0.54  0.64  1.41  1.76   2.09   2.86  3039    1</span></span>
-<span><span class="co">#&gt; log_lik[15]  3.33    0.00 0.13  3.07  3.26  3.34   3.42   3.56  2489    1</span></span>
-<span><span class="co">#&gt; log_lik[16]  3.33    0.00 0.14  3.02  3.26  3.35   3.42   3.57  3639    1</span></span>
-<span><span class="co">#&gt; log_lik[17]  3.31    0.00 0.15  2.99  3.23  3.32   3.40   3.56  3293    1</span></span>
-<span><span class="co">#&gt; log_lik[18]  3.34    0.00 0.15  3.01  3.26  3.35   3.43   3.58  2754    1</span></span>
-<span><span class="co">#&gt; log_lik[19]  3.14    0.01 0.26  2.47  3.03  3.19   3.31   3.50  2655    1</span></span>
-<span><span class="co">#&gt; log_lik[20]  3.32    0.00 0.15  3.02  3.24  3.33   3.41   3.56  2904    1</span></span>
-<span><span class="co">#&gt; log_lik[21]  2.60    0.01 0.34  1.85  2.40  2.62   2.81   3.23  3521    1</span></span>
-<span><span class="co">#&gt; log_lik[22]  3.27    0.00 0.19  2.80  3.19  3.30   3.38   3.55  3497    1</span></span>
-<span><span class="co">#&gt; log_lik[23]  3.25    0.00 0.16  2.92  3.16  3.26   3.35   3.54  2054    1</span></span>
-<span><span class="co">#&gt; log_lik[24]  3.21    0.00 0.22  2.69  3.10  3.24   3.35   3.53  3166    1</span></span>
-<span><span class="co">#&gt; log_lik[25]  3.22    0.00 0.18  2.85  3.12  3.23   3.33   3.54  2334    1</span></span>
-<span><span class="co">#&gt; log_lik[26]  3.28    0.00 0.19  2.81  3.19  3.30   3.40   3.57  2269    1</span></span>
-<span><span class="co">#&gt; log_lik[27]  3.02    0.01 0.27  2.43  2.86  3.05   3.20   3.46  2753    1</span></span>
-<span><span class="co">#&gt; log_lik[28]  3.04    0.00 0.26  2.42  2.91  3.07   3.21   3.45  3017    1</span></span>
-<span><span class="co">#&gt; log_lik[29]  2.01    0.01 0.51  1.02  1.70  2.02   2.31   3.03  3056    1</span></span>
-<span><span class="co">#&gt; log_lik[30]  2.92    0.00 0.30  2.22  2.77  2.95   3.12   3.39  4511    1</span></span>
-<span><span class="co">#&gt; log_lik[31]  3.13    0.00 0.23  2.60  3.01  3.16   3.29   3.51  2685    1</span></span>
-<span><span class="co">#&gt; log_lik[32]  3.35    0.00 0.13  3.09  3.28  3.36   3.43   3.58  2885    1</span></span>
-<span><span class="co">#&gt; log_lik[33]  2.18    0.01 0.47  1.14  1.92  2.21   2.48   2.98  3109    1</span></span>
-<span><span class="co">#&gt; log_lik[34]  2.23    0.01 0.55  0.88  1.96  2.30   2.59   3.07  2822    1</span></span>
-<span><span class="co">#&gt; log_lik[35]  3.36    0.00 0.13  3.11  3.29  3.37   3.44   3.59  3029    1</span></span>
-<span><span class="co">#&gt; log_lik[36]  1.04    0.01 0.72 -0.59  0.62  1.08   1.52   2.28  3586    1</span></span>
-<span><span class="co">#&gt; log_lik[37]  2.68    0.01 0.41  1.76  2.43  2.72   2.97   3.37  2662    1</span></span>
-<span><span class="co">#&gt; log_lik[38]  3.18    0.00 0.20  2.67  3.09  3.21   3.30   3.50  2984    1</span></span>
-<span><span class="co">#&gt; log_lik[39]  3.08    0.00 0.23  2.54  2.95  3.11   3.24   3.47  3202    1</span></span>
-<span><span class="co">#&gt; log_lik[40]  3.10    0.00 0.23  2.55  2.99  3.13   3.25   3.47  2958    1</span></span>
-<span><span class="co">#&gt; log_lik[41]  2.71    0.01 0.33  1.97  2.54  2.74   2.92   3.28  3756    1</span></span>
-<span><span class="co">#&gt; log_lik[42]  1.91    0.01 0.55  0.79  1.57  1.92   2.24   3.01  2815    1</span></span>
-<span><span class="co">#&gt; log_lik[43]  3.18    0.00 0.24  2.60  3.07  3.23   3.35   3.53  2390    1</span></span>
-<span><span class="co">#&gt; log_lik[44]  3.35    0.00 0.14  3.05  3.27  3.36   3.43   3.58  3277    1</span></span>
-<span><span class="co">#&gt; log_lik[45]  2.22    0.01 0.45  1.21  1.99  2.27   2.51   2.98  3109    1</span></span>
-<span><span class="co">#&gt; log_lik[46]  3.30    0.00 0.18  2.84  3.22  3.32   3.41   3.58  2087    1</span></span>
-<span><span class="co">#&gt; log_lik[47]  2.84    0.01 0.28  2.19  2.70  2.86   3.00   3.32  2530    1</span></span>
-<span><span class="co">#&gt; log_lik[48]  3.24    0.00 0.19  2.79  3.15  3.26   3.36   3.55  2294    1</span></span>
-<span><span class="co">#&gt; log_lik[49]  2.15    0.01 0.45  1.15  1.91  2.18   2.43   2.95  2891    1</span></span>
-<span><span class="co">#&gt; log_lik[50]  3.20    0.00 0.26  2.49  3.11  3.25   3.35   3.51  2947    1</span></span>
-<span><span class="co">#&gt; lp__        99.41    0.21 7.37 83.88 94.58 99.66 104.60 113.07  1199    1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Jul  8 13:03:17 2025.</span></span>
-<span><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
-<span><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
-<span><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>ionmodel <span class="ot">&lt;-</span> <span class="fu">cal.ion.bayesian</span>(<span class="at">calibrationData =</span> ds, <span class="at">useIonError =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>\</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a>\</span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a></span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a><span class="er">/</span></span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a> </span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a>ionmodel</span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a><span class="co">#&gt; $BLM1_fit</span></span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a><span class="co">#&gt; Inference for Stan model: anon_model.</span></span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
+<span id="cb15-38"><a href="#cb15-38" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-39"><a href="#cb15-39" tabindex="-1"></a><span class="co">#&gt;        mean se_mean   sd  2.5%   25%   50%    75%  97.5% n_eff Rhat</span></span>
+<span id="cb15-40"><a href="#cb15-40" tabindex="-1"></a><span class="co">#&gt; alpha  0.27    0.00 0.01  0.24  0.26  0.27   0.28   0.30  6450    1</span></span>
+<span id="cb15-41"><a href="#cb15-41" tabindex="-1"></a><span class="co">#&gt; beta   0.04    0.00 0.00  0.03  0.04  0.04   0.04   0.04  6339    1</span></span>
+<span id="cb15-42"><a href="#cb15-42" tabindex="-1"></a><span class="co">#&gt; gamma  0.00    0.00 0.00 -0.01  0.00  0.00   0.00   0.00  1793    1</span></span>
+<span id="cb15-43"><a href="#cb15-43" tabindex="-1"></a><span class="co">#&gt; sigma  0.01    0.00 0.00  0.01  0.01  0.01   0.01   0.02  4431    1</span></span>
+<span id="cb15-44"><a href="#cb15-44" tabindex="-1"></a><span class="co">#&gt; lp__  99.57    0.26 7.16 84.74 94.80 99.82 104.67 112.48   776    1</span></span>
+<span id="cb15-45"><a href="#cb15-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb15-46"><a href="#cb15-46" tabindex="-1"></a><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Jul 22 08:02:28 2025.</span></span>
+<span id="cb15-47"><a href="#cb15-47" tabindex="-1"></a><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
+<span id="cb15-48"><a href="#cb15-48" tabindex="-1"></a><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
+<span id="cb15-49"><a href="#cb15-49" tabindex="-1"></a><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
 <p>From here, we can simply run a reconstruction based on a synthetic
 reconstruction dataset with the following structure:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -526,74 +630,271 @@ reconstruction dataset with the following structure:</p>
 <span>                      N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span>,</span>
 <span>                      Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The reconstruction can be performed as follows:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">PredsBay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rec.ion.bayesian.html">rec.ion.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">ionmodel</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>                         recData <span class="op">=</span> <span class="va">recData</span>,</span>
-<span>                         iter <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>                         postcalsamples <span class="op">=</span> <span class="fl">100</span>, MC <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Gradient evaluation took 0.000192 seconds</span></span>
-<span><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.92 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; Chain 1:  Elapsed Time: 9.044 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 1:                1.799 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 1:                10.843 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 1: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Gradient evaluation took 9.6e-05 seconds</span></span>
-<span><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.96 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2: </span></span>
-<span><span class="co">#&gt; Chain 2:  Elapsed Time: 7.515 seconds (Warm-up)</span></span>
-<span><span class="co">#&gt; Chain 2:                1.802 seconds (Sampling)</span></span>
-<span><span class="co">#&gt; Chain 2:                9.317 seconds (Total)</span></span>
-<span><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>PredsBay <span class="ot">&lt;-</span> <span class="fu">rec.ion.bayesian</span>(<span class="at">calModel =</span> ionmodel[[<span class="dv">1</span>]],</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>                         <span class="at">recData =</span> recData,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>                         <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>                         <span class="at">postcalsamples =</span> <span class="dv">100</span>, <span class="at">MC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>\</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb17-23"><a href="#cb17-23" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb17-24"><a href="#cb17-24" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb17-25"><a href="#cb17-25" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb17-26"><a href="#cb17-26" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-27"><a href="#cb17-27" tabindex="-1"></a>\</span>
+<span id="cb17-28"><a href="#cb17-28" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb17-29"><a href="#cb17-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-30"><a href="#cb17-30" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb17-31"><a href="#cb17-31" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb17-32"><a href="#cb17-32" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-33"><a href="#cb17-33" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb17-34"><a href="#cb17-34" tabindex="-1"></a></span>
+<span id="cb17-35"><a href="#cb17-35" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb17-36"><a href="#cb17-36" tabindex="-1"></a></span>
+<span id="cb17-37"><a href="#cb17-37" tabindex="-1"></a> </span>
+<span id="cb17-38"><a href="#cb17-38" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span id="cb17-39"><a href="#cb17-39" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb17-40"><a href="#cb17-40" tabindex="-1"></a><span class="co">#&gt; Chain 1: Gradient evaluation took 7.3e-05 seconds</span></span>
+<span id="cb17-41"><a href="#cb17-41" tabindex="-1"></a><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.73 seconds.</span></span>
+<span id="cb17-42"><a href="#cb17-42" tabindex="-1"></a><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span id="cb17-43"><a href="#cb17-43" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb17-44"><a href="#cb17-44" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb17-45"><a href="#cb17-45" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span id="cb17-46"><a href="#cb17-46" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span id="cb17-47"><a href="#cb17-47" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span id="cb17-48"><a href="#cb17-48" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span id="cb17-49"><a href="#cb17-49" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span id="cb17-50"><a href="#cb17-50" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span id="cb17-51"><a href="#cb17-51" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span id="cb17-52"><a href="#cb17-52" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span id="cb17-53"><a href="#cb17-53" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span id="cb17-54"><a href="#cb17-54" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span id="cb17-55"><a href="#cb17-55" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span id="cb17-56"><a href="#cb17-56" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span id="cb17-57"><a href="#cb17-57" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb17-58"><a href="#cb17-58" tabindex="-1"></a><span class="co">#&gt; Chain 1:  Elapsed Time: 0.483 seconds (Warm-up)</span></span>
+<span id="cb17-59"><a href="#cb17-59" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.602 seconds (Sampling)</span></span>
+<span id="cb17-60"><a href="#cb17-60" tabindex="-1"></a><span class="co">#&gt; Chain 1:                1.085 seconds (Total)</span></span>
+<span id="cb17-61"><a href="#cb17-61" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb17-62"><a href="#cb17-62" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-63"><a href="#cb17-63" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span id="cb17-64"><a href="#cb17-64" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb17-65"><a href="#cb17-65" tabindex="-1"></a><span class="co">#&gt; Chain 2: Gradient evaluation took 3.2e-05 seconds</span></span>
+<span id="cb17-66"><a href="#cb17-66" tabindex="-1"></a><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.32 seconds.</span></span>
+<span id="cb17-67"><a href="#cb17-67" tabindex="-1"></a><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span id="cb17-68"><a href="#cb17-68" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb17-69"><a href="#cb17-69" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb17-70"><a href="#cb17-70" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span id="cb17-71"><a href="#cb17-71" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span id="cb17-72"><a href="#cb17-72" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span id="cb17-73"><a href="#cb17-73" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span id="cb17-74"><a href="#cb17-74" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span id="cb17-75"><a href="#cb17-75" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span id="cb17-76"><a href="#cb17-76" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span id="cb17-77"><a href="#cb17-77" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span id="cb17-78"><a href="#cb17-78" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span id="cb17-79"><a href="#cb17-79" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span id="cb17-80"><a href="#cb17-80" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span id="cb17-81"><a href="#cb17-81" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span id="cb17-82"><a href="#cb17-82" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb17-83"><a href="#cb17-83" tabindex="-1"></a><span class="co">#&gt; Chain 2:  Elapsed Time: 0.504 seconds (Warm-up)</span></span>
+<span id="cb17-84"><a href="#cb17-84" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.323 seconds (Sampling)</span></span>
+<span id="cb17-85"><a href="#cb17-85" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.827 seconds (Total)</span></span>
+<span id="cb17-86"><a href="#cb17-86" tabindex="-1"></a><span class="co">#&gt; Chain 2:</span></span></code></pre></div>
 <p>And the resulting reconstructions are as follow:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">PredsBay</span></span>
 <span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.11940  7.608069</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.36948  4.989418</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.77794  3.718707</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.20635  8.824740</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.38667  5.794015</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.75082  4.308152</span></span>
-<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  60.56448 12.611447</span></span>
-<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.58468  8.292557</span></span>
-<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.64488  6.115418</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005  59.89768  7.554504</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.46968  4.966526</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.52275  3.739295</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.010  59.98475  8.727259</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.53053  5.826769</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.48592  4.321455</span></span>
+<span><span class="co">#&gt; 7 Sample 7 0.6    0.020  60.34881 12.441000</span></span>
+<span><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.69268  8.301508</span></span>
+<span><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.40590  6.106598</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="including-a-co-variate-without-error-in-the-covariate">Including a co-variate (without error in the covariate)<a class="anchor" aria-label="anchor" href="#including-a-co-variate-without-error-in-the-covariate"></a>
+</h2>
+<p>We will now do the same for the models outlined above but ignoring
+uncertainty in the covariate (Ion):</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>ds <span class="ot">&lt;-</span> <span class="fu">cal.dataset</span>(<span class="at">error =</span> <span class="st">"S1"</span>, <span class="at">nobs =</span> <span class="dv">50</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>ds<span class="sc">$</span>Ion <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(ds))</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>ionmodel <span class="ot">&lt;-</span> <span class="fu">cal.ion.bayesian</span>(<span class="at">calibrationData =</span> ds, <span class="at">useIonError =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; Trying to compile a simple C file</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>\</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a>\</span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a></span>
+<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a></span>
+<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a> </span>
+<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a>ionmodel</span>
+<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a><span class="co">#&gt; $BLM1_fit</span></span>
+<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a><span class="co">#&gt; Inference for Stan model: anon_model.</span></span>
+<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a><span class="co">#&gt; 2 chains, each with iter=2500; warmup=1000; thin=1; </span></span>
+<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a><span class="co">#&gt; post-warmup draws per chain=1500, total post-warmup draws=3000.</span></span>
+<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-44"><a href="#cb19-44" tabindex="-1"></a><span class="co">#&gt;         mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat</span></span>
+<span id="cb19-45"><a href="#cb19-45" tabindex="-1"></a><span class="co">#&gt; alpha   0.27    0.00 0.01   0.25   0.26   0.27   0.28   0.30  2908    1</span></span>
+<span id="cb19-46"><a href="#cb19-46" tabindex="-1"></a><span class="co">#&gt; beta    0.04    0.00 0.00   0.03   0.04   0.04   0.04   0.04  2931    1</span></span>
+<span id="cb19-47"><a href="#cb19-47" tabindex="-1"></a><span class="co">#&gt; gamma   0.00    0.00 0.00   0.00   0.00   0.00   0.00   0.00  5064    1</span></span>
+<span id="cb19-48"><a href="#cb19-48" tabindex="-1"></a><span class="co">#&gt; sigma   0.01    0.00 0.00   0.01   0.01   0.01   0.01   0.02  2766    1</span></span>
+<span id="cb19-49"><a href="#cb19-49" tabindex="-1"></a><span class="co">#&gt; lp__  136.05    0.14 5.24 124.71 132.76 136.44 139.86 145.28  1500    1</span></span>
+<span id="cb19-50"><a href="#cb19-50" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb19-51"><a href="#cb19-51" tabindex="-1"></a><span class="co">#&gt; Samples were drawn using NUTS(diag_e) at Tue Jul 22 08:03:35 2025.</span></span>
+<span id="cb19-52"><a href="#cb19-52" tabindex="-1"></a><span class="co">#&gt; For each parameter, n_eff is a crude measure of effective sample size,</span></span>
+<span id="cb19-53"><a href="#cb19-53" tabindex="-1"></a><span class="co">#&gt; and Rhat is the potential scale reduction factor on split chains (at </span></span>
+<span id="cb19-54"><a href="#cb19-54" tabindex="-1"></a><span class="co">#&gt; convergence, Rhat=1).</span></span></code></pre></div>
+<p>From here, we can just run the reconstructions</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>recData <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sample =</span> <span class="fu">paste</span>(<span class="st">"Sample"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>),</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>                      <span class="at">D47 =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>), <span class="dv">3</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>                      <span class="at">D47error =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fl">0.005</span>,<span class="dv">3</span>), <span class="fu">rep</span>(<span class="fl">0.01</span>,<span class="dv">3</span>), <span class="fu">rep</span>(<span class="fl">0.02</span>,<span class="dv">3</span>)),</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>                      <span class="at">Ion =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>), <span class="dv">3</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>                      <span class="at">N =</span> <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">9</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>                      <span class="at">Material =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">9</span>))</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>PredsBay <span class="ot">&lt;-</span> <span class="fu">rec.ion.bayesian</span>(<span class="at">calModel =</span> ionmodel[[<span class="dv">1</span>]],</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>                             <span class="at">recData =</span> recData,</span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>                             <span class="at">iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>                             <span class="at">postcalsamples =</span> <span class="dv">100</span>, <span class="at">MC =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>                             <span class="at">useIonError =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="co">#&gt; Trying to compile a simple C file</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co">#&gt; Running /Library/Frameworks/R.framework/Resources/bin/R CMD SHLIB foo.c</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>using C compiler<span class="sc">:</span> ‘Apple clang version <span class="dv">17</span>.<span class="fl">0.0</span> (clang<span class="dv">-1700</span>.<span class="dv">0</span>.<span class="fl">13.5</span>)’</span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a>\</span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>using SDK<span class="sc">:</span> ‘MacOSX15.<span class="fl">5.</span>sdk’</span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>clang <span class="sc">-</span>arch arm64 <span class="sc">-</span>std<span class="ot">=</span>gnu2x <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Resources/include"</span> <span class="sc">-</span>DNDEBUG   <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/Rcpp/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/unsupported"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/BH/include"</span> <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/src/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppParallel/include/"</span>  <span class="sc">-</span>I<span class="st">"/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rstan/include"</span> <span class="sc">-</span>DEIGEN_NO_DEBUG  <span class="sc">-</span>DBOOST_DISABLE_ASSERTS  <span class="sc">-</span>DBOOST_PENDING_INTEGER_LOG2_HPP  <span class="sc">-</span>DSTAN_THREADS  <span class="sc">-</span>DUSE_STANC3 <span class="sc">-</span>DSTRICT_R_HEADERS  <span class="sc">-</span>DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION  <span class="sc">-</span>D_HAS_AUTO_PTR_ETC<span class="ot">=</span><span class="dv">0</span>  <span class="sc">-</span>include <span class="st">'/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp'</span>  <span class="sc">-</span>D_REENTRANT <span class="sc">-</span>DRCPP_PARALLEL_USE_TBB<span class="ot">=</span><span class="dv">1</span>   <span class="sc">-</span>I<span class="sc">/</span>opt<span class="sc">/</span>R<span class="sc">/</span>arm64<span class="sc">/</span>include    <span class="sc">-</span>fPIC  <span class="sc">-</span>falign<span class="sc">-</span>functions<span class="ot">=</span><span class="dv">64</span> <span class="sc">-</span>Wall <span class="sc">-</span>g <span class="sc">-</span>O2  <span class="sc">-</span>c foo.c <span class="sc">-</span>o foo.o</span>
+<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a><span class="sc">/</span></span>
+<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a>In file included from <span class="sc">&lt;</span>built<span class="sc">-</span><span class="cf">in</span><span class="sc">&gt;</span><span class="er">:</span><span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/StanHeaders/include/stan/math/prim/fun/Eigen.hpp:22:</span></span>
+<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Dense:1:</span></span>
+<span id="cb20-29"><a href="#cb20-29" tabindex="-1"></a><span class="co">#&gt; In file included from /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/Core:19:</span></span>
+<span id="cb20-30"><a href="#cb20-30" tabindex="-1"></a><span class="co">#&gt; /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/RcppEigen/include/Eigen/src/Core/util/Macros.h:679:10: fatal error: 'cmath' file not found</span></span>
+<span id="cb20-31"><a href="#cb20-31" tabindex="-1"></a><span class="co">#&gt;   679 | #include &lt;cmath&gt;</span></span>
+<span id="cb20-32"><a href="#cb20-32" tabindex="-1"></a><span class="co">#&gt;       |          ^~~~~~~</span></span>
+<span id="cb20-33"><a href="#cb20-33" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-34"><a href="#cb20-34" tabindex="-1"></a><span class="sc">-</span></span>
+<span id="cb20-35"><a href="#cb20-35" tabindex="-1"></a><span class="dv">1</span> error generated.</span>
+<span id="cb20-36"><a href="#cb20-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-37"><a href="#cb20-37" tabindex="-1"></a>\</span>
+<span id="cb20-38"><a href="#cb20-38" tabindex="-1"></a>make<span class="sc">:</span> <span class="er">***</span> [foo.o] Error <span class="dv">1</span></span>
+<span id="cb20-39"><a href="#cb20-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-40"><a href="#cb20-40" tabindex="-1"></a><span class="sc">|</span></span>
+<span id="cb20-41"><a href="#cb20-41" tabindex="-1"></a></span>
+<span id="cb20-42"><a href="#cb20-42" tabindex="-1"></a><span class="er">/</span></span>
+<span id="cb20-43"><a href="#cb20-43" tabindex="-1"></a></span>
+<span id="cb20-44"><a href="#cb20-44" tabindex="-1"></a> </span>
+<span id="cb20-45"><a href="#cb20-45" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).</span></span>
+<span id="cb20-46"><a href="#cb20-46" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb20-47"><a href="#cb20-47" tabindex="-1"></a><span class="co">#&gt; Chain 1: Gradient evaluation took 0.0001 seconds</span></span>
+<span id="cb20-48"><a href="#cb20-48" tabindex="-1"></a><span class="co">#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1 seconds.</span></span>
+<span id="cb20-49"><a href="#cb20-49" tabindex="-1"></a><span class="co">#&gt; Chain 1: Adjust your expectations accordingly!</span></span>
+<span id="cb20-50"><a href="#cb20-50" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb20-51"><a href="#cb20-51" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb20-52"><a href="#cb20-52" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span id="cb20-53"><a href="#cb20-53" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span id="cb20-54"><a href="#cb20-54" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span id="cb20-55"><a href="#cb20-55" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span id="cb20-56"><a href="#cb20-56" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span id="cb20-57"><a href="#cb20-57" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span id="cb20-58"><a href="#cb20-58" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span id="cb20-59"><a href="#cb20-59" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span id="cb20-60"><a href="#cb20-60" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span id="cb20-61"><a href="#cb20-61" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span id="cb20-62"><a href="#cb20-62" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span id="cb20-63"><a href="#cb20-63" tabindex="-1"></a><span class="co">#&gt; Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span id="cb20-64"><a href="#cb20-64" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb20-65"><a href="#cb20-65" tabindex="-1"></a><span class="co">#&gt; Chain 1:  Elapsed Time: 0.478 seconds (Warm-up)</span></span>
+<span id="cb20-66"><a href="#cb20-66" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.319 seconds (Sampling)</span></span>
+<span id="cb20-67"><a href="#cb20-67" tabindex="-1"></a><span class="co">#&gt; Chain 1:                0.797 seconds (Total)</span></span>
+<span id="cb20-68"><a href="#cb20-68" tabindex="-1"></a><span class="co">#&gt; Chain 1: </span></span>
+<span id="cb20-69"><a href="#cb20-69" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb20-70"><a href="#cb20-70" tabindex="-1"></a><span class="co">#&gt; SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).</span></span>
+<span id="cb20-71"><a href="#cb20-71" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb20-72"><a href="#cb20-72" tabindex="-1"></a><span class="co">#&gt; Chain 2: Gradient evaluation took 2.9e-05 seconds</span></span>
+<span id="cb20-73"><a href="#cb20-73" tabindex="-1"></a><span class="co">#&gt; Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.29 seconds.</span></span>
+<span id="cb20-74"><a href="#cb20-74" tabindex="-1"></a><span class="co">#&gt; Chain 2: Adjust your expectations accordingly!</span></span>
+<span id="cb20-75"><a href="#cb20-75" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb20-76"><a href="#cb20-76" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb20-77"><a href="#cb20-77" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)</span></span>
+<span id="cb20-78"><a href="#cb20-78" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)</span></span>
+<span id="cb20-79"><a href="#cb20-79" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)</span></span>
+<span id="cb20-80"><a href="#cb20-80" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)</span></span>
+<span id="cb20-81"><a href="#cb20-81" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)</span></span>
+<span id="cb20-82"><a href="#cb20-82" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)</span></span>
+<span id="cb20-83"><a href="#cb20-83" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)</span></span>
+<span id="cb20-84"><a href="#cb20-84" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)</span></span>
+<span id="cb20-85"><a href="#cb20-85" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)</span></span>
+<span id="cb20-86"><a href="#cb20-86" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)</span></span>
+<span id="cb20-87"><a href="#cb20-87" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)</span></span>
+<span id="cb20-88"><a href="#cb20-88" tabindex="-1"></a><span class="co">#&gt; Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)</span></span>
+<span id="cb20-89"><a href="#cb20-89" tabindex="-1"></a><span class="co">#&gt; Chain 2: </span></span>
+<span id="cb20-90"><a href="#cb20-90" tabindex="-1"></a><span class="co">#&gt; Chain 2:  Elapsed Time: 0.502 seconds (Warm-up)</span></span>
+<span id="cb20-91"><a href="#cb20-91" tabindex="-1"></a><span class="co">#&gt; Chain 2:                0.596 seconds (Sampling)</span></span>
+<span id="cb20-92"><a href="#cb20-92" tabindex="-1"></a><span class="co">#&gt; Chain 2:                1.098 seconds (Total)</span></span>
+<span id="cb20-93"><a href="#cb20-93" tabindex="-1"></a><span class="co">#&gt; Chain 2:</span></span>
+<span id="cb20-94"><a href="#cb20-94" tabindex="-1"></a></span>
+<span id="cb20-95"><a href="#cb20-95" tabindex="-1"></a>PredsBay</span>
+<span id="cb20-96"><a href="#cb20-96" tabindex="-1"></a><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
+<span id="cb20-97"><a href="#cb20-97" tabindex="-1"></a><span class="co">#&gt; 1 Sample 1 0.6    0.005  60.01190  7.859567</span></span>
+<span id="cb20-98"><a href="#cb20-98" tabindex="-1"></a><span class="co">#&gt; 2 Sample 2 0.7    0.005  18.48208  5.102999</span></span>
+<span id="cb20-99"><a href="#cb20-99" tabindex="-1"></a><span class="co">#&gt; 3 Sample 3 0.8    0.005 -10.53734  3.798185</span></span>
+<span id="cb20-100"><a href="#cb20-100" tabindex="-1"></a><span class="co">#&gt; 4 Sample 4 0.6    0.010  60.14399  9.053373</span></span>
+<span id="cb20-101"><a href="#cb20-101" tabindex="-1"></a><span class="co">#&gt; 5 Sample 5 0.7    0.010  18.54175  5.853664</span></span>
+<span id="cb20-102"><a href="#cb20-102" tabindex="-1"></a><span class="co">#&gt; 6 Sample 6 0.8    0.010 -10.51314  4.399987</span></span>
+<span id="cb20-103"><a href="#cb20-103" tabindex="-1"></a><span class="co">#&gt; 7 Sample 7 0.6    0.020  60.38643 12.692343</span></span>
+<span id="cb20-104"><a href="#cb20-104" tabindex="-1"></a><span class="co">#&gt; 8 Sample 8 0.7    0.020  18.72312  8.343830</span></span>
+<span id="cb20-105"><a href="#cb20-105" tabindex="-1"></a><span class="co">#&gt; 9 Sample 9 0.8    0.020 -10.40656  6.197698</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="outlook">Outlook<a class="anchor" aria-label="anchor" href="#outlook"></a>

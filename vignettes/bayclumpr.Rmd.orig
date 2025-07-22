@@ -100,7 +100,7 @@ The associated reconstructions to this Bayesian model are shown below:
 PredsBay
 ```
 
-## Including a co-variate
+## Including a co-variate (with error in the covariate)
 
 Now, instead of having a single predictor, we will use a second column (i.e., Ion) and it's error (i.e., IonError) as predictors. Let's first create a calibration dataset.
 
@@ -118,7 +118,7 @@ ds$IonError <- rnorm(nrow(ds), 2)
 At this point, we can fit the regression model that accounts for uncertainty in each of the two predictors
 
 ```{r message=FALSE, warning=FALSE, error =FALSE}
-ionmodel <- cal.ion.bayesian(calibrationData = ds)
+ionmodel <- cal.ion.bayesian(calibrationData = ds, useIonError = TRUE)
 ionmodel
 ```
 
@@ -146,6 +146,35 @@ PredsBay <- rec.ion.bayesian(calModel = ionmodel[[1]],
 And the resulting reconstructions are as follow:
 
 ```{r}
+PredsBay
+```
+
+
+## Including a co-variate (without error in the covariate)
+
+We will now do the same for the models outlined above but ignoring uncertainty in the covariate (Ion):
+```{r}
+ds <- cal.dataset(error = "S1", nobs = 50)
+ds$Ion <- rnorm(nrow(ds))
+ionmodel <- cal.ion.bayesian(calibrationData = ds, useIonError = FALSE)
+ionmodel
+```
+
+From here, we can just run the reconstructions
+```{r}
+recData <- data.frame(Sample = paste("Sample", 1:9),
+                      D47 = rep(c(0.6, 0.7, 0.8), 3),
+                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
+                      Ion = rep(c(0.6, 0.7, 0.8), 3),
+                      N = rep(2, 9),
+                      Material = rep(1, 9))
+
+PredsBay <- rec.ion.bayesian(calModel = ionmodel[[1]],
+                             recData = recData,
+                             iter = 1000,
+                             postcalsamples = 100, MC = FALSE,
+                             useIonError = FALSE)
+
 PredsBay
 ```
 

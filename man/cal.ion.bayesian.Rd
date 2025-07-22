@@ -5,7 +5,12 @@
 \title{Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 \code{stan}.}
 \usage{
-cal.ion.bayesian(calibrationData, numSavedSteps = 3000, MC = TRUE)
+cal.ion.bayesian(
+  calibrationData,
+  numSavedSteps = 3000,
+  MC = TRUE,
+  useIonError = FALSE
+)
 }
 \arguments{
 \item{calibrationData}{The target calibration dataset.}
@@ -13,6 +18,8 @@ cal.ion.bayesian(calibrationData, numSavedSteps = 3000, MC = TRUE)
 \item{numSavedSteps}{Number of MCMC iterations to save.}
 
 \item{MC}{Multicore (TRUE/FALSE)}
+
+\item{useIonError}{Whether or not to account for ion measurement error.}
 }
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using

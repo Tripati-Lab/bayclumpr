@@ -4,6 +4,7 @@
 #' @param calibrationData The target calibration dataset.
 #' @param numSavedSteps Number of MCMC iterations to save.
 #' @param MC Multicore (TRUE/FALSE)
+#' @param useIonError Whether or not to account for ion measurement error.
 #'
 #' @import parallel
 #' @import rstan
@@ -13,25 +14,25 @@
 
 
 cal.ion.bayesian <- function(calibrationData,
-                         numSavedSteps = 3000,
-                         MC = TRUE) {
+                             numSavedSteps = 3000,
+                             MC = TRUE,
+                             useIonError = FALSE) {
 
   if(MC){
     options(mc.cores = parallel::detectCores())
-  }else{
+  } else {
     if(.Platform$OS.type == "unix"){
       options(mc.cores = 1)
     }
   }
 
-    # Flat prior
-    beta_mu <- 0.01
-    beta_sd <- 0.01
-    alpha_mu <- 0.01
-    alpha_sd <- 0.01
+  # Flat prior
+  beta_mu <- 0.01
+  beta_sd <- 0.01
+  alpha_mu <- 0.01
+  alpha_sd <- 0.01
 
-
-    fwMod_Errors2 <- "
+  fwMod_IonErr <- "
   data {
     int<lower=0> N;
     vector[N] y;
@@ -57,12 +58,9 @@ cal.ion.bayesian <- function(calibrationData,
   model {
     x ~ normal(mu_x, sigma_x);
     ion ~ normal(mu_ion, sigma_ion);
-
     x_meas ~ normal(x, tau);
     ion_meas ~ normal(ion, ion_tau);
-
     y ~ normal(alpha + beta * x + gamma * ion, sigma);
-
     sigma ~ cauchy(0, 5);
   }
 
@@ -74,8 +72,42 @@ cal.ion.bayesian <- function(calibrationData,
   }
   "
 
-    # Prepare data
-    stan_data_Err <- list(
+  fwMod_NoIonErr <- "
+  data {
+    int<lower=0> N;
+    vector[N] y;
+    vector[N] x_meas;
+    vector[N] ion;
+    real<lower=0> tau;
+    real mu_x;
+    real<lower=0> sigma_x;
+  }
+
+  parameters {
+    vector[N] x;
+    real alpha;
+    real beta;
+    real gamma;
+    real<lower=0> sigma;
+  }
+
+  model {
+    x ~ normal(mu_x, sigma_x);
+    x_meas ~ normal(x, tau);
+    y ~ normal(alpha + beta * x + gamma * ion, sigma);
+    sigma ~ cauchy(0, 5);
+  }
+
+  generated quantities {
+    vector[N] log_lik;
+    for (i in 1:N) {
+      log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i] + gamma * ion[i], sigma);
+    }
+  }
+  "
+
+  if (useIonError) {
+    stan_data <- list(
       N = nrow(calibrationData),
       x_meas = calibrationData$Temperature,
       ion_meas = calibrationData$Ion,
@@ -87,6 +119,19 @@ cal.ion.bayesian <- function(calibrationData,
       mu_ion = mean(calibrationData$Ion),
       sigma_ion = sd(calibrationData$Ion)
     )
+    model_code <- fwMod_IonErr
+  } else {
+    stan_data <- list(
+      N = nrow(calibrationData),
+      x_meas = calibrationData$Temperature,
+      ion = calibrationData$Ion,
+      y = calibrationData$D47,
+      tau = sd(calibrationData$TempError),
+      mu_x = mean(calibrationData$Temperature),
+      sigma_x = sd(calibrationData$Temperature)
+    )
+    model_code <- fwMod_NoIonErr
+  }
 
   # Parameters for the run
   nChains <- 2
@@ -95,15 +140,15 @@ cal.ion.bayesian <- function(calibrationData,
   nIter <- ceiling(burnInSteps + (numSavedSteps * thinSteps) / nChains)
 
   # Fit models
-  BLM1_E <- stan(
-    data = stan_data_Err, model_code = fwMod_Errors2,
+  BLM1_fit <- stan(
+    data = stan_data, model_code = model_code,
     chains = nChains, iter = nIter, warmup = burnInSteps,
-    thin = thinSteps, pars = c("alpha", "beta", "gamma", "sigma", "log_lik")
+    thin = thinSteps, pars = c("alpha", "beta", "gamma", "sigma")
   )
 
-  ##return all the relevant objects
+  ## Return all the relevant objects
   CompleteModelFit <- list(
-    "BLM1_fit" = BLM1_E
+    "BLM1_fit" = BLM1_fit
   )
 
   return(CompleteModelFit)

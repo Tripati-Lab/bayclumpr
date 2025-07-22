@@ -7,16 +7,18 @@
 #' @param iter Number of sampling iterations.
 #' @param postcalsamples Number of posterior calibration samples to use.
 #' @param MC Enable multicore (default TRUE).
+#' @param useIonError Use Ion error or not.
 #'
 #' @import rstan
 #' @import parallel
 #'
 #' @export
 rec.ion.bayesian <- function(calModel,
-                         recData,
-                         iter = 1000,
-                         postcalsamples = NULL,
-                         MC = TRUE) {
+                             recData,
+                             iter = 1000,
+                             postcalsamples = NULL,
+                             MC = TRUE,
+                             useIonError = FALSE) {
 
   if (MC) {
     options(mc.cores = parallel::detectCores())
@@ -26,7 +28,7 @@ rec.ion.bayesian <- function(calModel,
 
   vects.params <- extract(calModel)
 
-  Model <- "
+  Model_IonErr <- "
   data {
     int<lower=0> n;
     vector[n] y_mes;
@@ -48,10 +50,35 @@ rec.ion.bayesian <- function(calModel,
   model {
     vector[posts] y_hat;
     for (i in 1:n) {
-      // Observation model includes prediction and error
       y_hat = alpha + beta .* x_new[i,]' + gamma .* ion_new[i,]';
       y_mes[i] ~ normal(y_hat, sqrt(sigma^2 + y_err[i]^2));
       ion_meas[i] ~ normal(ion_new[i,]', ion_err[i]);
+    }
+  }
+  "
+
+  Model_NoIonErr <- "
+  data {
+    int<lower=0> n;
+    vector[n] y_mes;
+    vector[n] y_err;
+    vector[n] ion;
+    int<lower=0> posts;
+    vector[posts] alpha;
+    vector[posts] beta;
+    vector[posts] gamma;
+    vector[posts] sigma;
+  }
+
+  parameters {
+    matrix[n, posts] x_new;
+  }
+
+  model {
+    vector[posts] y_hat;
+    for (i in 1:n) {
+      y_hat = alpha + beta .* x_new[i,]' + gamma .* rep_vector(ion[i], posts);
+      y_mes[i] ~ normal(y_hat, sqrt(sigma^2 + y_err[i]^2));
     }
   }
   "
@@ -63,7 +90,7 @@ rec.ion.bayesian <- function(calModel,
     1:totsamp
   }
 
-
+  if (useIonError) {
     stan_data <- list(
       n = nrow(recData),
       y_mes = recData$D47,
@@ -76,28 +103,43 @@ rec.ion.bayesian <- function(calModel,
       gamma = vects.params$gamma[seqSamples],
       sigma = vects.params$sigma[seqSamples]
     )
-
-    fit <- stan(
-      data = stan_data,
-      model_code = Model,
-      chains = 2,
-      iter = iter,
-      warmup = floor(iter / 2),
-      control = list(adapt_delta = 0.9)
+    model_code <- Model_IonErr
+  } else {
+    stan_data <- list(
+      n = nrow(recData),
+      y_mes = recData$D47,
+      y_err = recData$D47error,
+      ion = recData$Ion,
+      posts = length(seqSamples),
+      alpha = vects.params$alpha[seqSamples],
+      beta = vects.params$beta[seqSamples],
+      gamma = vects.params$gamma[seqSamples],
+      sigma = vects.params$sigma[seqSamples]
     )
+    model_code <- Model_NoIonErr
+  }
 
-    samples <- extract(fit)
-    Xouts <- samples$x_new
+  fit <- stan(
+    data = stan_data,
+    model_code = model_code,
+    chains = 2,
+    iter = iter,
+    warmup = floor(iter / 2),
+    control = list(adapt_delta = 0.9)
+  )
 
-    temp_mat <- sqrt(1e6 / Xouts) - 273.15
+  samples <- extract(fit)
+  Xouts <- samples$x_new
 
-    temp_summary <- t(apply(temp_mat, 2, function(x) c(mean = mean(x), sd = sd(x))))
+  temp_mat <- sqrt(1e6 / Xouts) - 273.15
 
-    return(data.frame(
-      Sample = recData$Sample,
-      D47 = recData$D47,
-      D47error = recData$D47error,
-      meanTemp = temp_summary[, "mean"],
-      error = temp_summary[, "sd"]
-    ))
+  temp_summary <- t(apply(temp_mat, 2, function(x) c(mean = mean(x), sd = sd(x))))
+
+  return(data.frame(
+    Sample = recData$Sample,
+    D47 = recData$D47,
+    D47error = recData$D47error,
+    meanTemp = temp_summary[, "mean"],
+    error = temp_summary[, "sd"]
+  ))
 }

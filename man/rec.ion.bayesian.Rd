@@ -11,7 +11,8 @@ rec.ion.bayesian(
   recData,
   iter = 1000,
   postcalsamples = NULL,
-  MC = TRUE
+  MC = TRUE,
+  useIonError = FALSE
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ rec.ion.bayesian(
 \item{postcalsamples}{Number of posterior calibration samples to use.}
 
 \item{MC}{Enable multicore (default TRUE).}
+
+\item{useIonError}{Use Ion error or not.}
 }
 \description{
 This function generates temperature predictions (in 10^6/T2) based on a
