@@ -53,12 +53,12 @@ cal.york(data = ds, replicates = 10)
 Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. Let's fit all three models using the `cal.bayesian` function:
 
 ```{r  message=FALSE, warning=FALSE, error =FALSE}
-BayesCal <- cal.bayesian(calibrationData = ds, numSavedSteps = 3000, priors = "Weak", MC = FALSE)
+BayesCal <- cal.bayesian(calibrationData = ds)
 ```
 
 The results are here stored in the `BayesCal` object and corresponds to `stan` objects summarizing posterior distributions of the parameters:
 
-```{r eval=FALSE}
+```{r}
 BayesCal
 ```
 
@@ -153,7 +153,7 @@ PredsBay
 ## Including a co-variate (without error in the covariate)
 
 We will now do the same for the models outlined above but ignoring uncertainty in the covariate (Ion):
-```{r}
+```{r, warning=FALSE, error =FALSE}
 ds <- cal.dataset(error = "S1", nobs = 50)
 ds$Ion <- rnorm(nrow(ds))
 ionmodel <- cal.ion.bayesian(calibrationData = ds, useIonError = FALSE)
@@ -161,7 +161,7 @@ ionmodel
 ```
 
 From here, we can just run the reconstructions
-```{r}
+```{r, warning=FALSE, error =FALSE}
 recData <- data.frame(Sample = paste("Sample", 1:9),
                       D47 = rep(c(0.6, 0.7, 0.8), 3),
                       D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
