@@ -9,7 +9,7 @@ cal.ion.bayesian(
   calibrationData,
   numSavedSteps = 3000,
   MC = TRUE,
-  useIonError = FALSE
+  IonError = NULL
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ cal.ion.bayesian(
 
 \item{MC}{Multicore (TRUE/FALSE)}
 
-\item{useIonError}{Whether or not to account for ion measurement error.}
+\item{IonError}{Ion measurement error.}
 }
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using
