@@ -1,0 +1,107 @@
+# The `bayclumpr` `R` Package
+
+### Bayesian methods for clumped isotope paleothermometry
+
+## What is `bayclumpr`?
+
+To support the use of Bayesian models and the analytical framework
+developed in Román-Palacios et al. (2022) for clumped isotope
+calibration and for temperature reconstructions, and to facilitate
+comparisons of Bayesian and classical models, we present a
+self-contained `R` package and associated Shiny Dashboard application,
+`bayclumpr` and `BayClump`, respectively. `bayclumpr` (and `BayClump`)
+fits both frequentist and Bayesian linear regressions to calibration
+datasets and performs temperature reconstructions under both frameworks.
+You can find more details on how to use `bayclumpr` in this
+[website](https://tripati-lab.github.io/bayclumpr/).
+
+## What is `BayClump`?
+
+`BayClump` is an associated Shiny Dashboard application that is
+associated with the `bayclumpr` `R` package. All the functions
+implemented in `BayClump` are sourced from `bayclumpr`. We eveloped
+`BayClump` to allow users with less coding experience to be able to
+access standarized resources to calibrate and derive reconstructions
+using clumped isotope datasets. You can access BayClump directly from
+[here](https://bayclump.tripatilab.epss.ucla.edu/).
+
+## Installing `bayclumpr`
+
+The latest version of `bayclumpr` can be installed directly from our
+GitHub repository using the following lines of code from `R`
+
+    library(devtools)
+    install_github("Tripati-Lab/bayclumpr")
+
+## Contributing
+
+Please see our [contributing
+guide](https://tripati-lab.github.io/bayclumpr/CONTRIBUTING).
+
+## Contact
+
+Please see the package
+[DESCRIPTION](https://tripati-lab.github.io/bayclumpr/DESCRIPTION) for
+package authors.
+
+# Package index
+
+## All functions
+
+- [`cal.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/cal.bayesian.md)
+  :
+
+  Bayesian regressions to calibrate the clumped isotopes
+  paleothermometer using `stan`.
+
+- [`cal.ci()`](https://tripati-lab.github.io/bayclumpr/reference/cal.ci.md)
+  : This function is used to generate CI estimates at given intervals.
+  It is currently used for plotting in BayClump.
+
+- [`cal.dataset()`](https://tripati-lab.github.io/bayclumpr/reference/cal.dataset.md)
+  : Generate a synthetic dataset for clumped isotopes calibrations
+
+- [`cal.deming()`](https://tripati-lab.github.io/bayclumpr/reference/cal.deming.md)
+  : Fit Deming regression models on a given calibration dataset
+
+- [`cal.ion.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/cal.ion.bayesian.md)
+  :
+
+  Bayesian regressions to calibrate the clumped isotopes
+  paleothermometer using `stan`.
+
+- [`cal.ols()`](https://tripati-lab.github.io/bayclumpr/reference/cal.ols.md)
+  : Fit OLS regression models on a given calibration dataset
+
+- [`cal.prior()`](https://tripati-lab.github.io/bayclumpr/reference/cal.prior.md)
+  : Generate a dataset reflecting the priors used to run the analyses
+
+- [`cal.wols()`](https://tripati-lab.github.io/bayclumpr/reference/cal.wols.md)
+  : Fit weighted OLS regression models on a given calibration dataset
+
+- [`cal.york()`](https://tripati-lab.github.io/bayclumpr/reference/cal.york.md)
+  : Fit York regression models on a given calibration dataset
+
+- [`rec.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.md)
+  : This function generate temperature predictions (in 10^6/T2) based on
+  a calibration dataset and target D47. Note that this approach
+  additionally accounts for measured error in the target D47. This
+  approach is congruent with the one used in McClelland et al. (2022).
+
+- [`rec.clumped()`](https://tripati-lab.github.io/bayclumpr/reference/rec.clumped.md)
+  : This function performs temp reconstruction (10^6/T^2 with T in K)
+  for multiple replicates of the same target.
+
+- [`rec.ion.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/rec.ion.bayesian.md)
+  : This function generates temperature predictions (in 10^6/T2) based
+  on a calibration dataset and target D47. It includes measured error in
+  the target D47 and ion as an additional predictor.
+
+- [`rec.prior()`](https://tripati-lab.github.io/bayclumpr/reference/rec.prior.md)
+  : Generate a dataset reflecting the priors used to run the analyses
+
+# Articles
+
+### All vignettes
+
+- [bayclumpr](https://tripati-lab.github.io/bayclumpr/articles/bayclumpr.md):
