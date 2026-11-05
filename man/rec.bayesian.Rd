@@ -2,39 +2,27 @@
 % Please edit documentation in R/rec.bayesian.R
 \name{rec.bayesian}
 \alias{rec.bayesian}
-\title{This function generates temperature predictions (in degrees C) based on a
-calibration dataset and target D47. Note that this approach additionally
-accounts for measured error in the target D47. This approach is congruent
-with the one used in McClelland et al. (2022).}
+\title{Bayesian temperature reconstructions}
 \usage{
-rec.bayesian(
-  calModel,
-  recData,
-  iter = 1000,
-  mixed = FALSE,
-  postcalsamples = NULL,
-  MC = TRUE
-)
+rec.bayesian(calModel, recData, ndraws = 10000, model = NULL, ...)
 }
 \arguments{
-\item{calModel}{The stan model to be analyzed. The calibration must use \code{Temperature} in 10^6/T^2 (T in K).}
+\item{calModel}{Posterior draws from \code{cal.draws()}, a result from \code{cal.bayesian()}, or a single \code{stanfit} from it.}
 
-\item{recData}{The reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value; if D47 is a mean of replicates, use its standard error). Mixed models also need \code{Material}, with the same labels used in the calibration.}
+\item{recData}{The reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error. Mixed models also need \code{Material}, with the same labels used in the calibration.}
 
-\item{iter}{Number of replicates to retain.}
+\item{ndraws}{Number of draws used for each sample.}
 
-\item{mixed}{whether the model \code{calModel} is mixed or not.}
+\item{model}{The model to use when \code{calModel} holds more than one, such as \code{"errors"}.}
 
-\item{postcalsamples}{Number of posterior samples to analyze from the calibration step.}
-
-\item{MC}{Multicore (TRUE/FALSE)}
+\item{...}{Arguments from earlier versions (\code{iter}, \code{mixed}, \code{postcalsamples}, and \code{MC}). They are ignored.}
 }
 \value{
-A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}. For \code{BLM1_fit}, \code{sigma} excludes the measurement error of the calibration samples. For \code{BLM1_fit_NoErrors} and \code{BLM3_fit}, \code{sigma} includes it.
+A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}. For the errors model, \code{sigma} excludes the measurement error of the calibration samples. For the other two models, it includes it.
 }
 \description{
-This function generates temperature predictions (in degrees C) based on a
-calibration dataset and target D47. Note that this approach additionally
-accounts for measured error in the target D47. This approach is congruent
-with the one used in McClelland et al. (2022).
+Reconstructs temperatures (in degrees C) from the posterior draws of a Bayesian calibration and the measured D47 of each sample. This approach is congruent with the one used in McClelland et al. (2022).
+}
+\details{
+With a flat prior on 10^6/T^2, the posterior of 10^6/T^2 for each calibration draw is normal. Its mean is (D47 - alpha) / beta and its SD is sqrt(sigma^2 + D47error^2) / beta. This function samples it directly, so no MCMC run is needed. Draws with 10^6/T^2 at or below zero are not physically possible. They are removed with a warning.
 }

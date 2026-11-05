@@ -7,7 +7,7 @@
 rec.clumped(recData, obCal, ndraws = 10000)
 }
 \arguments{
-\item{recData}{Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value; if D47 is a mean of replicates, use its standard error).}
+\item{recData}{Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error.}
 
 \item{obCal}{A \code{data.frame} summarizing the distribution of slopes and intercepts}
 

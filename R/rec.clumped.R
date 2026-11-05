@@ -1,6 +1,6 @@
 #' This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).
 #'
-#' @param recData Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value; if D47 is a mean of replicates, use its standard error).
+#' @param recData Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error.
 #' @param obCal A \code{data.frame} summarizing the distribution of slopes and intercepts
 #' @param ndraws Number of Monte Carlo draws used to estimate the error.
 #'

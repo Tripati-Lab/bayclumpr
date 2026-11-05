@@ -2,34 +2,27 @@
 % Please edit documentation in R/rec.ion.bayesian.R
 \name{rec.ion.bayesian}
 \alias{rec.ion.bayesian}
-\title{This function generates temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47. It includes measured error in the target D47
-and ion as an additional predictor.}
+\title{Bayesian temperature reconstructions with a second predictor}
 \usage{
-rec.ion.bayesian(
-  calModel,
-  recData,
-  iter = 1000,
-  postcalsamples = NULL,
-  MC = TRUE,
-  useIonError = FALSE
-)
+rec.ion.bayesian(calModel, recData, ndraws = 10000, useIonError = FALSE, ...)
 }
 \arguments{
-\item{calModel}{The fitted Stan model from calibration.}
+\item{calModel}{Posterior draws from \code{cal.draws()}, a result from \code{cal.ion.bayesian()}, or the \code{stanfit} in it.}
 
-\item{recData}{The reconstruction dataset.}
+\item{recData}{The reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, \code{D47error} (1 SD of the D47 value), and \code{Ion}. It also needs \code{IonError} (1 SD of \code{Ion}) when \code{useIonError = TRUE}.}
 
-\item{iter}{Number of sampling iterations.}
+\item{ndraws}{Number of draws used for each sample.}
 
-\item{postcalsamples}{Number of posterior calibration samples to use.}
+\item{useIonError}{Whether to account for the error in \code{Ion}.}
 
-\item{MC}{Enable multicore (default TRUE).}
-
-\item{useIonError}{Use Ion error or not.}
+\item{...}{Arguments from earlier versions (\code{iter}, \code{postcalsamples}, and \code{MC}). They are ignored.}
+}
+\value{
+A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), \code{D47error}, and \code{IonError} when used.
 }
 \description{
-This function generates temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47. It includes measured error in the target D47
-and ion as an additional predictor.
+Reconstructs temperatures (in degrees C) from the posterior draws of \code{cal.ion.bayesian()}, the measured D47, and the \code{Ion} value of each sample.
+}
+\details{
+With flat priors on 10^6/T^2 and \code{Ion}, the posterior of \code{Ion} follows its measurement, and the posterior of 10^6/T^2 for each draw is normal. Both are sampled directly, so no MCMC run is needed. Draws with 10^6/T^2 at or below zero are not physically possible. They are removed with a warning.
 }

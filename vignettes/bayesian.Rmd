@@ -1,0 +1,244 @@
+---
+title: "3. Bayesian calibrations and reconstructions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{3. Bayesian calibrations and reconstructions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+This vignette covers Bayesian calibrations in `bayclumpr`. We fit the models, choose priors, check convergence, compare models, and reconstruct temperatures. If you're new to the package, start with `vignette("bayclumpr", package = "bayclumpr")`.
+
+
+``` r
+library(bayclumpr)
+```
+
+## The three models
+
+`cal.bayesian()` fits up to three models. We choose them with the `models` argument.
+
+| `models` | Name in the result | Errors in `Temperature` | Errors in `D47` | Varies by `Material` |
+|:---------|:-------------------|:-----------------------:|:---------------:|:--------------------:|
+| `"errors"` | `BLM1_fit` | Yes | Yes | No |
+| `"noerrors"` | `BLM1_fit_NoErrors` | No | No | No |
+| `"mixed"` | `BLM3_fit` | No | No | Yes |
+
+All three models estimate `sigma`, the scatter around the calibration line. In the errors model, `sigma` is the scatter left after removing the measurement error in `D47`. In the other two models, it includes the measurement error.
+
+The mixed model lets intercepts and slopes vary by `Material` around shared means. It needs at least two materials and is skipped otherwise.
+
+The models run in Stan. If they weren't compiled when `bayclumpr` was installed, the first fit of each model in a session compiles it. This can take a minute or more. Later fits in the same session start right away.
+
+## Fitting a model
+
+We simulate 50 observations under the intermediate error scenario. The true values are `alpha` = 0.268 and `beta` = 0.0369.
+
+
+``` r
+set.seed(3)
+ds <- cal.dataset(error = "S2", nobs = 50)
+```
+
+We start with the errors model:
+
+
+``` r
+fit <- cal.bayesian(calibrationData = ds, models = "errors")
+fit
+#> Bayesian clumped isotope calibration
+#> Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)
+#> 
+#> BLM1_fit
+#>         mean     sd   2.5%  97.5%
+#> alpha 0.2589 0.0214 0.2160 0.2995
+#> beta  0.0375 0.0018 0.0341 0.0411
+#> sigma 0.0247 0.0028 0.0196 0.0310
+#> 
+#> Convergence
+#>     model max_Rhat min_ESS divergences
+#>  BLM1_fit   0.9993    5838           0
+```
+
+The first table summarizes the posterior distribution of each parameter. The second table checks convergence. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
+
+## Choosing priors
+
+The `priors` argument sets the priors on `alpha` and `beta`. There are three presets:
+
+| `priors` | `alpha` | `beta` |
+|:---------|:--------|:-------|
+| `"Informative"` | Normal(0.231, 0.065) | Normal(0.039, 0.004) |
+| `"Weak"` | Normal(0.231, 1) | Normal(0.039, 1) |
+| `"Flat"` | Flat | Flat |
+
+The informative values are the ones used in earlier versions of this package. Calibrations differ among reference frames and acid corrections, so check that these values suit your data. You can also set your own priors as a list with the mean and SD of each normal prior:
+
+
+``` r
+myPriors <- list(alpha = c(0.25, 0.05), beta = c(0.038, 0.003))
+```
+
+`cal.prior()` draws from a set of priors. This shows the range of slopes that a prior allows before seeing the data:
+
+
+``` r
+quantile(cal.prior("Informative", n = 10000)$beta, c(0.025, 0.975))
+#>       2.5%      97.5% 
+#> 0.03105497 0.04668649
+quantile(cal.prior(myPriors, n = 10000)$beta, c(0.025, 0.975))
+#>       2.5%      97.5% 
+#> 0.03203628 0.04367196
+```
+
+Let's fit the same model under weak priors and compare the slopes:
+
+
+``` r
+fitWeak <- cal.bayesian(calibrationData = ds, models = "errors", priors = "Weak")
+
+rbind(
+  Informative = quantile(cal.draws(fit)$beta, c(0.025, 0.5, 0.975)),
+  Weak = quantile(cal.draws(fitWeak)$beta, c(0.025, 0.5, 0.975))
+)
+#>                   2.5%        50%      97.5%
+#> Informative 0.03413404 0.03745101 0.04105367
+#> Weak        0.03244945 0.03677519 0.04110373
+```
+
+## Comparing models
+
+We can fit several models at once and compare them with `cal.compare()`. It uses approximate leave-one-out cross-validation.
+
+
+``` r
+fits <- cal.bayesian(calibrationData = ds, models = c("errors", "noerrors"))
+cal.compare(fits)
+#>              model elpd_diff se_diff p_worse diag_diff diag_elpd
+#>           BLM1_fit       0.0     0.0      NA                    
+#>  BLM1_fit_NoErrors      -0.1     0.0    1.00   N < 100
+#> 
+#> Diagnostic flags present.
+#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+#> or https://mc-stan.org/loo/reference/loo-glossary.html.
+```
+
+The best model is in the first row. When `elpd_diff` is small relative to `se_diff`, the data don't clearly favor one model.
+
+## Mixed models
+
+To show the mixed model, we simulate a second material with an intercept that is 0.02 higher:
+
+
+``` r
+ds1 <- cal.dataset(error = "S2", nobs = 50)
+ds2 <- cal.dataset(error = "S2", nobs = 50)
+ds2$D47 <- ds2$D47 + 0.02
+ds2$Material <- 2
+dsMixed <- rbind(ds1, ds2)
+
+fitMixed <- cal.bayesian(calibrationData = dsMixed, models = "mixed")
+#> Warning: There were 5 divergent transitions after warmup. See
+#> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
+#> to find out why this is a problem and how to eliminate them.
+#> Warning: Examine the pairs() plot to diagnose sampling problems
+#> Warning in .finish_fit(fits, prior, chains): Check convergence for: BLM3_fit. Print the
+#> result for details.
+fitMixed
+#> Bayesian clumped isotope calibration
+#> Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)
+#> 
+#> BLM3_fit (materials: 1, 2)
+#>            mean     sd   2.5%  97.5%
+#> alpha[1] 0.2698 0.0159 0.2396 0.3012
+#> alpha[2] 0.2712 0.0189 0.2337 0.3088
+#> beta[1]  0.0374 0.0014 0.0347 0.0401
+#> beta[2]  0.0381 0.0016 0.0351 0.0412
+#> sigma    0.0257 0.0018 0.0223 0.0295
+#> 
+#> Convergence
+#>     model max_Rhat min_ESS divergences
+#>  BLM3_fit   0.9993    1964           5
+```
+
+The intercepts and slopes of the two materials are pulled toward shared means (partial pooling). The SDs among materials have half-normal priors with scales of 0.1 for intercepts and 0.01 for slopes. With fewer than five materials, these SDs mostly reflect their priors.
+
+## Reconstructing temperatures
+
+`cal.draws()` returns the posterior draws of a model as a table. It has the same shape as the frequentist tables in `vignette("frequentist", package = "bayclumpr")`, plus a column for `sigma`.
+
+
+``` r
+draws <- cal.draws(fit)
+head(draws)
+#>       alpha       beta      sigma
+#> 1 0.3021960 0.03395156 0.02669041
+#> 2 0.2236944 0.04069044 0.02557638
+#> 3 0.2705610 0.03666542 0.02856427
+#> 4 0.2764546 0.03628994 0.02398676
+#> 5 0.3015556 0.03408810 0.02169374
+#> 6 0.2594430 0.03664949 0.02289845
+```
+
+We create a reconstruction dataset and pass it to `rec.bayesian()` with the draws:
+
+
+``` r
+recData <- data.frame(
+  Sample = paste("Sample", 1:6),
+  D47 = rep(c(0.6, 0.7, 0.8), 2),
+  D47error = rep(c(0.005, 0.02), each = 3)
+)
+
+rec.bayesian(calModel = draws, recData = recData)
+#>     Sample D47 D47error  meanTemp     error
+#> 1 Sample 1 0.6    0.005 59.273404 13.031189
+#> 2 Sample 2 0.7    0.005 18.876373  8.552529
+#> 3 Sample 3 0.8    0.005 -9.842059  6.395533
+#> 4 Sample 4 0.6    0.020 59.521523 16.163257
+#> 5 Sample 5 0.7    0.020 18.851290 10.861169
+#> 6 Sample 6 0.8    0.020 -9.700610  7.888241
+```
+
+`meanTemp` is the posterior mean temperature in °C. `error` is 1 SD. It includes the uncertainty in the calibration, the scatter around the calibration line (`sigma`), and the error in `D47`. For this reason, these errors are larger than those from `rec.clumped()`, which doesn't include `sigma`.
+
+`rec.bayesian()` doesn't run another MCMC. For each posterior draw, the temperature has a known distribution, so it's sampled directly. This takes less than a second.
+
+We can also pass the result of `cal.bayesian()` and name the model:
+
+
+``` r
+rec.bayesian(calModel = fits, recData = recData, model = "noerrors")
+#>     Sample D47 D47error  meanTemp     error
+#> 1 Sample 1 0.6    0.005 59.376185 13.761447
+#> 2 Sample 2 0.7    0.005 18.834242  8.947053
+#> 3 Sample 3 0.8    0.005 -9.707001  6.725816
+#> 4 Sample 4 0.6    0.020 59.996891 16.881775
+#> 5 Sample 5 0.7    0.020 19.220210 11.002130
+#> 6 Sample 6 0.8    0.020 -9.569373  8.136530
+```
+
+For mixed models, the reconstruction dataset needs a `Material` column with the same labels used in the calibration:
+
+
+``` r
+recMixed <- data.frame(
+  Sample = c("Sample 1", "Sample 2"),
+  D47 = c(0.62, 0.62),
+  D47error = 0.01,
+  Material = c(1, 2)
+)
+
+rec.bayesian(calModel = fitMixed, recData = recMixed)
+#>     Sample  D47 D47error meanTemp    error
+#> 1 Sample 1 0.62     0.01 54.56164 13.14680
+#> 2 Sample 2 0.62     0.01 58.42695 13.60663
+```
+
+## Tips for faster fits
+
+- Fit only the models you need with the `models` argument.
+- Run chains in parallel with `cores`, for example `cores = 4`.
+- Use fewer draws while you explore, for example `numSavedSteps = 1000`, and more for final results.

@@ -2,32 +2,57 @@
 % Please edit documentation in R/cal.bayesian.R
 \name{cal.bayesian}
 \alias{cal.bayesian}
-\title{Bayesian regressions to calibrate the clumped isotopes paleothermometer using
-\code{stan}.}
+\alias{print.bayclump_cal}
+\title{Bayesian calibration of the clumped isotope paleothermometer}
 \usage{
 cal.bayesian(
   calibrationData,
-  numSavedSteps = 3000,
+  models = c("errors", "noerrors", "mixed"),
   priors = "Informative",
-  MC = TRUE
+  numSavedSteps = 3000,
+  chains = 4,
+  cores = getOption("mc.cores", 1L),
+  MC = NULL
 )
+
+\method{print}{bayclump_cal}(x, digits = 4, ...)
 }
 \arguments{
-\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, \code{D47error} (1 SD of \code{D47}), and \code{Material}.}
+\item{calibrationData}{The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{D47error} (1 SD of \code{D47}). The mixed model also needs \code{Material}.}
 
-\item{numSavedSteps}{Number of MCMC iterations to save.}
+\item{models}{The models to fit. Use any of \code{"errors"}, \code{"noerrors"}, and \code{"mixed"}.}
 
-\item{priors}{Either \code{Informative}, \code{Weak}, or
-\code{Uninformative} on the slope and intercept.}
+\item{priors}{Priors on the intercept (alpha) and slope (beta). Use \code{"Informative"}, \code{"Weak"}, or \code{"Flat"}, or a list such as \code{list(alpha = c(0.231, 0.065), beta = c(0.039, 0.004))} with the mean and SD of each normal prior. \code{"Uninformative"} is kept as another name for \code{"Flat"}.}
 
-\item{MC}{Multicore (TRUE/FALSE)}
+\item{numSavedSteps}{Total number of posterior draws to keep across all chains.}
+
+\item{chains}{Number of MCMC chains.}
+
+\item{cores}{Number of cores used to run the chains in parallel.}
+
+\item{MC}{Deprecated. Use \code{cores} instead.}
+
+\item{x}{A \code{bayclump_cal} object.}
+
+\item{digits}{Number of decimal places to print.}
+
+\item{...}{Not used.}
+}
+\value{
+An object of class \code{bayclump_cal}. It is a list of \code{stanfit} objects named \code{BLM1_fit}, \code{BLM1_fit_NoErrors}, and \code{BLM3_fit}, with the priors and a convergence summary stored as attributes. Use \code{cal.draws()} to get the posterior draws and \code{cal.compare()} to compare models.
 }
 \description{
-Bayesian regressions to calibrate the clumped isotopes paleothermometer using
-\code{stan}.
+Fits up to three Bayesian linear regressions of D47 on temperature using Stan.
 }
 \details{
-\code{BLM1_fit} accounts for errors in both \code{Temperature} and \code{D47}. Its \code{sigma} is the scatter left after removing the measurement error in \code{D47}. \code{BLM1_fit_NoErrors} ignores both errors, so its \code{sigma} includes the measurement error. \code{BLM3_fit} is a mixed model with intercepts and slopes that vary by \code{Material} around a shared mean (partial pooling). The priors set by \code{priors} apply to these shared means. The SDs among materials have half-normal priors with scales of 0.1 (intercepts) and 0.01 (slopes). With fewer than five materials, these SDs are mostly set by their priors. \code{BLM3_fit} is only fit when there are at least two materials. Otherwise it is \code{NULL}.
+The three models are:
+\itemize{
+  \item \code{"errors"} (\code{BLM1_fit}) accounts for errors in both \code{Temperature} and \code{D47}. Its \code{sigma} is the scatter left after removing the measurement error in \code{D47}. The true temperatures have a normal prior with a mean and SD estimated from the data.
+  \item \code{"noerrors"} (\code{BLM1_fit_NoErrors}) ignores both errors, so its \code{sigma} includes the measurement error.
+  \item \code{"mixed"} (\code{BLM3_fit}) lets intercepts and slopes vary by \code{Material} around shared means (partial pooling). It ignores measurement errors. The priors apply to the shared means. The SDs among materials have half-normal priors with scales of 0.1 (intercepts) and 0.01 (slopes). With fewer than five materials, these SDs are mostly set by their priors. The model is skipped when there are fewer than two materials.
+}
 
-The \code{loo} attribute compares the fitted models using PSIS-LOO. In \code{BLM1_fit}, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
+The \code{"Informative"} values are the ones used in earlier versions of this package. Check that they suit the reference frame of your data, or set your own.
+
+A warning is given when a model shows signs of poor convergence: Rhat above 1.01, fewer than 100 effective draws per chain, or divergent transitions.
 }

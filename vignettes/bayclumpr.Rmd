@@ -1,618 +1,107 @@
 ---
-title: "bayclumpr"
+title: "1. Getting started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{bayclumpr}
+  %\VignetteIndexEntry{1. Getting started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
+`bayclumpr` fits calibrations between clumped isotopes (D47) and temperature. It then uses these calibrations to reconstruct temperatures for new samples. You can fit calibrations under frequentist and Bayesian frameworks. The same functions run [BayClump](https://bayclump.tripatilab.epss.ucla.edu/), a Shiny app that you can use from your browser.
 
+This vignette covers the data you need and a first example. The other vignettes go into more detail:
 
-Welcome to `bayclumpr`! Before we get started with this tutorial, we would like to remind you that there is an associated shiny app that accompanies this `R` package. You can access `BayClump` directly from your browser using by clicking [here](https://bayclump.tripatilab.epss.ucla.edu/). Now, let's go ahead and discuss some of the basic functions in `bayclumpr`.
+1. Getting started (this vignette).
+2. `vignette("frequentist", package = "bayclumpr")`: OLS, weighted OLS, Deming, and York regressions.
+3. `vignette("bayesian", package = "bayclumpr")`: Bayesian calibrations, priors, model comparison, and reconstructions.
+4. `vignette("covariates", package = "bayclumpr")`: Bayesian calibrations with a second predictor.
 
-
-``` r
+```{r setup}
 library(bayclumpr)
 ```
 
+## The workflow
 
-## Performing calibrations using `bayclumpr`
+Every analysis has two steps. First, we fit a calibration. The result is a table with many plausible values of the intercept (`alpha`) and slope (`beta`). Second, we use that table to reconstruct temperatures for new samples. Frequentist functions get these values by bootstrapping. Bayesian functions get them from the posterior distribution.
 
-First, we will need some data to work with. We can use `bayclumpr` to generate simulated datasets with uncertainty values described in Roman-Palacios et al. (2022). For this example, we will simulate 50 observations under a low-eror scenario. __Note that the functions in `bayclumpr` expect users to provide uncertainty in terms of standard deviation.__ The resulting dataset will be stored in the `ds` object.
+| Step | Frequentist | Bayesian |
+|:-----|:------------|:---------|
+| 1. Calibrate | `cal.ols()`, `cal.wols()`, `cal.deming()`, `cal.york()` | `cal.bayesian()`, `cal.ion.bayesian()` |
+| 2. Get the table of `alpha` and `beta` | Returned by the functions above | `cal.draws()` |
+| 3. Reconstruct | `rec.clumped()` | `rec.bayesian()`, `rec.ion.bayesian()` |
 
+## Preparing your data
 
-``` r
+### Calibration data
+
+Calibration datasets need the following columns:
+
+| Column | Description |
+|:-------|:------------|
+| `Temperature` | Temperature as 10^6^/T^2^, with T in kelvin |
+| `TempError` | Uncertainty in `Temperature` (1 SD, in the same units) |
+| `D47` | Measured D47 |
+| `D47error` | Uncertainty in `D47` (1 SD) |
+| `Material` | Material of each sample. Only needed for mixed models |
+
+All uncertainties are 1 SD of the value in the table. If `D47` is the mean of several replicates, `D47error` should be the standard error of that mean. The same applies to `TempError`.
+
+Temperatures are often reported in °C. To convert them, we use T in kelvin. For the error, the SD of 10^6^/T^2^ is about 2 × 10^6^ × SD(T) / T^3^:
+
+```{r}
+tempC <- c(5, 25, 50)
+tempErrorC <- c(0.5, 0.5, 1)
+tempK <- tempC + 273.15
+
+data.frame(
+  Temperature = 10^6 / tempK^2,
+  TempError = 2 * 10^6 * tempErrorC / tempK^3
+)
+```
+
+### Reconstruction data
+
+Reconstruction datasets need `Sample`, `D47`, and `D47error`. Mixed models also need `Material`, with the same labels used in the calibration. Reconstructed temperatures are always returned in °C.
+
+## Simulated data
+
+`cal.dataset()` simulates calibration datasets with known parameters (`alpha` = 0.268 and `beta` = 0.0369). There are three error scenarios: low (`"S1"`), intermediate (`"S2"`), and high (`"S3"`). The columns `x_TRUE` and `y_TRUE` hold the true values before measurement error.
+
+```{r}
+set.seed(3)
 ds <- cal.dataset(error = "S1", nobs = 50)
 head(ds)
-#>      x_TRUE Temperature TempError    y_TRUE D47error       D47 Material
-#> 1 10.076133   10.089943     0.019 0.6475262   0.0025 0.6442978        1
-#> 2 11.414949   11.399569     0.019 0.6841481   0.0025 0.6907357        1
-#> 3 12.517576   12.522651     0.019 0.7430624   0.0025 0.7442800        1
-#> 4  9.695736    9.662728     0.019 0.6333012   0.0025 0.6354360        1
-#> 5 12.391566   12.364749     0.019 0.7379670   0.0025 0.7406881        1
-#> 6 12.060248   12.051630     0.019 0.7206252   0.0025 0.7211903        1
 ```
 
-Now, let's start by fitting different models in the simulated dataset. For instance, let's fit a Deming regression model using  the `cal.deming` function in `bayclumpr`:
+## A first example
 
+We fit an OLS calibration with 1,000 bootstrap replicates. Each row of the result is one replicate.
 
-``` r
-cal.deming(data = ds, replicates = 10)
-#>        alpha       beta
-#> 1  0.2539664 0.03814835
-#> 2  0.2624737 0.03738230
-#> 3  0.2731154 0.03646133
-#> 4  0.2663295 0.03691643
-#> 5  0.2891530 0.03502454
-#> 6  0.2669035 0.03676367
-#> 7  0.2564930 0.03787469
-#> 8  0.2673744 0.03691069
-#> 9  0.2571329 0.03761716
-#> 10 0.2517197 0.03782684
+```{r}
+ols <- cal.ols(data = ds, replicates = 1000)
+head(ols)
+colMeans(ols)
 ```
 
-Alternatively, you can fit an unweighted or weighted OLS regression using `cal.ols` and `cal.wols` functions, respectively:
+Next, we create a reconstruction dataset for three samples and reconstruct their temperatures:
 
+```{r}
+recData <- data.frame(
+  Sample = c("Sample 1", "Sample 2", "Sample 3"),
+  D47 = c(0.6, 0.7, 0.8),
+  D47error = 0.01
+)
 
-``` r
-cal.ols(data = ds, replicates = 10)
-#>        alpha       beta
-#> 1  0.2839352 0.03554307
-#> 2  0.2872762 0.03527608
-#> 3  0.2733101 0.03642586
-#> 4  0.2640842 0.03709674
-#> 5  0.2652946 0.03701428
-#> 6  0.2668595 0.03679151
-#> 7  0.2660233 0.03687870
-#> 8  0.2826984 0.03542715
-#> 9  0.2693398 0.03663859
-#> 10 0.2850873 0.03507551
-cal.wols(data = ds, replicates = 10)
-#>        alpha       beta
-#> 1  0.2557905 0.03789321
-#> 2  0.2734807 0.03632590
-#> 3  0.2716440 0.03643221
-#> 4  0.2711929 0.03621119
-#> 5  0.2743809 0.03625556
-#> 6  0.2716777 0.03629290
-#> 7  0.2765445 0.03604140
-#> 8  0.2747726 0.03619440
-#> 9  0.2710448 0.03650991
-#> 10 0.2699076 0.03685035
+rec.clumped(recData = recData, obCal = ols)
 ```
 
-York regression models are also implemented in `bayclumpr`:
+`meanTemp` is the reconstructed temperature in °C. `error` is its uncertainty (1 SD). It combines the error in `D47` with the uncertainty in the calibration.
 
-
-``` r
-cal.york(data = ds, replicates = 10)
-#>        alpha       beta
-#> 1  0.2782633 0.03613127
-#> 2  0.2617492 0.03731390
-#> 3  0.2611256 0.03727515
-#> 4  0.2614298 0.03719806
-#> 5  0.2897583 0.03469461
-#> 6  0.2702000 0.03653415
-#> 7  0.2766738 0.03633159
-#> 8  0.2670301 0.03710520
-#> 9  0.2752743 0.03608641
-#> 10 0.2673683 0.03690520
-```
-
-Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. The first model accounts for errors in both `Temperature` and `D47`. The second model ignores these errors. The third model is a mixed model where intercepts and slopes vary by `Material`. Let's fit these models using the `cal.bayesian` function. Note that the mixed model is only fit when there are at least two materials, so it is skipped for this simulated dataset:
-
-
-``` r
-BayesCal <- cal.bayesian(calibrationData = ds)
-```
-
-The results are here stored in the `BayesCal` object and corresponds to `stan` objects summarizing posterior distributions of the parameters:
-
-
-``` r
-BayesCal
-#> $BLM1_fit
-#> Inference for Stan model: anon_model.
-#> 2 chains, each with iter=2500; warmup=1000; thin=1; 
-#> post-warmup draws per chain=1500, total post-warmup draws=3000.
-#> 
-#>               mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> alpha         0.27    0.00 0.01   0.24   0.26   0.27   0.27   0.29  4596    1
-#> beta          0.04    0.00 0.00   0.03   0.04   0.04   0.04   0.04  4621    1
-#> sigma         0.01    0.00 0.00   0.01   0.01   0.01   0.01   0.02  3954    1
-#> log_lik[1]    3.29    0.00 0.13   3.02   3.20   3.29   3.37   3.50  3213    1
-#> log_lik[2]    3.34    0.00 0.11   3.12   3.27   3.34   3.41   3.54  3627    1
-#> log_lik[3]    2.71    0.00 0.19   2.30   2.59   2.72   2.83   3.02  2887    1
-#> log_lik[4]    2.95    0.00 0.21   2.47   2.82   2.97   3.10   3.29  4007    1
-#> log_lik[5]    2.50    0.00 0.22   2.02   2.37   2.52   2.65   2.88  3070    1
-#> log_lik[6]    3.11    0.00 0.12   2.85   3.03   3.11   3.19   3.33  3003    1
-#> log_lik[7]    3.31    0.00 0.11   3.09   3.24   3.31   3.38   3.51  3536    1
-#> log_lik[8]    1.51    0.01 0.51   0.36   1.20   1.54   1.86   2.39  4017    1
-#> log_lik[9]    3.01    0.00 0.19   2.58   2.89   3.04   3.15   3.33  3742    1
-#> log_lik[10]   2.81    0.00 0.26   2.19   2.65   2.84   3.00   3.22  3841    1
-#> log_lik[11]   3.25    0.00 0.12   2.99   3.17   3.26   3.33   3.46  3037    1
-#> log_lik[12]   3.36    0.00 0.11   3.13   3.29   3.36   3.43   3.56  2909    1
-#> log_lik[13]   3.36    0.00 0.11   3.13   3.29   3.36   3.43   3.55  3318    1
-#> log_lik[14]   1.60    0.01 0.40   0.74   1.35   1.64   1.88   2.29  3317    1
-#> log_lik[15]   3.33    0.00 0.11   3.11   3.26   3.33   3.40   3.52  3319    1
-#> log_lik[16]   3.36    0.00 0.11   3.14   3.29   3.36   3.43   3.55  3425    1
-#> log_lik[17]   3.30    0.00 0.12   3.04   3.22   3.31   3.39   3.52  3435    1
-#> log_lik[18]   3.37    0.00 0.11   3.14   3.30   3.37   3.44   3.56  3492    1
-#> log_lik[19]   3.25    0.00 0.14   2.92   3.17   3.26   3.34   3.49  3190    1
-#> log_lik[20]   3.34    0.00 0.11   3.12   3.27   3.34   3.41   3.54  3510    1
-#> log_lik[21]   2.59    0.00 0.22   2.09   2.45   2.60   2.74   2.96  3626    1
-#> log_lik[22]   3.31    0.00 0.12   3.05   3.23   3.31   3.39   3.51  3263    1
-#> log_lik[23]   3.21    0.00 0.11   2.98   3.14   3.21   3.29   3.42  3251    1
-#> log_lik[24]   3.23    0.00 0.16   2.85   3.15   3.25   3.34   3.49  2855    1
-#> log_lik[25]   3.18    0.00 0.12   2.92   3.10   3.18   3.26   3.40  3354    1
-#> log_lik[26]   3.27    0.00 0.12   3.03   3.20   3.28   3.35   3.48  3090    1
-#> log_lik[27]   3.04    0.00 0.19   2.59   2.93   3.06   3.18   3.35  3507    1
-#> log_lik[28]   2.99    0.00 0.20   2.56   2.88   3.01   3.13   3.32  3575    1
-#> log_lik[29]   1.83    0.01 0.33   1.10   1.63   1.86   2.08   2.39  3701    1
-#> log_lik[30]   2.87    0.00 0.22   2.38   2.74   2.90   3.03   3.23  3727    1
-#> log_lik[31]   3.11    0.00 0.16   2.74   3.01   3.12   3.22   3.38  3306    1
-#> log_lik[32]   3.36    0.00 0.11   3.14   3.29   3.36   3.43   3.56  3187    1
-#> log_lik[33]   2.20    0.01 0.33   1.49   2.00   2.24   2.44   2.75  3550    1
-#> log_lik[34]   2.32    0.00 0.29   1.67   2.14   2.34   2.53   2.83  3652    1
-#> log_lik[35]   3.37    0.00 0.11   3.15   3.30   3.37   3.44   3.56  3698    1
-#> log_lik[36]   0.86    0.01 0.56  -0.37   0.51   0.91   1.25   1.83  3947    1
-#> log_lik[37]   2.65    0.00 0.31   1.93   2.47   2.68   2.87   3.14  3906    1
-#> log_lik[38]   3.22    0.00 0.11   2.99   3.15   3.23   3.30   3.43  3073    1
-#> log_lik[39]   3.09    0.00 0.16   2.73   2.99   3.11   3.20   3.36  3430    1
-#> log_lik[40]   3.08    0.00 0.16   2.73   2.99   3.10   3.19   3.36  3365    1
-#> log_lik[41]   2.65    0.00 0.24   2.11   2.51   2.67   2.81   3.06  3408    1
-#> log_lik[42]   1.72    0.01 0.37   0.92   1.49   1.75   1.98   2.34  3904    1
-#> log_lik[43]   3.11    0.00 0.23   2.58   2.99   3.15   3.27   3.45  3572    1
-#> log_lik[44]   3.36    0.00 0.11   3.14   3.29   3.37   3.44   3.56  3355    1
-#> log_lik[45]   2.30    0.00 0.27   1.71   2.13   2.33   2.48   2.75  3129    1
-#> log_lik[46]   3.29    0.00 0.17   2.88   3.20   3.31   3.40   3.54  1715    1
-#> log_lik[47]   2.85    0.00 0.15   2.52   2.75   2.86   2.95   3.12  3015    1
-#> log_lik[48]   3.19    0.00 0.16   2.83   3.10   3.21   3.31   3.46  3364    1
-#> log_lik[49]   2.08    0.01 0.30   1.40   1.89   2.11   2.29   2.59  3189    1
-#> log_lik[50]   3.30    0.00 0.12   3.05   3.22   3.30   3.38   3.52  3464    1
-#> lp__        136.58    0.16 5.25 124.95 133.32 137.09 140.28 145.76  1036    1
-#> 
-#> Samples were drawn using NUTS(diag_e) at Thu Nov  5 08:53:57 2026.
-#> For each parameter, n_eff is a crude measure of effective sample size,
-#> and Rhat is the potential scale reduction factor on split chains (at 
-#> convergence, Rhat=1).
-#> 
-#> $BLM1_fit_NoErrors
-#> Inference for Stan model: anon_model.
-#> 2 chains, each with iter=2500; warmup=1000; thin=1; 
-#> post-warmup draws per chain=1500, total post-warmup draws=3000.
-#> 
-#>               mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> alpha         0.27    0.00 0.01   0.24   0.26   0.27   0.28   0.29  1104    1
-#> beta          0.04    0.00 0.00   0.03   0.04   0.04   0.04   0.04  1113    1
-#> sigma         0.01    0.00 0.00   0.01   0.01   0.01   0.01   0.02   923    1
-#> log_lik[1]    3.29    0.00 0.12   3.04   3.21   3.29   3.37   3.51  1229    1
-#> log_lik[2]    3.34    0.00 0.10   3.12   3.27   3.34   3.41   3.54  1088    1
-#> log_lik[3]    2.70    0.00 0.17   2.32   2.59   2.72   2.82   3.01  2779    1
-#> log_lik[4]    2.95    0.01 0.20   2.53   2.82   2.97   3.09   3.28  1435    1
-#> log_lik[5]    2.50    0.00 0.21   2.04   2.37   2.51   2.64   2.85  2387    1
-#> log_lik[6]    3.11    0.00 0.11   2.87   3.03   3.11   3.18   3.32  2451    1
-#> log_lik[7]    3.31    0.00 0.10   3.09   3.24   3.31   3.38   3.51  1220    1
-#> log_lik[8]    1.51    0.01 0.51   0.40   1.19   1.56   1.88   2.37  1498    1
-#> log_lik[9]    3.01    0.01 0.19   2.56   2.90   3.03   3.15   3.31  1312    1
-#> log_lik[10]   2.80    0.01 0.26   2.22   2.63   2.83   2.99   3.22  1692    1
-#> log_lik[11]   3.25    0.00 0.12   3.00   3.17   3.26   3.33   3.46  1065    1
-#> log_lik[12]   3.36    0.00 0.11   3.14   3.29   3.36   3.43   3.56   893    1
-#> log_lik[13]   3.36    0.00 0.11   3.14   3.29   3.37   3.43   3.56   901    1
-#> log_lik[14]   1.59    0.01 0.38   0.72   1.35   1.62   1.86   2.24  1581    1
-#> log_lik[15]   3.33    0.00 0.10   3.11   3.26   3.33   3.40   3.52  1029    1
-#> log_lik[16]   3.36    0.00 0.10   3.14   3.29   3.36   3.43   3.55   924    1
-#> log_lik[17]   3.30    0.00 0.12   3.06   3.22   3.30   3.38   3.52  1191    1
-#> log_lik[18]   3.37    0.00 0.10   3.15   3.30   3.37   3.44   3.56   938    1
-#> log_lik[19]   3.24    0.00 0.14   2.92   3.16   3.26   3.34   3.49  1197    1
-#> log_lik[20]   3.34    0.00 0.10   3.12   3.27   3.34   3.41   3.53  1099    1
-#> log_lik[21]   2.59    0.00 0.21   2.10   2.46   2.60   2.73   2.94  1926    1
-#> log_lik[22]   3.31    0.00 0.11   3.07   3.23   3.31   3.39   3.52  1168    1
-#> log_lik[23]   3.21    0.00 0.11   2.99   3.14   3.21   3.28   3.42  1725    1
-#> log_lik[24]   3.23    0.01 0.16   2.84   3.14   3.25   3.34   3.49   969    1
-#> log_lik[25]   3.18    0.00 0.11   2.94   3.10   3.18   3.26   3.40  1737    1
-#> log_lik[26]   3.27    0.00 0.11   3.04   3.20   3.28   3.35   3.48  1018    1
-#> log_lik[27]   3.03    0.00 0.19   2.60   2.91   3.06   3.17   3.34  1723    1
-#> log_lik[28]   2.99    0.00 0.19   2.58   2.88   3.01   3.13   3.30  1755    1
-#> log_lik[29]   1.83    0.01 0.33   1.08   1.65   1.87   2.06   2.38  2022    1
-#> log_lik[30]   2.87    0.01 0.21   2.42   2.74   2.89   3.03   3.23  1448    1
-#> log_lik[31]   3.10    0.00 0.16   2.75   3.00   3.12   3.21   3.37  1719    1
-#> log_lik[32]   3.36    0.00 0.11   3.14   3.29   3.36   3.43   3.56   956    1
-#> log_lik[33]   2.19    0.01 0.32   1.49   2.00   2.22   2.42   2.73  1815    1
-#> log_lik[34]   2.33    0.01 0.29   1.72   2.15   2.35   2.54   2.81  1997    1
-#> log_lik[35]   3.37    0.00 0.10   3.15   3.30   3.37   3.44   3.56   967    1
-#> log_lik[36]   0.85    0.02 0.57  -0.42   0.49   0.91   1.27   1.83  1467    1
-#> log_lik[37]   2.64    0.01 0.30   1.97   2.45   2.68   2.86   3.14  1653    1
-#> log_lik[38]   3.22    0.00 0.11   3.01   3.16   3.23   3.30   3.42  1412    1
-#> log_lik[39]   3.09    0.00 0.15   2.73   2.99   3.10   3.20   3.35  1308    1
-#> log_lik[40]   3.09    0.00 0.15   2.76   2.99   3.10   3.19   3.34  1791    1
-#> log_lik[41]   2.65    0.00 0.23   2.16   2.51   2.68   2.82   3.04  2122    1
-#> log_lik[42]   1.71    0.01 0.36   0.89   1.51   1.74   1.96   2.31  1819    1
-#> log_lik[43]   3.12    0.01 0.22   2.60   3.00   3.15   3.27   3.44  1365    1
-#> log_lik[44]   3.37    0.00 0.11   3.15   3.29   3.37   3.44   3.56   937    1
-#> log_lik[45]   2.29    0.01 0.25   1.72   2.14   2.31   2.47   2.72  2051    1
-#> log_lik[46]   3.29    0.00 0.15   2.94   3.21   3.32   3.40   3.54   998    1
-#> log_lik[47]   2.85    0.00 0.14   2.53   2.76   2.86   2.94   3.10  2862    1
-#> log_lik[48]   3.20    0.00 0.15   2.86   3.11   3.22   3.30   3.45  1401    1
-#> log_lik[49]   2.07    0.01 0.29   1.46   1.89   2.09   2.28   2.57  1560    1
-#> log_lik[50]   3.30    0.00 0.11   3.06   3.22   3.30   3.38   3.52  1201    1
-#> lp__        185.91    0.04 1.20 182.72 185.35 186.20 186.80 187.31   888    1
-#> 
-#> Samples were drawn using NUTS(diag_e) at Thu Nov  5 08:54:12 2026.
-#> For each parameter, n_eff is a crude measure of effective sample size,
-#> and Rhat is the potential scale reduction factor on split chains (at 
-#> convergence, Rhat=1).
-#> 
-#> $BLM3_fit
-#> NULL
-#> 
-#> attr(,"loo")
-#>    model elpd_diff se_diff p_worse diag_diff diag_elpd
-#>  BLM1_NE       0.0     0.0      NA                    
-#>   BLM1_E       0.0     0.0    0.85   N < 100
-#> 
-#> Diagnostic flags present.
-#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
-#> or https://mc-stan.org/loo/reference/loo-glossary.html.
-```
-
-## Reconstructing temperatures in `bayclumpr`
-
-`bayclumpr` implements two functions to perform temperature reconstructions under frequentist (`rec.clumped`) and Bayesian frameworks (`rec.bayesian`). Let's review how each of these functions work by generating a synthetic dataset for nine samples.
-
-
-``` r
-recData <- data.frame(Sample = paste("Sample", 1:9),
-                      D47 = rep(c(0.6, 0.7, 0.8), 3),
-                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
-                      N = rep(2, 9),
-                      Material = rep(1, 9))
-```
-
-As for the calibration step, `bayclumpr` expects uncertainty (`D47error`) to be expressed in terms of standard deviation. If `D47` is the mean of several replicates, `D47error` should be the standard error of that mean. Only `Sample`, `D47`, and `D47error` are needed for reconstructions. `Material` is only used by mixed models, and `N` is not used. Also note that calibrations in `bayclumpr` expect `Temperature` in 10^6/T^2 (T in K), and reconstructed temperatures are returned in °C.
-
-From this point, we will need to either specify the distribution of parameter estimates from the calibration step. For instance, let's assume that we were interested in reconstructing temperatures for our `recData` under an OLS model. First, we would have to run our calibration analyses:
-
-
-``` r
-paramdist <- cal.ols(data = ds, replicates = 1000)
-```
-
-From this point, we can use the `rec.clumped` to reconstruct temperatures based on the reconstruction dataset (`recData` argument) and the observed calibration object (`obCal` argument):
-
-
-``` r
-rec.clumped(recData = recData, obCal = paramdist)
-#>     Sample D47 D47error  meanTemp     error
-#> 1 Sample 1 0.6    0.005  60.01883  2.855913
-#> 2 Sample 2 0.7    0.005  18.70032  1.818749
-#> 3 Sample 3 0.8    0.005 -10.28080  1.557964
-#> 4 Sample 4 0.6    0.010  60.01883  5.303578
-#> 5 Sample 5 0.7    0.010  18.70032  3.423741
-#> 6 Sample 6 0.8    0.010 -10.28080  2.661335
-#> 7 Sample 7 0.6    0.020  60.01883 10.313267
-#> 8 Sample 8 0.7    0.020  18.70032  6.836586
-#> 9 Sample 9 0.8    0.020 -10.28080  5.097607
-```
-
-The resulting object includes information from the template reconstruction dataset but also information on the reconstructed temperature and associated uncertainty (`1 SD`). This uncertainty combines the error in `D47` with the spread of slopes and intercepts in `paramdist`. Let's now perform reconstructions but under a Bayesian framework. For this, we will again need parameter estimates derived from the calibration step (see the `BayesCal` created above). We will perform reconstructions under only a single of the Bayesian models equivalent to the OLS but fit under a Bayesian framework (`BayesCal$BLM1_fit_NoErrors`).
-
-
-``` r
-PredsBay <- rec.bayesian(calModel = BayesCal$BLM1_fit_NoErrors, recData = recData, iter = 1000, postcalsamples = 100, MC = FALSE)
-#> 
-#> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).
-#> Chain 1: 
-#> Chain 1: Gradient evaluation took 3.9e-05 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.39 seconds.
-#> Chain 1: Adjust your expectations accordingly!
-#> Chain 1: 
-#> Chain 1: 
-#> Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
-#> Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
-#> Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
-#> Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
-#> Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
-#> Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
-#> Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
-#> Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
-#> Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
-#> Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
-#> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
-#> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
-#> Chain 1: 
-#> Chain 1:  Elapsed Time: 0.335 seconds (Warm-up)
-#> Chain 1:                0.271 seconds (Sampling)
-#> Chain 1:                0.606 seconds (Total)
-#> Chain 1: 
-#> 
-#> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).
-#> Chain 2: 
-#> Chain 2: Gradient evaluation took 2.9e-05 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.29 seconds.
-#> Chain 2: Adjust your expectations accordingly!
-#> Chain 2: 
-#> Chain 2: 
-#> Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
-#> Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
-#> Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
-#> Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
-#> Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
-#> Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
-#> Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
-#> Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
-#> Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
-#> Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
-#> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
-#> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
-#> Chain 2: 
-#> Chain 2:  Elapsed Time: 0.578 seconds (Warm-up)
-#> Chain 2:                0.267 seconds (Sampling)
-#> Chain 2:                0.845 seconds (Total)
-#> Chain 2:
-```
-
-The associated reconstructions to this Bayesian model are shown below. These errors also include the residual scatter of the calibration (`sigma`), so they are expected to be larger than those from `rec.clumped`:
-
-
-``` r
-PredsBay
-#>     Sample D47 D47error   meanTemp     error
-#> 1 Sample 1 0.6    0.005  59.910268  7.438936
-#> 2 Sample 2 0.7    0.005  18.818418  4.923552
-#> 3 Sample 3 0.8    0.005 -10.045012  3.637227
-#> 4 Sample 4 0.6    0.010  59.969871  8.689868
-#> 5 Sample 5 0.7    0.010  18.852886  5.712809
-#> 6 Sample 6 0.8    0.010 -10.023340  4.240449
-#> 7 Sample 7 0.6    0.020  60.360775 12.393256
-#> 8 Sample 8 0.7    0.020  19.038624  8.227682
-#> 9 Sample 9 0.8    0.020  -9.883864  6.055279
-```
-
-## Including a co-variate (with sample-specific errors in the covariate)
-
-Now, instead of having a single predictor, we will use a second column (i.e., Ion) and it's error (i.e., IonError) as predictors. Let's first create a calibration dataset.
-
-
-``` r
-ds <- cal.dataset(error = "S1", nobs = 50)
-```
-
-Note that Ion is random noise in this example, so its slope (`gamma`) should be close to zero. We also assume an error of 0.1 (1 SD) for Ion in each sample:
-
-
-``` r
-ds$Ion <- rnorm(nrow(ds))
-ds$IonError <- 0.1
-```
-
-At this point, we can fit the regression model that accounts for uncertainty in each of the two predictors
-
-
-``` r
-ionmodel <- cal.ion.bayesian(calibrationData = ds, IonError = ds$IonError)
-ionmodel
-#> $BLM1_fit
-#> Inference for Stan model: anon_model.
-#> 2 chains, each with iter=2500; warmup=1000; thin=1; 
-#> post-warmup draws per chain=1500, total post-warmup draws=3000.
-#> 
-#>        mean se_mean   sd  2.5%   25%   50%   75%  97.5% n_eff Rhat
-#> alpha  0.27     0.0 0.01  0.24  0.26  0.27  0.28   0.30  6126    1
-#> beta   0.04     0.0 0.00  0.03  0.04  0.04  0.04   0.04  6227    1
-#> gamma  0.00     0.0 0.00  0.00  0.00  0.00  0.00   0.00  3459    1
-#> sigma  0.01     0.0 0.00  0.01  0.01  0.01  0.01   0.02  4723    1
-#> lp__  86.71     0.2 7.38 71.42 81.93 86.93 91.83 100.10  1403    1
-#> 
-#> Samples were drawn using NUTS(diag_e) at Thu Nov  5 08:54:47 2026.
-#> For each parameter, n_eff is a crude measure of effective sample size,
-#> and Rhat is the potential scale reduction factor on split chains (at 
-#> convergence, Rhat=1).
-```
-
-From here, we can simply run a reconstruction based on a synthetic reconstruction dataset with the following structure:
-
-
-``` r
-recData <- data.frame(Sample = paste("Sample", 1:9),
-                      D47 = rep(c(0.6, 0.7, 0.8), 3),
-                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
-                      Ion = rep(c(0.6, 0.7, 0.8), 3),
-                      IonError = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
-                      N = rep(2, 9),
-                      Material = rep(1, 9))
-```
-
-The reconstruction can be performed as follows:
-
-
-``` r
-PredsBay <- rec.ion.bayesian(calModel = ionmodel[[1]],
-                         recData = recData,
-                         iter = 1000,
-                         postcalsamples = 100, MC = FALSE,
-                         useIonError = TRUE)
-#> 
-#> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).
-#> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000109 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.09 seconds.
-#> Chain 1: Adjust your expectations accordingly!
-#> Chain 1: 
-#> Chain 1: 
-#> Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
-#> Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
-#> Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
-#> Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
-#> Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
-#> Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
-#> Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
-#> Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
-#> Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
-#> Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
-#> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
-#> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
-#> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.661 seconds (Warm-up)
-#> Chain 1:                0.77 seconds (Sampling)
-#> Chain 1:                4.431 seconds (Total)
-#> Chain 1: 
-#> 
-#> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).
-#> Chain 2: 
-#> Chain 2: Gradient evaluation took 3.6e-05 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.36 seconds.
-#> Chain 2: Adjust your expectations accordingly!
-#> Chain 2: 
-#> Chain 2: 
-#> Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
-#> Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
-#> Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
-#> Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
-#> Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
-#> Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
-#> Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
-#> Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
-#> Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
-#> Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
-#> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
-#> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
-#> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.375 seconds (Warm-up)
-#> Chain 2:                0.764 seconds (Sampling)
-#> Chain 2:                4.139 seconds (Total)
-#> Chain 2:
-```
-
-And the resulting reconstructions are as follow:
-
-
-``` r
-PredsBay
-#>     Sample D47 D47error  meanTemp     error
-#> 1 Sample 1 0.6    0.005  59.94212  7.491345
-#> 2 Sample 2 0.7    0.005  18.55897  4.912302
-#> 3 Sample 3 0.8    0.005 -10.42800  3.621478
-#> 4 Sample 4 0.6    0.010  60.04640  8.664364
-#> 5 Sample 5 0.7    0.010  18.61089  5.703738
-#> 6 Sample 6 0.8    0.010 -10.40374  4.228139
-#> 7 Sample 7 0.6    0.020  60.36029 12.526982
-#> 8 Sample 8 0.7    0.020  18.75429  8.216831
-#> 9 Sample 9 0.8    0.020 -10.28526  6.069082
-```
-
-
-## Including a co-variate (without error in the covariate)
-
-We will now do the same for the models outlined above but ignoring uncertainty in the covariate (Ion):
-
-``` r
-ds <- cal.dataset(error = "S1", nobs = 50)
-ds$Ion <- rnorm(nrow(ds))
-ionmodel <- cal.ion.bayesian(calibrationData = ds)
-ionmodel
-#> $BLM1_fit
-#> Inference for Stan model: anon_model.
-#> 2 chains, each with iter=2500; warmup=1000; thin=1; 
-#> post-warmup draws per chain=1500, total post-warmup draws=3000.
-#> 
-#>         mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
-#> alpha   0.27    0.00 0.01   0.24   0.26   0.27   0.28   0.30  4277    1
-#> beta    0.04    0.00 0.00   0.03   0.04   0.04   0.04   0.04  4268    1
-#> gamma   0.00    0.00 0.00   0.00   0.00   0.00   0.00   0.00  4305    1
-#> sigma   0.01    0.00 0.00   0.01   0.01   0.01   0.01   0.02  3356    1
-#> lp__  136.40    0.13 5.19 125.89 133.07 136.72 140.04 145.58  1524    1
-#> 
-#> Samples were drawn using NUTS(diag_e) at Thu Nov  5 08:55:27 2026.
-#> For each parameter, n_eff is a crude measure of effective sample size,
-#> and Rhat is the potential scale reduction factor on split chains (at 
-#> convergence, Rhat=1).
-```
-
-From here, we can just run the reconstructions
-
-``` r
-recData <- data.frame(Sample = paste("Sample", 1:9),
-                      D47 = rep(c(0.6, 0.7, 0.8), 3),
-                      D47error = c(rep(0.005,3), rep(0.01,3), rep(0.02,3)),
-                      Ion = rep(c(0.6, 0.7, 0.8), 3),
-                      N = rep(2, 9),
-                      Material = rep(1, 9))
-
-PredsBay <- rec.ion.bayesian(calModel = ionmodel[[1]],
-                             recData = recData,
-                             iter = 1000,
-                             postcalsamples = 100, MC = FALSE,
-                             useIonError = FALSE)
-#> 
-#> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 1).
-#> Chain 1: 
-#> Chain 1: Gradient evaluation took 4.1e-05 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.41 seconds.
-#> Chain 1: Adjust your expectations accordingly!
-#> Chain 1: 
-#> Chain 1: 
-#> Chain 1: Iteration:   1 / 1000 [  0%]  (Warmup)
-#> Chain 1: Iteration: 100 / 1000 [ 10%]  (Warmup)
-#> Chain 1: Iteration: 200 / 1000 [ 20%]  (Warmup)
-#> Chain 1: Iteration: 300 / 1000 [ 30%]  (Warmup)
-#> Chain 1: Iteration: 400 / 1000 [ 40%]  (Warmup)
-#> Chain 1: Iteration: 500 / 1000 [ 50%]  (Warmup)
-#> Chain 1: Iteration: 501 / 1000 [ 50%]  (Sampling)
-#> Chain 1: Iteration: 600 / 1000 [ 60%]  (Sampling)
-#> Chain 1: Iteration: 700 / 1000 [ 70%]  (Sampling)
-#> Chain 1: Iteration: 800 / 1000 [ 80%]  (Sampling)
-#> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
-#> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
-#> Chain 1: 
-#> Chain 1:  Elapsed Time: 0.365 seconds (Warm-up)
-#> Chain 1:                0.255 seconds (Sampling)
-#> Chain 1:                0.62 seconds (Total)
-#> Chain 1: 
-#> 
-#> SAMPLING FOR MODEL 'anon_model' NOW (CHAIN 2).
-#> Chain 2: 
-#> Chain 2: Gradient evaluation took 2.3e-05 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.
-#> Chain 2: Adjust your expectations accordingly!
-#> Chain 2: 
-#> Chain 2: 
-#> Chain 2: Iteration:   1 / 1000 [  0%]  (Warmup)
-#> Chain 2: Iteration: 100 / 1000 [ 10%]  (Warmup)
-#> Chain 2: Iteration: 200 / 1000 [ 20%]  (Warmup)
-#> Chain 2: Iteration: 300 / 1000 [ 30%]  (Warmup)
-#> Chain 2: Iteration: 400 / 1000 [ 40%]  (Warmup)
-#> Chain 2: Iteration: 500 / 1000 [ 50%]  (Warmup)
-#> Chain 2: Iteration: 501 / 1000 [ 50%]  (Sampling)
-#> Chain 2: Iteration: 600 / 1000 [ 60%]  (Sampling)
-#> Chain 2: Iteration: 700 / 1000 [ 70%]  (Sampling)
-#> Chain 2: Iteration: 800 / 1000 [ 80%]  (Sampling)
-#> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
-#> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
-#> Chain 2: 
-#> Chain 2:  Elapsed Time: 0.39 seconds (Warm-up)
-#> Chain 2:                0.266 seconds (Sampling)
-#> Chain 2:                0.656 seconds (Total)
-#> Chain 2:
-
-PredsBay
-#>     Sample D47 D47error  meanTemp     error
-#> 1 Sample 1 0.6    0.005  60.36720  7.823094
-#> 2 Sample 2 0.7    0.005  18.67771  5.128382
-#> 3 Sample 3 0.8    0.005 -10.48924  3.851282
-#> 4 Sample 4 0.6    0.010  60.42758  8.994516
-#> 5 Sample 5 0.7    0.010  18.71691  5.951343
-#> 6 Sample 6 0.8    0.010 -10.45114  4.435930
-#> 7 Sample 7 0.6    0.020  60.85282 12.784111
-#> 8 Sample 8 0.7    0.020  18.90442  8.442479
-#> 9 Sample 9 0.8    0.020 -10.35414  6.204517
-```
-
-## Outlook
-
-We have reviewed the most fundamental aspects of using `bayclumpr`. More advances analyses involving alternative priors in Bayesian models are an option.
-
-
-
+From here, `vignette("frequentist", package = "bayclumpr")` compares the four frequentist models. `vignette("bayesian", package = "bayclumpr")` shows the same workflow under a Bayesian framework.

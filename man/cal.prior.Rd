@@ -7,9 +7,12 @@
 cal.prior(prior, n = 1000)
 }
 \arguments{
-\item{prior}{Either \code{Informative} or \code{Weak}, with the same values used in \code{cal.bayesian()}. The \code{Uninformative} option is a flat (improper) prior and can't be sampled.}
+\item{prior}{The priors on alpha and beta. Use \code{"Informative"} or \code{"Weak"}, a list such as \code{list(alpha = c(0.231, 0.065), beta = c(0.039, 0.004))}, or a result from \code{cal.bayesian()} to use its priors. Flat priors are improper and can't be sampled.}
 
 \item{n}{number of observations to simulate}
+}
+\value{
+A \code{data.frame} with \code{n} draws of \code{alpha} and \code{beta}.
 }
 \description{
 Generate a dataset reflecting the priors used to run the analyses

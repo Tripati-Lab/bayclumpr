@@ -1,38 +1,29 @@
 #' Generate a dataset reflecting the priors used to run the analyses
 #'
-#' @param prior Either \code{Informative} or \code{Weak}, with the same values used in \code{cal.bayesian()}. The \code{Uninformative} option is a flat (improper) prior and can't be sampled.
+#' @param prior The priors on alpha and beta. Use \code{"Informative"} or \code{"Weak"}, a list such as \code{list(alpha = c(0.231, 0.065), beta = c(0.039, 0.004))}, or a result from \code{cal.bayesian()} to use its priors. Flat priors are improper and can't be sampled.
 #' @param n number of observations to simulate
+#'
+#' @return A \code{data.frame} with \code{n} draws of \code{alpha} and \code{beta}.
 #'
 #' @importFrom stats rnorm
 #'
 #' @export
 
 cal.prior <- function(prior, n = 1000) {
-  if (!prior %in% c("Informative", "Weak")) {
-    stop("Use `Informative` or `Weak`. `Uninformative` is a flat (improper) prior and can't be sampled.")
-  }
-
-  if (prior == "Informative") {
-    params <- cbind.data.frame(
-      parameter = c("alpha", "beta"),
-      mean = c(0.231, 0.039),
-      sd = c(0.065, 0.004)
-    )
-    params
-  } else {
-    params <- cbind.data.frame(
-      parameter = c("alpha", "beta"),
-      mean = c(0.231, 0.039),
-      sd = c(1, 1)
-    )
-    params
+  params <- if (inherits(prior, "bayclump_cal")) attr(prior, "priors") else .get_priors(prior)
+  if (!is.list(params)) {
+    stop("Flat priors are improper and can't be sampled.")
   }
 
   data <- cbind.data.frame(
-    alpha = rnorm(n, params[1, 2], params[1, 3]),
-    beta = rnorm(n, params[2, 2], params[2, 3])
+    alpha = rnorm(n, params$alpha[1], params$alpha[2]),
+    beta = rnorm(n, params$beta[1], params$beta[2])
   )
-  attr(data, "priors") <- prior
-  attr(data, "params") <- params
+  attr(data, "priors") <- if (is.character(prior)) prior else "Custom"
+  attr(data, "params") <- cbind.data.frame(
+    parameter = c("alpha", "beta"),
+    mean = c(params$alpha[1], params$beta[1]),
+    sd = c(params$alpha[2], params$beta[2])
+  )
   data
 }

@@ -1,0 +1,85 @@
+---
+title: "4. Calibrations with a second predictor"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4. Calibrations with a second predictor}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Some calibrations depend on a second variable, such as the concentration of an ion. This vignette shows how to include it as a second predictor:
+
+D47 = `alpha` + `beta` × `Temperature` + `gamma` × `Ion`
+
+It builds on `vignette("bayesian", package = "bayclumpr")`.
+
+```{r setup}
+library(bayclumpr)
+```
+
+## Preparing the data
+
+The calibration dataset needs the usual columns plus `Ion`. If `Ion` is measured with error, we also need its uncertainty (1 SD). We simulate 100 observations where `Ion` raises D47 by 0.005 per unit. We then add measurement error to `Ion` with an SD of 0.1.
+
+```{r}
+set.seed(3)
+ds <- cal.dataset(error = "S1", nobs = 100)
+
+trueIon <- rnorm(nrow(ds))
+ds$D47 <- ds$D47 + 0.005 * trueIon
+ds$IonError <- 0.1
+ds$Ion <- trueIon + rnorm(nrow(ds), 0, ds$IonError)
+```
+
+## Fitting the calibration
+
+`cal.ion.bayesian()` accounts for errors in `Temperature`, `D47`, and `Ion`. `IonError` can be a single value for all samples or one value per sample.
+
+```{r}
+fit <- cal.ion.bayesian(calibrationData = ds, IonError = ds$IonError)
+fit
+```
+
+`gamma` is the slope for `Ion`. Its posterior should be close to the simulated value of 0.005.
+
+When `Ion` is known without error, we leave out `IonError`:
+
+```{r}
+fitKnown <- cal.ion.bayesian(calibrationData = ds)
+fitKnown
+```
+
+## Reconstructing temperatures
+
+The reconstruction dataset needs `Ion` for each sample, and `IonError` when we account for its uncertainty:
+
+```{r}
+recData <- data.frame(
+  Sample = paste("Sample", 1:3),
+  D47 = c(0.6, 0.7, 0.8),
+  D47error = 0.01,
+  Ion = c(-1, 0, 1),
+  IonError = 0.1
+)
+```
+
+With `useIonError = TRUE`, the error in `Ion` is included in the reconstructed temperatures:
+
+```{r}
+rec.ion.bayesian(calModel = fit, recData = recData, useIonError = TRUE)
+```
+
+With `useIonError = FALSE`, `Ion` is treated as known:
+
+```{r}
+rec.ion.bayesian(calModel = fit, recData = recData, useIonError = FALSE)
+```
+
+As for `rec.bayesian()`, the error (1 SD) includes the uncertainty in the calibration, the scatter around the calibration line, and the error in `D47`.

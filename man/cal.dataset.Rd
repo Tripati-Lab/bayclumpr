@@ -4,13 +4,18 @@
 \alias{cal.dataset}
 \title{Generate a synthetic dataset for clumped isotopes calibrations}
 \usage{
-cal.dataset(error = "S1", nobs = 1000)
+cal.dataset(error = "S1", nobs = 1000, seed = NULL)
 }
 \arguments{
 \item{error}{Error scenario: low (S1), Intermediate (S2), or High (S3)}
 
 \item{nobs}{Number of observations in the simulated dataset}
+
+\item{seed}{Optional seed. When given, it is passed to \code{set.seed()}, which also sets the seed for the rest of the session.}
+}
+\value{
+A \code{data.frame} with the true and measured values of \code{Temperature} and \code{D47}, their errors (1 SD), and \code{Material} (always 1).
 }
 \description{
-Generate a synthetic dataset for clumped isotopes calibrations
+Simulates a calibration dataset with alpha = 0.268 and beta = 0.0369. True temperatures (10^6/T^2) are drawn from a normal distribution with mean 12 and SD 2.
 }

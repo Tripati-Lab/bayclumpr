@@ -2,29 +2,36 @@
 % Please edit documentation in R/cal.ion.bayesian.R
 \name{cal.ion.bayesian}
 \alias{cal.ion.bayesian}
-\title{Bayesian regressions to calibrate the clumped isotopes paleothermometer using
-\code{stan}.}
+\title{Bayesian calibration with a second predictor}
 \usage{
 cal.ion.bayesian(
   calibrationData,
+  IonError = NULL,
   numSavedSteps = 3000,
-  MC = TRUE,
-  IonError = NULL
+  chains = 4,
+  cores = getOption("mc.cores", 1L),
+  MC = NULL
 )
 }
 \arguments{
-\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, \code{D47error} (1 SD of \code{D47}), and \code{Ion}.}
-
-\item{numSavedSteps}{Number of MCMC iterations to save.}
-
-\item{MC}{Multicore (TRUE/FALSE)}
+\item{calibrationData}{The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, \code{D47error} (1 SD of \code{D47}), and \code{Ion}.}
 
 \item{IonError}{Ion measurement error (1 SD). Use a single value for all samples or one value per sample. Use \code{NULL} to treat \code{Ion} as known without error.}
+
+\item{numSavedSteps}{Total number of posterior draws to keep across all chains.}
+
+\item{chains}{Number of MCMC chains.}
+
+\item{cores}{Number of cores used to run the chains in parallel.}
+
+\item{MC}{Deprecated. Use \code{cores} instead.}
+}
+\value{
+An object of class \code{bayclump_cal} with a single \code{stanfit} named \code{BLM1_fit}. Use \code{cal.draws()} to get the posterior draws.
 }
 \description{
-Bayesian regressions to calibrate the clumped isotopes paleothermometer using
-\code{stan}.
+Fits a Bayesian regression of D47 on temperature and a second predictor (\code{Ion}) using Stan.
 }
 \details{
-Both models account for errors in \code{Temperature} and \code{D47}. Their \code{sigma} is the scatter left after removing the measurement error in \code{D47}.
+The model accounts for errors in \code{Temperature} and \code{D47}, and in \code{Ion} when \code{IonError} is given. Its \code{sigma} is the scatter left after removing the measurement error in \code{D47}. The true values of each predictor have a normal prior with a mean and SD estimated from the data. The intercept (alpha) and both slopes (beta and gamma) have flat priors.
 }

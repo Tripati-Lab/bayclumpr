@@ -1,145 +1,34 @@
-#' This function generates temperature predictions (in 10^6/T2) based on a
-#' calibration dataset and target D47. It includes measured error in the target D47
-#' and ion as an additional predictor.
+#' Bayesian temperature reconstructions with a second predictor
 #'
-#' @param calModel The fitted Stan model from calibration.
-#' @param recData The reconstruction dataset.
-#' @param iter Number of sampling iterations.
-#' @param postcalsamples Number of posterior calibration samples to use.
-#' @param MC Enable multicore (default TRUE).
-#' @param useIonError Use Ion error or not.
+#' Reconstructs temperatures (in degrees C) from the posterior draws of \code{cal.ion.bayesian()}, the measured D47, and the \code{Ion} value of each sample.
 #'
-#' @import rstan
-#' @import parallel
+#' @param calModel Posterior draws from \code{cal.draws()}, a result from \code{cal.ion.bayesian()}, or the \code{stanfit} in it.
+#' @param recData The reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, \code{D47error} (1 SD of the D47 value), and \code{Ion}. It also needs \code{IonError} (1 SD of \code{Ion}) when \code{useIonError = TRUE}.
+#' @param ndraws Number of draws used for each sample.
+#' @param useIonError Whether to account for the error in \code{Ion}.
+#' @param ... Arguments from earlier versions (\code{iter}, \code{postcalsamples}, and \code{MC}). They are ignored.
+#'
+#' @details With flat priors on 10^6/T^2 and \code{Ion}, the posterior of \code{Ion} follows its measurement, and the posterior of 10^6/T^2 for each draw is normal. Both are sampled directly, so no MCMC run is needed. Draws with 10^6/T^2 at or below zero are not physically possible. They are removed with a warning.
+#'
+#' @return A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), \code{D47error}, and \code{IonError} when used.
+#'
+#' @importFrom stats rnorm sd
 #'
 #' @export
-rec.ion.bayesian <- function(calModel,
-                             recData,
-                             iter = 1000,
-                             postcalsamples = NULL,
-                             MC = TRUE,
-                             useIonError = FALSE) {
 
-  if (MC) {
-    options(mc.cores = parallel::detectCores())
-  } else {
-    options(mc.cores = 1)
+rec.ion.bayesian <- function(calModel, recData, ndraws = 10000, useIonError = FALSE, ...) {
+  old <- names(list(...))
+  if (length(old) > 0) {
+    warning("These arguments are no longer used and were ignored: ", paste(old, collapse = ", "), ".")
   }
 
-  vects.params <- extract(calModel)
-
-  Model_IonErr <- "
-  data {
-    int<lower=0> n;
-    vector[n] y_mes;
-    vector[n] y_err;
-    vector[n] ion_meas;
-    vector[n] ion_err;
-    int<lower=0> posts;
-    vector[posts] alpha;
-    vector[posts] beta;
-    vector[posts] gamma;
-    vector[posts] sigma;
+  draws <- if (is.data.frame(calModel)) calModel else cal.draws(calModel)
+  if (!"gamma" %in% names(draws)) {
+    stop("The calibration needs a slope for Ion (gamma). Use a model from cal.ion.bayesian().")
   }
 
-  parameters {
-    matrix[n, posts] x_new;
-    matrix[n, posts] ion_new;
-  }
-
-  model {
-    vector[posts] y_hat;
-    for (i in 1:n) {
-      y_hat = alpha + beta .* x_new[i,]' + gamma .* ion_new[i,]';
-      y_mes[i] ~ normal(y_hat, sqrt(sigma^2 + y_err[i]^2));
-      ion_meas[i] ~ normal(ion_new[i,]', ion_err[i]);
-    }
-  }
-  "
-
-  Model_NoIonErr <- "
-  data {
-    int<lower=0> n;
-    vector[n] y_mes;
-    vector[n] y_err;
-    vector[n] ion;
-    int<lower=0> posts;
-    vector[posts] alpha;
-    vector[posts] beta;
-    vector[posts] gamma;
-    vector[posts] sigma;
-  }
-
-  parameters {
-    matrix[n, posts] x_new;
-  }
-
-  model {
-    vector[posts] y_hat;
-    for (i in 1:n) {
-      y_hat = alpha + beta .* x_new[i,]' + gamma .* rep_vector(ion[i], posts);
-      y_mes[i] ~ normal(y_hat, sqrt(sigma^2 + y_err[i]^2));
-    }
-  }
-  "
-
-  totsamp <- length(vects.params[[1]])
-  seqSamples <- if (!is.null(postcalsamples)) {
-    sample(1:totsamp, postcalsamples, replace = FALSE)
-  } else {
-    1:totsamp
-  }
-
-  if (useIonError) {
-    stan_data <- list(
-      n = nrow(recData),
-      y_mes = recData$D47,
-      y_err = recData$D47error,
-      ion_meas = recData$Ion,
-      ion_err = recData$IonError,
-      posts = length(seqSamples),
-      alpha = vects.params$alpha[seqSamples],
-      beta = vects.params$beta[seqSamples],
-      gamma = vects.params$gamma[seqSamples],
-      sigma = vects.params$sigma[seqSamples]
-    )
-    model_code <- Model_IonErr
-  } else {
-    stan_data <- list(
-      n = nrow(recData),
-      y_mes = recData$D47,
-      y_err = recData$D47error,
-      ion = recData$Ion,
-      posts = length(seqSamples),
-      alpha = vects.params$alpha[seqSamples],
-      beta = vects.params$beta[seqSamples],
-      gamma = vects.params$gamma[seqSamples],
-      sigma = vects.params$sigma[seqSamples]
-    )
-    model_code <- Model_NoIonErr
-  }
-
-  fit <- stan(
-    data = stan_data,
-    model_code = model_code,
-    chains = 2,
-    iter = iter,
-    warmup = floor(iter / 2),
-    control = list(adapt_delta = 0.9)
-  )
-
-  samples <- extract(fit)
-  Xouts <- samples$x_new
-
-  temp_mat <- sqrt(1e6 / Xouts) - 273.15
-
-  temp_summary <- t(apply(temp_mat, 2, function(x) c(mean = mean(x), sd = sd(x))))
-
-  return(data.frame(
-    Sample = recData$Sample,
-    D47 = recData$D47,
-    D47error = recData$D47error,
-    meanTemp = temp_summary[, "mean"],
-    error = temp_summary[, "sd"]
-  ))
+  cols <- c("Sample", "D47", "D47error", "Ion")
+  if (useIonError) cols <- c(cols, "IonError")
+  .check_rec_data(recData, cols)
+  .rec_exact(draws, recData, ndraws, useIon = TRUE, useIonError = useIonError)
 }

@@ -7,10 +7,13 @@
 rec.prior(prior, n = 1000)
 }
 \arguments{
-\item{prior}{Either \code{Informative} or \code{Weak}, with the same values used in \code{cal.bayesian()}. The \code{Uninformative} option is a flat (improper) prior and can't be sampled.}
+\item{prior}{The priors on alpha and beta. See \code{cal.prior()}.}
 
 \item{n}{number of observations to simulate}
 }
+\value{
+A \code{data.frame} with \code{n} rows and the columns \code{alpha}, \code{beta}, \code{x}, and \code{xC}.
+}
 \description{
-Generate a dataset reflecting the priors used to run the analyses
+Same as \code{cal.prior()}, with two extra columns: \code{x}, values of 10^6/T^2 close to 11, and \code{xC}, the same values in degrees C.
 }
