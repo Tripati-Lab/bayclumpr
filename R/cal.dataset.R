@@ -62,9 +62,9 @@ cal.dataset <- function(error = "S1", nobs = 1000){
   ds <- cbind.data.frame(
     x_TRUE = truex,
     Temperature = obsx,
-    TempError = errorx,
+    TempError = TempErrC,
     y_TRUE = truey,
-    D47error = obs_errory,
+    D47error = AddD,
     D47 = obsy,
     Material = 1)
 
