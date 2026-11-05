@@ -13,7 +13,7 @@ cal.ion.bayesian(
 )
 }
 \arguments{
-\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Ion}.}
+\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, \code{D47error} (1 SD of \code{D47}), and \code{Ion}.}
 
 \item{numSavedSteps}{Number of MCMC iterations to save.}
 
@@ -24,4 +24,7 @@ cal.ion.bayesian(
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 \code{stan}.
+}
+\details{
+Both models account for errors in \code{Temperature} and \code{D47}. Their \code{sigma} is the scatter left after removing the measurement error in \code{D47}.
 }

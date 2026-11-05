@@ -1,10 +1,12 @@
 #' Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 #' \code{stan}.
 #'
-#' @param calibrationData The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Ion}.
+#' @param calibrationData The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, \code{D47error} (1 SD of \code{D47}), and \code{Ion}.
 #' @param numSavedSteps Number of MCMC iterations to save.
 #' @param MC Multicore (TRUE/FALSE)
 #' @param IonError Ion measurement error (1 SD). Use a single value for all samples or one value per sample. Use \code{NULL} to treat \code{Ion} as known without error.
+#'
+#' @details Both models account for errors in \code{Temperature} and \code{D47}. Their \code{sigma} is the scatter left after removing the measurement error in \code{D47}.
 #'
 #' @import parallel
 #' @import rstan
@@ -29,6 +31,9 @@ cal.ion.bayesian <- function(calibrationData,
   if (!isTRUE(all(calibrationData$TempError > 0))) {
     stop("TempError must be a positive 1 SD for every observation.")
   }
+  if (!isTRUE(all(calibrationData$D47error >= 0))) {
+    stop("D47error must be a non-negative 1 SD for every observation.")
+  }
 
   # Flat prior
   beta_mu <- 0.01
@@ -41,6 +46,7 @@ cal.ion.bayesian <- function(calibrationData,
   data {
     int<lower=0> N;
     vector[N] y;
+    vector<lower=0>[N] y_err;
     vector[N] x_meas;
     vector[N] ion_meas;
     vector<lower=0>[N] tau;
@@ -63,13 +69,13 @@ cal.ion.bayesian <- function(calibrationData,
     ion ~ normal(mu_ion, sigma_ion);
     x_meas ~ normal(x, tau);
     ion_meas ~ normal(ion, ion_tau);
-    y ~ normal(alpha + beta * x + gamma * ion, sigma);
+    y ~ normal(alpha + beta * x + gamma * ion, sqrt(square(sigma) + square(y_err)));
     sigma ~ cauchy(0, 5);
   }
   generated quantities {
     vector[N] log_lik;
     for (i in 1:N) {
-      log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i] + gamma * ion[i], sigma);
+      log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i] + gamma * ion[i], sqrt(square(sigma) + square(y_err[i])));
     }
   }
   "
@@ -79,6 +85,7 @@ cal.ion.bayesian <- function(calibrationData,
   data {
     int<lower=0> N;
     vector[N] y;
+    vector<lower=0>[N] y_err;
     vector[N] x_meas;
     vector[N] ion;
     vector<lower=0>[N] tau;
@@ -95,13 +102,13 @@ cal.ion.bayesian <- function(calibrationData,
   model {
     x ~ normal(mu_x, sigma_x);
     x_meas ~ normal(x, tau);
-    y ~ normal(alpha + beta * x + gamma * ion, sigma);
+    y ~ normal(alpha + beta * x + gamma * ion, sqrt(square(sigma) + square(y_err)));
     sigma ~ cauchy(0, 5);
   }
   generated quantities {
     vector[N] log_lik;
     for (i in 1:N) {
-      log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i] + gamma * ion[i], sigma);
+      log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i] + gamma * ion[i], sqrt(square(sigma) + square(y_err[i])));
     }
   }
   "
@@ -117,6 +124,7 @@ cal.ion.bayesian <- function(calibrationData,
       x_meas = calibrationData$Temperature,
       ion_meas = calibrationData$Ion,
       y = calibrationData$D47,
+      y_err = calibrationData$D47error,
       tau = calibrationData$TempError,
       ion_tau = rep(IonError, length.out = nrow(calibrationData)),
       mu_x = mean(calibrationData$Temperature),
@@ -132,6 +140,7 @@ cal.ion.bayesian <- function(calibrationData,
       x_meas = calibrationData$Temperature,
       ion = calibrationData$Ion,
       y = calibrationData$D47,
+      y_err = calibrationData$D47error,
       tau = calibrationData$TempError,
       mu_x = mean(calibrationData$Temperature),
       sigma_x = sd(calibrationData$Temperature)

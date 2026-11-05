@@ -30,7 +30,7 @@ rec.bayesian(
 \item{MC}{Multicore (TRUE/FALSE)}
 }
 \value{
-A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}.
+A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}. For \code{BLM1_fit}, \code{sigma} excludes the measurement error of the calibration samples. For \code{BLM1_fit_NoErrors} and \code{BLM3_fit}, \code{sigma} includes it.
 }
 \description{
 This function generates temperature predictions (in degrees C) based on a

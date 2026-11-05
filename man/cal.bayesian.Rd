@@ -13,7 +13,7 @@ cal.bayesian(
 )
 }
 \arguments{
-\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Material}.}
+\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, \code{D47error} (1 SD of \code{D47}), and \code{Material}.}
 
 \item{numSavedSteps}{Number of MCMC iterations to save.}
 
@@ -27,5 +27,7 @@ Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 \code{stan}.
 }
 \details{
-The \code{loo} attribute compares the three models using PSIS-LOO. In \code{BLM1_fit}, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
+\code{BLM1_fit} accounts for errors in both \code{Temperature} and \code{D47}. Its \code{sigma} is the scatter left after removing the measurement error in \code{D47}. \code{BLM1_fit_NoErrors} ignores both errors, so its \code{sigma} includes the measurement error. \code{BLM3_fit} is a mixed model with intercepts and slopes that vary by \code{Material} around a shared mean (partial pooling). The priors set by \code{priors} apply to these shared means. The SDs among materials have half-normal priors with scales of 0.1 (intercepts) and 0.01 (slopes). With fewer than five materials, these SDs are mostly set by their priors. \code{BLM3_fit} is only fit when there are at least two materials. Otherwise it is \code{NULL}.
+
+The \code{loo} attribute compares the fitted models using PSIS-LOO. In \code{BLM1_fit}, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
 }

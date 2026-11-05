@@ -10,7 +10,7 @@
 #' @param postcalsamples Number of posterior samples to analyze from the calibration step.
 #' @param MC Multicore (TRUE/FALSE)
 #'
-#' @return A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}.
+#' @return A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}. For \code{BLM1_fit}, \code{sigma} excludes the measurement error of the calibration samples. For \code{BLM1_fit_NoErrors} and \code{BLM3_fit}, \code{sigma} includes it.
 #'
 #' @import rstan
 #' @import parallel
@@ -28,6 +28,10 @@ rec.bayesian <- function(calModel,
     options(mc.cores = parallel::detectCores())
   }else{
     options(mc.cores = 1)
+  }
+
+  if (is.null(calModel)) {
+    stop("calModel is NULL. BLM3_fit is only available when the calibration has at least two materials.")
   }
 
   vects.params <- extract(calModel)
@@ -63,10 +67,8 @@ model {
 
 "
 
-totsamp <- if(!mixed){
-  length(vects.params[[1]])}else{
-    nrow(vects.params[[1]])
-}
+# One sigma per posterior draw in all models
+totsamp <- length(vects.params$sigma)
 
 seqSamples <- if(!is.null(postcalsamples) ){
   sample(1:totsamp, postcalsamples, replace = TRUE)

@@ -50,7 +50,7 @@ York regression models are also implemented in `bayclumpr`:
 cal.york(data = ds, replicates = 10)
 ```
 
-Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. Let's fit all three models using the `cal.bayesian` function:
+Finally, `bayclumpr` implements three types of Bayesian linear models that are used for calibrations and temperature reconstructions. The first model accounts for errors in both `Temperature` and `D47`. The second model ignores these errors. The third model is a mixed model where intercepts and slopes vary by `Material`. Let's fit these models using the `cal.bayesian` function. Note that the mixed model is only fit when there are at least two materials, so it is skipped for this simulated dataset:
 
 ```{r  message=FALSE, error =FALSE}
 BayesCal <- cal.bayesian(calibrationData = ds)
