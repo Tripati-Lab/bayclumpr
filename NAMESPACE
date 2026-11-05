@@ -17,11 +17,15 @@ import(parallel)
 import(rstan)
 importFrom(IsoplotR,york)
 importFrom(deming,deming)
-importFrom(loo,extract_log_lik)
-importFrom(loo,loo_compare)
-importFrom(loo,relative_eff)
-importFrom(stats,lm)
-importFrom(stats,median)
-importFrom(stats,quantile)
-importFrom(stats,rnorm)
-importFrom(stats,sd)
+importFrom(loo,
+  extract_log_lik,
+  loo_compare,
+  relative_eff
+)
+importFrom(stats,
+  lm,
+  median,
+  quantile,
+  rnorm,
+  sd
+)

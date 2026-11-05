@@ -1,6 +1,6 @@
 #' Fit OLS regression models on a given calibration dataset
 #'
-#' @param data The calibration dataset
+#' @param data The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K) and \code{D47}.
 #' @param replicates Number of bootstrap replicates
 #' @param samples Number of samples per bootstrap replicate
 #'

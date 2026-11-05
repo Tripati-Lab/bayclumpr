@@ -1,14 +1,16 @@
-#' This function generate temperature predictions (in 10^6/T2) based on a
+#' This function generates temperature predictions (in degrees C) based on a
 #' calibration dataset and target D47. Note that this approach additionally
 #' accounts for measured error in the target D47. This approach is congruent
 #' with the one used in McClelland et al. (2022).
 #'
-#' @param calModel The stan model to be analyzed.
-#' @param recData The reconstruction dataset.
+#' @param calModel The stan model to be analyzed. The calibration must use \code{Temperature} in 10^6/T^2 (T in K).
+#' @param recData The reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value; if D47 is a mean of replicates, use its standard error). Mixed models also need \code{Material}, with the same labels used in the calibration.
 #' @param iter Number of replicates to retain.
 #' @param mixed whether the model \code{calModel} is mixed or not.
 #' @param postcalsamples Number of posterior samples to analyze from the calibration step.
 #' @param MC Multicore (TRUE/FALSE)
+#'
+#' @return A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}.
 #'
 #' @import rstan
 #' @import parallel
@@ -30,7 +32,12 @@ rec.bayesian <- function(calModel,
 
   vects.params <- extract(calModel)
 
-  ## Define models
+  # Slopes against 10^6/T^2 are positive
+  if (mean(vects.params$beta) <= 0) {
+    stop("The calibration must use Temperature in 10^6/T^2 (T in K).")
+  }
+
+  # Define models
 Model <- "
 data {
   int<lower=0> n;
@@ -43,7 +50,7 @@ data {
 }
 
 parameters {
-  matrix[n, posts] x_new;
+  matrix<lower=0>[n, posts] x_new;
 }
 
 model {
@@ -64,22 +71,35 @@ totsamp <- if(!mixed){
 seqSamples <- if(!is.null(postcalsamples) ){
   sample(1:totsamp, postcalsamples, replace = TRUE)
   }else{
-    1:length(vects.params[[1]])
+    1:totsamp
   }
 
-##If mixed perform analysis per material
+# Summarize temperatures (in degrees C) across all posterior draws
+sumTemps <- function(fit) {
+  Xouts2 <- extract(fit)$x_new
+  temps <- sqrt(10 ^ 6 / Xouts2) - 273.15
+  t(apply(temps, 2, function(x) c(mean(x), sd(x))))
+}
+
+# If mixed perform analysis per material
 
 if (mixed) {
+  # Match materials to the labels stored by cal.bayesian()
+  mats <- attr(calModel, "Material")
+  if (is.null(mats) || anyNA(match(as.character(recData$Material), mats))) {
+    stop("Materials in recData must match those in the calibration fitted with cal.bayesian().")
+  }
   partMat <- split(recData, recData$Material)
 
   recs <- lapply(partMat, function(x) {
+    j <- match(as.character(x$Material[1]), mats)
     stan_date <- list(
       n = nrow(x),
       y_mes = x$D47,
       y_err = x$D47error,
       posts = length(seqSamples),
-      alpha = vects.params$alpha[seqSamples, x$Material[1]],
-      beta = vects.params$beta[seqSamples, x$Material[1]],
+      alpha = vects.params$alpha[seqSamples, j],
+      beta = vects.params$beta[seqSamples, j],
       sigma = vects.params$sigma[seqSamples]
     )
 
@@ -92,18 +112,7 @@ if (mixed) {
       control = list(adapt_delta = 0.90, max_treedepth = 10)
     )
 
-    params2 <- extract(data.rstan)
-    Xouts2 <- params2$x_new
-    Xdims2 <- dim(Xouts2)
-    recs <- sapply(1:iter, function(x){
-      rowMeans(Xouts2[x,,])
-    })
-    recs <- sqrt(10 ^ 6 / recs) - 273.15
-    recs <- apply(recs, 1, function(x){
-      data.frame(mean(x), sd(x))}
-    )
-
-    recs <- do.call(rbind, recs)
+    recs <- sumTemps(data.rstan)
 
     cbind.data.frame(
       Sample = x$Sample,
@@ -137,19 +146,7 @@ if (mixed) {
     warmup = floor(iter / 2)
   )
 
-  params2 <- extract(data.rstan)
-  Xouts2 <- params2$x_new
-  Xdims2 <- dim(Xouts2)
-
-  recs <- sapply(1:iter, function(x){
-    rowMeans(Xouts2[x,,])
-  })
-  recs <- sqrt(10 ^ 6 / recs) - 273.15
-  recs <- apply(recs, 1, function(x){
-    data.frame(mean(x), sd(x))}
-  )
-
-  recs <- do.call(rbind, recs)
+  recs <- sumTemps(data.rstan)
 
   reconstructionTable <-
   cbind.data.frame(

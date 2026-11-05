@@ -13,13 +13,13 @@ cal.ion.bayesian(
 )
 }
 \arguments{
-\item{calibrationData}{The target calibration dataset.}
+\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Ion}.}
 
 \item{numSavedSteps}{Number of MCMC iterations to save.}
 
 \item{MC}{Multicore (TRUE/FALSE)}
 
-\item{IonError}{Ion measurement error.}
+\item{IonError}{Ion measurement error (1 SD). Use a single value for all samples or one value per sample. Use \code{NULL} to treat \code{Ion} as known without error.}
 }
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using

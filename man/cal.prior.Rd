@@ -7,7 +7,7 @@
 cal.prior(prior, n = 1000)
 }
 \arguments{
-\item{prior}{Informative or not}
+\item{prior}{Either \code{Informative} or \code{Weak}, with the same values used in \code{cal.bayesian()}. The \code{Uninformative} option is a flat (improper) prior and can't be sampled.}
 
 \item{n}{number of observations to simulate}
 }

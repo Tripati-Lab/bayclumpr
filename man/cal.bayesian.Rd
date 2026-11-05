@@ -13,7 +13,7 @@ cal.bayesian(
 )
 }
 \arguments{
-\item{calibrationData}{The target calibration dataset.}
+\item{calibrationData}{The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Material}.}
 
 \item{numSavedSteps}{Number of MCMC iterations to save.}
 
@@ -25,4 +25,7 @@ cal.bayesian(
 \description{
 Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 \code{stan}.
+}
+\details{
+The \code{loo} attribute compares the three models using PSIS-LOO. In \code{BLM1_fit}, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
 }

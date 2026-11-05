@@ -2,7 +2,7 @@
 % Please edit documentation in R/rec.bayesian.R
 \name{rec.bayesian}
 \alias{rec.bayesian}
-\title{This function generate temperature predictions (in 10^6/T2) based on a
+\title{This function generates temperature predictions (in degrees C) based on a
 calibration dataset and target D47. Note that this approach additionally
 accounts for measured error in the target D47. This approach is congruent
 with the one used in McClelland et al. (2022).}
@@ -17,9 +17,9 @@ rec.bayesian(
 )
 }
 \arguments{
-\item{calModel}{The stan model to be analyzed.}
+\item{calModel}{The stan model to be analyzed. The calibration must use \code{Temperature} in 10^6/T^2 (T in K).}
 
-\item{recData}{The reconstruction dataset.}
+\item{recData}{The reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value; if D47 is a mean of replicates, use its standard error). Mixed models also need \code{Material}, with the same labels used in the calibration.}
 
 \item{iter}{Number of replicates to retain.}
 
@@ -29,8 +29,11 @@ rec.bayesian(
 
 \item{MC}{Multicore (TRUE/FALSE)}
 }
+\value{
+A \code{data.frame} with \code{meanTemp} (posterior mean, in degrees C) and \code{error} (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (\code{sigma}), and \code{D47error}.
+}
 \description{
-This function generate temperature predictions (in 10^6/T2) based on a
+This function generates temperature predictions (in degrees C) based on a
 calibration dataset and target D47. Note that this approach additionally
 accounts for measured error in the target D47. This approach is congruent
 with the one used in McClelland et al. (2022).

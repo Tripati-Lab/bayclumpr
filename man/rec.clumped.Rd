@@ -2,17 +2,20 @@
 % Please edit documentation in R/rec.clumped.R
 \name{rec.clumped}
 \alias{rec.clumped}
-\title{This function performs temp reconstruction (10^6/T^2 with T in K) for
-multiple replicates of the same target.}
+\title{This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).}
 \usage{
-rec.clumped(recData, obCal)
+rec.clumped(recData, obCal, ndraws = 10000)
 }
 \arguments{
-\item{recData}{Reconstruction dataset}
+\item{recData}{Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value; if D47 is a mean of replicates, use its standard error).}
 
 \item{obCal}{A \code{data.frame} summarizing the distribution of slopes and intercepts}
+
+\item{ndraws}{Number of Monte Carlo draws used to estimate the error.}
+}
+\value{
+A \code{data.frame} with \code{meanTemp} (temperature from the mean slope and intercept, in degrees C) and \code{error} (1 SD) for each sample. The error propagates \code{D47error} and the joint spread of slopes and intercepts in \code{obCal}. It does not include the residual scatter of the calibration.
 }
 \description{
-This function performs temp reconstruction (10^6/T^2 with T in K) for
-multiple replicates of the same target.
+This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).
 }

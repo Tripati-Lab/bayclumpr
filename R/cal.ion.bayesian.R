@@ -1,10 +1,10 @@
 #' Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 #' \code{stan}.
 #'
-#' @param calibrationData The target calibration dataset.
+#' @param calibrationData The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Ion}.
 #' @param numSavedSteps Number of MCMC iterations to save.
 #' @param MC Multicore (TRUE/FALSE)
-#' @param IonError Ion measurement error.
+#' @param IonError Ion measurement error (1 SD). Use a single value for all samples or one value per sample. Use \code{NULL} to treat \code{Ion} as known without error.
 #'
 #' @import parallel
 #' @import rstan
@@ -24,6 +24,12 @@ cal.ion.bayesian <- function(calibrationData,
       options(mc.cores = 1)
     }
   }
+
+  # Temperature errors are used per observation and must be positive
+  if (!isTRUE(all(calibrationData$TempError > 0))) {
+    stop("TempError must be a positive 1 SD for every observation.")
+  }
+
   # Flat prior
   beta_mu <- 0.01
   beta_sd <- 0.01
@@ -37,8 +43,8 @@ cal.ion.bayesian <- function(calibrationData,
     vector[N] y;
     vector[N] x_meas;
     vector[N] ion_meas;
-    real<lower=0> tau;
-    real<lower=0> ion_tau;
+    vector<lower=0>[N] tau;
+    vector<lower=0>[N] ion_tau;
     real mu_x;
     real<lower=0> sigma_x;
     real mu_ion;
@@ -75,7 +81,7 @@ cal.ion.bayesian <- function(calibrationData,
     vector[N] y;
     vector[N] x_meas;
     vector[N] ion;
-    real<lower=0> tau;
+    vector<lower=0>[N] tau;
     real mu_x;
     real<lower=0> sigma_x;
   }
@@ -102,14 +108,17 @@ cal.ion.bayesian <- function(calibrationData,
 
   # Determine which model to use based on whether IonError is provided
   if (!is.null(IonError)) {
-    # Use ion error model with general error for all samples
+    # Use one error per sample, or the same error for all samples
+    if (!length(IonError) %in% c(1, nrow(calibrationData)) || !all(IonError > 0)) {
+      stop("IonError must be positive, with length 1 or one value per observation.")
+    }
     stan_data <- list(
       N = nrow(calibrationData),
       x_meas = calibrationData$Temperature,
       ion_meas = calibrationData$Ion,
       y = calibrationData$D47,
-      tau = sd(calibrationData$TempError),
-      ion_tau = IonError,
+      tau = calibrationData$TempError,
+      ion_tau = rep(IonError, length.out = nrow(calibrationData)),
       mu_x = mean(calibrationData$Temperature),
       sigma_x = sd(calibrationData$Temperature),
       mu_ion = mean(calibrationData$Ion),
@@ -123,7 +132,7 @@ cal.ion.bayesian <- function(calibrationData,
       x_meas = calibrationData$Temperature,
       ion = calibrationData$Ion,
       y = calibrationData$D47,
-      tau = sd(calibrationData$TempError),
+      tau = calibrationData$TempError,
       mu_x = mean(calibrationData$Temperature),
       sigma_x = sd(calibrationData$Temperature)
     )
@@ -143,7 +152,7 @@ cal.ion.bayesian <- function(calibrationData,
     thin = thinSteps, pars = c("alpha", "beta", "gamma", "sigma")
   )
 
-  ## Return all the relevant objects
+  # Return all the relevant objects
   CompleteModelFit <- list(
     "BLM1_fit" = BLM1_fit
   )

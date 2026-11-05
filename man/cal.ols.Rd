@@ -7,7 +7,7 @@
 cal.ols(data, replicates, samples = NULL)
 }
 \arguments{
-\item{data}{The calibration dataset}
+\item{data}{The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K) and \code{D47}.}
 
 \item{replicates}{Number of bootstrap replicates}
 

@@ -7,7 +7,7 @@
 cal.deming(data, replicates, samples = NULL)
 }
 \arguments{
-\item{data}{The calibration dataset}
+\item{data}{The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{D47error} (1 SD of \code{D47}).}
 
 \item{replicates}{Number of bootstrap replicates}
 

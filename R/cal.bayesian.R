@@ -1,11 +1,13 @@
 #' Bayesian regressions to calibrate the clumped isotopes paleothermometer using
 #' \code{stan}.
 #'
-#' @param calibrationData The target calibration dataset.
+#' @param calibrationData The target calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K), \code{TempError} (1 SD of \code{Temperature}), \code{D47}, and \code{Material}.
 #' @param numSavedSteps Number of MCMC iterations to save.
 #' @param priors Either \code{Informative}, \code{Weak}, or
 #'               \code{Uninformative} on the slope and intercept.
 #' @param MC Multicore (TRUE/FALSE)
+#'
+#' @details The \code{loo} attribute compares the three models using PSIS-LOO. In \code{BLM1_fit}, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
 #'
 #' @importFrom loo extract_log_lik relative_eff loo_compare
 #' @import parallel
@@ -32,6 +34,11 @@ cal.bayesian <- function(calibrationData,
     stop("Priors must be in `Informative`, `Weak`, or `Uninformative`")
   }
 
+  # Temperature errors are used per observation and must be positive
+  if (!isTRUE(all(calibrationData$TempError > 0))) {
+    stop("TempError must be a positive 1 SD for every observation.")
+  }
+
   if (priors == "Informative") {
     beta_mu <- 0.039
     beta_sd <- 0.004
@@ -55,13 +62,13 @@ cal.bayesian <- function(calibrationData,
   }
 
 
-  ## Models
+  # Models
   fwMod_Errors <- "
   data {
     int<lower=0> N;
     vector[N] y;
     vector[N] x_meas;
-    real<lower=0> tau;
+    vector<lower=0>[N] tau;
     real beta_mu;
     real beta_sd;
     real alpha_mu;
@@ -159,12 +166,12 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha[Material[i]] + beta[Material[i]] * x[i], sigma);
     }
   }
 "
 
-  ## Non-Informative
+  # Non-Informative
 
   fwMod_NE2 <- "
   data {
@@ -197,7 +204,7 @@ cal.bayesian <- function(calibrationData,
     int<lower=0> N;
     vector[N] y;
     vector[N] x_meas;
-    real<lower=0> tau;
+    vector<lower=0>[N] tau;
   }
 
   parameters {
@@ -205,7 +212,7 @@ cal.bayesian <- function(calibrationData,
     real alpha;
     real beta;
     real mu_x;
-    real sigma_x;
+    real<lower=0> sigma_x;
     real<lower=0> sigma;
   }
 
@@ -249,7 +256,7 @@ cal.bayesian <- function(calibrationData,
   generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha[Material[i]] + beta[Material[i]] * x[i], sigma);
     }
   }
 "
@@ -271,7 +278,7 @@ cal.bayesian <- function(calibrationData,
     N = nrow(calibrationData),
     x_meas = calibrationData$Temperature,
     y = calibrationData$D47,
-    tau = sd(calibrationData$TempError),
+    tau = calibrationData$TempError,
     beta_mu = beta_mu,
     beta_sd = beta_sd,
     alpha_mu = alpha_mu,
@@ -329,7 +336,10 @@ cal.bayesian <- function(calibrationData,
     thin = thinSteps, pars = c("alpha", "beta", "sigma", "log_lik")
   )
 
-  ## Extract likelihood values for model comparison
+  # Store material labels so rec.bayesian() can match them
+  attr(BLM3, "Material") <- levels(factor(calibrationData$Material))
+
+  # Extract likelihood values for model comparison
   log_lik_BLM1_E <- extract_log_lik(BLM1_E, merge_chains = F)
   r_eff_1_BLM1_E <- relative_eff(log_lik_BLM1_E)
   log_lik_BLM1_NE <- extract_log_lik(BLM1_NE, merge_chains = F)
@@ -343,7 +353,13 @@ cal.bayesian <- function(calibrationData,
 
   looComp <- loo_compare(list("BLM1_E" = loo_BLM1_E, "BLM1_NE" = loo_BLM1_NE, "BLM3" = loo_BLM3))
 
-  ##return all the relevant objects
+  # Flag unreliable PSIS-LOO estimates
+  k <- c(loo::pareto_k_values(loo_BLM1_E), loo::pareto_k_values(loo_BLM1_NE), loo::pareto_k_values(loo_BLM3))
+  if (any(k > 0.7)) {
+    warning("Some Pareto k values are above 0.7, so the LOO comparison may be unreliable.")
+  }
+
+  # Return all the relevant objects
   CompleteModelFit <- list(
     "BLM1_fit" = BLM1_E,
     "BLM1_fit_NoErrors" = BLM1_NE,
