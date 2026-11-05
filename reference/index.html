@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bayclumpr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
+    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Tripati-Lab/bayclumpr/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -42,10 +48,10 @@
 
       <dl><dt>
 
-          <code><a href="cal.bayesian.html">cal.bayesian()</a></code>
+          <code><a href="cal.bayesian.html">cal.bayesian()</a></code> <code><a href="cal.bayesian.html">print(<i>&lt;bayclump_cal&gt;</i>)</a></code>
 
         </dt>
-        <dd>Bayesian regressions to calibrate the clumped isotopes paleothermometer using <code>stan</code>.</dd>
+        <dd>Bayesian calibration of the clumped isotope paleothermometer</dd>
 
         <dt>
 
@@ -53,6 +59,13 @@
 
         </dt>
         <dd>This function is used to generate CI estimates at given intervals. It is currently used for plotting in BayClump.</dd>
+
+        <dt>
+
+          <code><a href="cal.compare.html">cal.compare()</a></code>
+
+        </dt>
+        <dd>Compare Bayesian calibration models</dd>
 
         <dt>
 
@@ -70,10 +83,17 @@
 
         <dt>
 
+          <code><a href="cal.draws.html">cal.draws()</a></code>
+
+        </dt>
+        <dd>Posterior draws from a Bayesian calibration</dd>
+
+        <dt>
+
           <code><a href="cal.ion.bayesian.html">cal.ion.bayesian()</a></code>
 
         </dt>
-        <dd>Bayesian regressions to calibrate the clumped isotopes paleothermometer using <code>stan</code>.</dd>
+        <dd>Bayesian calibration with a second predictor</dd>
 
         <dt>
 
@@ -108,21 +128,21 @@
           <code><a href="rec.bayesian.html">rec.bayesian()</a></code>
 
         </dt>
-        <dd>This function generate temperature predictions (in 10^6/T2) based on a calibration dataset and target D47. Note that this approach additionally accounts for measured error in the target D47. This approach is congruent with the one used in McClelland et al. (2022).</dd>
+        <dd>Bayesian temperature reconstructions</dd>
 
         <dt>
 
           <code><a href="rec.clumped.html">rec.clumped()</a></code>
 
         </dt>
-        <dd>This function performs temp reconstruction (10^6/T^2 with T in K) for multiple replicates of the same target.</dd>
+        <dd>This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).</dd>
 
         <dt>
 
           <code><a href="rec.ion.bayesian.html">rec.ion.bayesian()</a></code>
 
         </dt>
-        <dd>This function generates temperature predictions (in 10^6/T2) based on a calibration dataset and target D47. It includes measured error in the target D47 and ion as an additional predictor.</dd>
+        <dd>Bayesian temperature reconstructions with a second predictor</dd>
 
         <dt>
 

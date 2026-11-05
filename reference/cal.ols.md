@@ -12,7 +12,8 @@ cal.ols(data, replicates, samples = NULL)
 
 - data:
 
-  The calibration dataset
+  The calibration dataset. It needs the columns `Temperature` (10^6/T^2,
+  with T in K) and `D47`.
 
 - replicates:
 

@@ -16,13 +16,13 @@ Source:
 [`DESCRIPTION`](https://github.com/Tripati-Lab/bayclumpr/blob/master/DESCRIPTION)
 
 Roman Palacios C, Carroll H, Tripati A (2026). *bayclumpr: Bayesian
-Analysis of Clumped Isotope Datasets*. R package version 0.1.2,
+Analysis of Clumped Isotope Datasets*. R package version 0.2.0,
 <https://bayclump.tripatilab.epss.ucla.edu/>.
 
     @Manual{,
       title = {bayclumpr: Bayesian Analysis of Clumped Isotope Datasets},
       author = {Cristian {Roman Palacios} and Hannah M. Carroll and Aradhna Tripati},
       year = {2026},
-      note = {R package version 0.1.2},
+      note = {R package version 0.2.0},
       url = {https://bayclump.tripatilab.epss.ucla.edu/},
     }

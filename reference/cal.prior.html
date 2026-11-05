@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bayclumpr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,12 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
+    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Tripati-Lab/bayclumpr/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -46,13 +52,17 @@
 
 
 <dl><dt id="arg-prior">prior<a class="anchor" aria-label="anchor" href="#arg-prior"></a></dt>
-<dd><p>Informative or not</p></dd>
+<dd><p>The priors on alpha and beta. Use <code>"Informative"</code> or <code>"Weak"</code>, a list such as <code>list(alpha = c(0.231, 0.065), beta = c(0.039, 0.004))</code>, or a result from <code><a href="cal.bayesian.html">cal.bayesian()</a></code> to use its priors. Flat priors are improper and can't be sampled.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>number of observations to simulate</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A <code>data.frame</code> with <code>n</code> draws of <code>alpha</code> and <code>beta</code>.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -1,0 +1,125 @@
+# 4. Calibrations with a second predictor
+
+Some calibrations depend on a second variable, such as the concentration
+of an ion. This vignette shows how to include it as a second predictor:
+
+D47 = `alpha` + `beta` × `Temperature` + `gamma` × `Ion`
+
+It builds on
+[`vignette("bayesian", package = "bayclumpr")`](https://tripati-lab.github.io/bayclumpr/articles/bayesian.md).
+
+``` r
+
+library(bayclumpr)
+```
+
+## Preparing the data
+
+The calibration dataset needs the usual columns plus `Ion`. If `Ion` is
+measured with error, we also need its uncertainty (1 SD). We simulate
+100 observations where `Ion` raises D47 by 0.005 per unit. We then add
+measurement error to `Ion` with an SD of 0.1.
+
+``` r
+
+set.seed(3)
+ds <- cal.dataset(error = "S1", nobs = 100)
+
+trueIon <- rnorm(nrow(ds))
+ds$D47 <- ds$D47 + 0.005 * trueIon
+ds$IonError <- 0.1
+ds$Ion <- trueIon + rnorm(nrow(ds), 0, ds$IonError)
+```
+
+## Fitting the calibration
+
+[`cal.ion.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/cal.ion.bayesian.md)
+accounts for errors in `Temperature`, `D47`, and `Ion`. `IonError` can
+be a single value for all samples or one value per sample.
+
+``` r
+
+fit <- cal.ion.bayesian(calibrationData = ds, IonError = ds$IonError)
+fit
+#> Bayesian clumped isotope calibration
+#> Priors: Flat 
+#> 
+#> BLM1_fit
+#>         mean     sd   2.5%  97.5%
+#> alpha 0.2725 0.0097 0.2536 0.2910
+#> beta  0.0366 0.0008 0.0351 0.0382
+#> gamma 0.0051 0.0013 0.0025 0.0075
+#> sigma 0.0136 0.0010 0.0118 0.0157
+#> 
+#> Convergence
+#>     model max_Rhat min_ESS divergences
+#>  BLM1_fit        1    2348           0
+```
+
+`gamma` is the slope for `Ion`. Its posterior should be close to the
+simulated value of 0.005.
+
+When `Ion` is known without error, we leave out `IonError`:
+
+``` r
+
+fitKnown <- cal.ion.bayesian(calibrationData = ds)
+fitKnown
+#> Bayesian clumped isotope calibration
+#> Priors: Flat 
+#> 
+#> BLM1_fit
+#>         mean     sd   2.5%  97.5%
+#> alpha 0.2723 0.0098 0.2533 0.2917
+#> beta  0.0367 0.0008 0.0351 0.0382
+#> gamma 0.0050 0.0012 0.0026 0.0074
+#> sigma 0.0136 0.0010 0.0117 0.0158
+#> 
+#> Convergence
+#>     model max_Rhat min_ESS divergences
+#>  BLM1_fit   0.9999    2776           0
+```
+
+## Reconstructing temperatures
+
+The reconstruction dataset needs `Ion` for each sample, and `IonError`
+when we account for its uncertainty:
+
+``` r
+
+recData <- data.frame(
+  Sample = paste("Sample", 1:3),
+  D47 = c(0.6, 0.7, 0.8),
+  D47error = 0.01,
+  Ion = c(-1, 0, 1),
+  IonError = 0.1
+)
+```
+
+With `useIonError = TRUE`, the error in `Ion` is included in the
+reconstructed temperatures:
+
+``` r
+
+rec.ion.bayesian(calModel = fit, recData = recData, useIonError = TRUE)
+#>     Sample D47 D47error  meanTemp    error
+#> 1 Sample 1 0.6     0.01 59.179098 8.545411
+#> 2 Sample 2 0.7     0.01 19.941494 5.798269
+#> 3 Sample 3 0.8     0.01 -8.170901 4.334123
+```
+
+With `useIonError = FALSE`, `Ion` is treated as known:
+
+``` r
+
+rec.ion.bayesian(calModel = fit, recData = recData, useIonError = FALSE)
+#>     Sample D47 D47error  meanTemp    error
+#> 1 Sample 1 0.6     0.01 59.160601 8.639737
+#> 2 Sample 2 0.7     0.01 19.739268 5.778040
+#> 3 Sample 3 0.8     0.01 -8.261234 4.350976
+```
+
+As for
+[`rec.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.md),
+the error (1 SD) includes the uncertainty in the calibration, the
+scatter around the calibration line, and the error in `D47`.

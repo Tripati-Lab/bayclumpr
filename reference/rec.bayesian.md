@@ -1,45 +1,59 @@
-# This function generate temperature predictions (in 10^6/T2) based on a calibration dataset and target D47. Note that this approach additionally accounts for measured error in the target D47. This approach is congruent with the one used in McClelland et al. (2022).
+# Bayesian temperature reconstructions
 
-This function generate temperature predictions (in 10^6/T2) based on a
-calibration dataset and target D47. Note that this approach additionally
-accounts for measured error in the target D47. This approach is
-congruent with the one used in McClelland et al. (2022).
+Reconstructs temperatures (in degrees C) from the posterior draws of a
+Bayesian calibration and the measured D47 of each sample. This approach
+is congruent with the one used in McClelland et al. (2022).
 
 ## Usage
 
 ``` r
-rec.bayesian(
-  calModel,
-  recData,
-  iter = 1000,
-  mixed = FALSE,
-  postcalsamples = NULL,
-  MC = TRUE
-)
+rec.bayesian(calModel, recData, ndraws = 10000, model = NULL, ...)
 ```
 
 ## Arguments
 
 - calModel:
 
-  The stan model to be analyzed.
+  Posterior draws from
+  [`cal.draws()`](https://tripati-lab.github.io/bayclumpr/reference/cal.draws.md),
+  a result from
+  [`cal.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/cal.bayesian.md),
+  or a single `stanfit` from it.
 
 - recData:
 
-  The reconstruction dataset.
+  The reconstruction dataset. It needs the columns `Sample`, `D47`, and
+  `D47error` (1 SD of the D47 value). If D47 is the mean of several
+  replicates, `D47error` should be its standard error. Mixed models also
+  need `Material`, with the same labels used in the calibration.
 
-- iter:
+- ndraws:
 
-  Number of replicates to retain.
+  Number of draws used for each sample.
 
-- mixed:
+- model:
 
-  whether the model `calModel` is mixed or not.
+  The model to use when `calModel` holds more than one, such as
+  `"errors"`.
 
-- postcalsamples:
+- ...:
 
-  Number of posterior samples to analyze from the calibration step.
+  Arguments from earlier versions (`iter`, `mixed`, `postcalsamples`,
+  and `MC`). They are ignored.
 
-- MC:
+## Value
 
-  Multicore (TRUE/FALSE)
+A `data.frame` with `meanTemp` (posterior mean, in degrees C) and
+`error` (1 SD) for each sample. The error includes uncertainty in the
+calibration parameters, the residual SD of the calibration (`sigma`),
+and `D47error`. For the errors model, `sigma` excludes the measurement
+error of the calibration samples. For the other two models, it includes
+it.
+
+## Details
+
+With a flat prior on 10^6/T^2, the posterior of 10^6/T^2 for each
+calibration draw is normal. Its mean is (D47 - alpha) / beta and its SD
+is sqrt(sigma^2 + D47error^2) / beta. This function samples it directly,
+so no MCMC run is needed. Draws with 10^6/T^2 at or below zero are not
+physically possible. They are removed with a warning.
