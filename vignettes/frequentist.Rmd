@@ -35,7 +35,7 @@ The models differ in which measurement errors they account for.
 
 The weights in `cal.wols()` don't come from the reported errors. They come from a regression of the absolute residuals on the fitted values, so observations in regions with more scatter get less weight. `cal.deming()` and `cal.york()` use `TempError` and `D47error` for each observation.
 
-All four functions use bootstrapping. Each replicate resamples the calibration dataset with replacement and fits the model again. The result has one row per replicate, with the intercept (`alpha`) and slope (`beta`). We recommend at least 1,000 replicates.
+All four functions use bootstrapping. Each replicate resamples the calibration dataset with replacement and fits the model again. The result has one row per replicate, with the intercept (`alpha`), the slope (`beta`), and the residual SD of D47 around the fitted line (`sigma`). The default is 1,000 replicates. Replicates that fail are removed with a warning.
 
 ## Fitting the models
 
@@ -46,30 +46,28 @@ set.seed(3)
 ds <- cal.dataset(error = "S2", nobs = 50)
 
 fits <- list(
-  OLS = cal.ols(data = ds, replicates = 1000),
-  WOLS = cal.wols(data = ds, replicates = 1000),
-  Deming = cal.deming(data = ds, replicates = 1000),
-  York = cal.york(data = ds, replicates = 1000)
+  OLS = cal.ols(data = ds),
+  WOLS = cal.wols(data = ds),
+  Deming = cal.deming(data = ds),
+  York = cal.york(data = ds)
 )
 ```
 
-We summarize each model with the mean and 95% interval of the slope:
+`cal.summary()` gives the estimate, standard error, and 95% interval of each parameter. We combine the summaries of the four models into one table:
 
 ```{r}
-t(sapply(fits, function(f) {
-  c(alpha = mean(f$alpha),
-    beta = mean(f$beta),
-    beta_lower = quantile(f$beta, 0.025, names = FALSE),
-    beta_upper = quantile(f$beta, 0.975, names = FALSE))
-}))
+sums <- lapply(names(fits), function(m) cbind(model = m, cal.summary(fits[[m]])))
+do.call(rbind, sums)
 ```
+
+`SE` is the standard error of each estimate, which is the SD of the bootstrap replicates. `sigma` is itself an SD: the scatter of individual samples around the calibration line.
 
 ## Plotting a calibration
 
-`cal.ci()` takes the table of `alpha` and `beta` and returns the median line and its 95% interval over a range of temperatures. Here we plot the York calibration:
+`cal.ci()` takes the table of `alpha` and `beta` and returns the median line and its interval over a range of temperatures. Here we plot the York calibration:
 
 ```{r}
-ci <- cal.ci(fits$York, from = min(ds$Temperature), to = max(ds$Temperature))[[1]]
+ci <- cal.ci(fits$York, from = min(ds$Temperature), to = max(ds$Temperature))
 
 plot(D47 ~ Temperature, data = ds, pch = 16, col = "grey50",
      xlab = expression(10^6 / T^2 ~ (K)), ylab = expression(Delta[47]))
@@ -78,21 +76,30 @@ polygon(c(ci$x, rev(ci$x)), c(ci$ci_lower_est, rev(ci$ci_upper_est)),
 lines(ci$x, ci$median_est, col = "steelblue", lwd = 2)
 ```
 
+The `level` argument changes the probability covered by the interval.
+
 ## Reconstructing temperatures
 
-`rec.clumped()` reconstructs temperatures from any of these tables. We create a reconstruction dataset with three D47 values, each measured with two levels of precision:
+`rec.clumped()` reconstructs temperatures from any of these tables. We create a reconstruction dataset with three D47 values, each measured with two levels of precision. Each sample has three replicates (`N`):
 
 ```{r}
 recData <- data.frame(
   Sample = paste("Sample", 1:6),
   D47 = rep(c(0.6, 0.7, 0.8), 2),
-  D47error = rep(c(0.005, 0.02), each = 3)
+  D47error = rep(c(0.005, 0.02), each = 3),
+  N = 3
 )
 
 rec.clumped(recData = recData, obCal = fits$York)
 ```
 
-`meanTemp` is the temperature (°C) predicted from the mean slope and intercept. `error` is 1 SD. It combines the error in `D47` with the spread of slopes and intercepts in the bootstrap. It doesn't include the scatter of individual samples around the calibration line. The Bayesian reconstructions in `vignette("bayesian", package = "bayclumpr")` do include it.
+`meanTemp` is the temperature (°C) from the mean slope and intercept. `SE` is the standard error of the temperature, based on `D47error`. `SD` is the uncertainty of the temperature of a single replicate, based on `D47error` × sqrt(`N`). `median`, `lower`, and `upper` describe the 95% interval, based on `SE`.
+
+By default, both `SD` and `SE` combine the error in `D47` with the spread of slopes and intercepts in the bootstrap. It describes the temperature predicted by the calibration line. With `prediction = TRUE`, it also includes the scatter of individual samples around that line (`sigma`). This is the same kind of uncertainty given by `rec.bayesian()`:
+
+```{r}
+rec.clumped(recData = recData, obCal = fits$York, prediction = TRUE)
+```
 
 We can also reconstruct the same samples under every model:
 

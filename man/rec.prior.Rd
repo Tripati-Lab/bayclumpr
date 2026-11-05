@@ -17,3 +17,7 @@ A \code{data.frame} with \code{n} rows and the columns \code{alpha}, \code{beta}
 \description{
 Same as \code{cal.prior()}, with two extra columns: \code{x}, values of 10^6/T^2 close to 11, and \code{xC}, the same values in degrees C.
 }
+\examples{
+head(rec.prior("Weak", n = 100))
+
+}

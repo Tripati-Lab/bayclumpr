@@ -1,6 +1,5 @@
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/Tripati-Lab/bayclumpr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Tripati-Lab/bayclumpr/actions/workflows/R-CMD-check.yaml)
-[![CodeFactor](https://www.codefactor.io/repository/github/tripati-lab/bayclumpr/badge)](https://www.codefactor.io/repository/github/tripati-lab/bayclumpr)
   [![](https://img.shields.io/github/languages/code-size/tripati-lab/bayclumpr.svg)](https://github.com/tripati-lab/bayclumpr)
   [![](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)  
 

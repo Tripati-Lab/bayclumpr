@@ -82,4 +82,4 @@ With `useIonError = FALSE`, `Ion` is treated as known:
 rec.ion.bayesian(calModel = fit, recData = recData, useIonError = FALSE)
 ```
 
-As for `rec.bayesian()`, the error (1 SD) includes the uncertainty in the calibration, the scatter around the calibration line, and the error in `D47`.
+The columns are the same as in `rec.bayesian()`. `meanTemp` is the posterior mean temperature in °C, and `SE` is its standard error. `SD` is `NA` here because the dataset has neither `N` nor `D47sd`. Add one of them to get the uncertainty of a single replicate. `median`, `lower`, and `upper` describe the 95% posterior interval, based on `SE`. The uncertainty includes the calibration, the scatter around the calibration line, and the error in `D47`.

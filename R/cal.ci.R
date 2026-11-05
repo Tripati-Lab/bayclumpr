@@ -1,41 +1,36 @@
-#' This function is used to generate CI estimates at given intervals. It is currently
-#' used for plotting in BayClump.
+#' Calibration line with its interval
 #'
-#' @param data A \code{data.frame} with two columns named as beta and alpha.
-#' This should be the result of bootstrapping or the posterior distribution
-#' for a given calibration set.
-#' @param from the lower limit in x.
-#' @param to the upper limit in x.
-#' @param length.out the number of breaks.
+#' Computes the median calibration line and its interval over a range of temperatures. This is mostly used for plotting.
 #'
-#' @importFrom stats median quantile
+#' @param data A \code{data.frame} with the columns \code{alpha} and \code{beta}, such as a result from \code{cal.ols()} or \code{cal.draws()}. For mixed models, use the rows of a single material.
+#' @param from The lowest temperature (10^6/T^2).
+#' @param to The highest temperature (10^6/T^2).
+#' @param length.out Number of temperatures between \code{from} and \code{to}.
+#' @param level Probability covered by the interval.
+#'
+#' @return A \code{data.frame} with the columns \code{x} (temperature), \code{median_est} (median D47), and \code{ci_lower_est} and \code{ci_upper_est} (limits of the interval).
+#'
+#' @examples
+#' ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+#' ols <- cal.ols(ds, replicates = 100)
+#' ci <- cal.ci(ols, from = min(ds$Temperature), to = max(ds$Temperature))
+#' head(ci)
+#'
+#' @importFrom stats quantile
 #'
 #' @export
 
+cal.ci <- function(data, from, to, length.out = 100, level = 0.95) {
+  if ("Material" %in% names(data) && length(unique(data$Material)) > 1) {
+    stop("data has several materials. Use the rows of a single material.")
+  }
 
-cal.ci <- function(data, from, to, length.out = 100) {
-  sampleDataReplicates <- as.data.frame(data)
+  # One row per temperature and one column per draw
+  x <- seq(from, to, length.out = length.out)
+  pred <- outer(x, data$beta) + matrix(data$alpha, nrow = length(x), ncol = nrow(data), byrow = TRUE)
 
-  Theta_mat <- sampleDataReplicates
+  probs <- c(0.5, (1 - level) / 2, 1 - (1 - level) / 2)
+  q <- t(apply(pred, 1, quantile, probs = probs, names = FALSE))
 
-  # Points where to evaluate the model
-  x_eval <- seq(from, to, length.out = length.out)
-
-  # Matrix with the predictions
-  fun <- function(x, theta) as.numeric(theta["alpha"]) + (x * as.numeric(theta["beta"]))
-  Pred_mat <- apply(Theta_mat, 1, function(theta) fun(x_eval, theta))
-
-  # Pack the estimates for plotting
-  uncertaintyModels <- cbind(
-    x = x_eval,
-    as.data.frame(t(apply(Pred_mat, 1, function(y_est) {
-      c(
-        median_est = median(y_est),
-        ci_lower_est = quantile(y_est, probs = 0.025, names = FALSE),
-        ci_upper_est = quantile(y_est, probs = 0.975, names = FALSE)
-      )
-    })))
-  )
-
-  return(list(uncertaintyModels))
+  data.frame(x = x, median_est = q[, 1], ci_lower_est = q[, 2], ci_upper_est = q[, 3])
 }

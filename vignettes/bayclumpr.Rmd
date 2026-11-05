@@ -22,6 +22,7 @@ This vignette covers the data you need and a first example. The other vignettes 
 2. `vignette("frequentist", package = "bayclumpr")`: OLS, weighted OLS, Deming, and York regressions.
 3. `vignette("bayesian", package = "bayclumpr")`: Bayesian calibrations, priors, model comparison, and reconstructions.
 4. `vignette("covariates", package = "bayclumpr")`: Bayesian calibrations with a second predictor.
+5. `vignette("comparison", package = "bayclumpr")`: frequentist and Bayesian approaches on the same dataset, with plots of parameters and reconstructions.
 
 ```{r setup}
 library(bayclumpr)
@@ -29,12 +30,12 @@ library(bayclumpr)
 
 ## The workflow
 
-Every analysis has two steps. First, we fit a calibration. The result is a table with many plausible values of the intercept (`alpha`) and slope (`beta`). Second, we use that table to reconstruct temperatures for new samples. Frequentist functions get these values by bootstrapping. Bayesian functions get them from the posterior distribution.
+Every analysis has two steps. First, we fit a calibration. The result is a table with many plausible values of the intercept (`alpha`), the slope (`beta`), and the scatter around the calibration line (`sigma`). Second, we use that table to reconstruct temperatures for new samples. Frequentist functions get these values by bootstrapping. Bayesian functions get them from the posterior distribution.
 
 | Step | Frequentist | Bayesian |
 |:-----|:------------|:---------|
 | 1. Calibrate | `cal.ols()`, `cal.wols()`, `cal.deming()`, `cal.york()` | `cal.bayesian()`, `cal.ion.bayesian()` |
-| 2. Get the table of `alpha` and `beta` | Returned by the functions above | `cal.draws()` |
+| 2. Get the table of `alpha`, `beta`, and `sigma` | Returned by the functions above | `cal.draws()` |
 | 3. Reconstruct | `rec.clumped()` | `rec.bayesian()`, `rec.ion.bayesian()` |
 
 ## Preparing your data
@@ -53,22 +54,34 @@ Calibration datasets need the following columns:
 
 All uncertainties are 1 SD of the value in the table. If `D47` is the mean of several replicates, `D47error` should be the standard error of that mean. The same applies to `TempError`.
 
-Temperatures are often reported in °C. To convert them, we use T in kelvin. For the error, the SD of 10^6^/T^2^ is about 2 × 10^6^ × SD(T) / T^3^:
+### Converting temperatures
+
+Temperatures are often reported in °C. `temp2x()` converts them to 10^6^/T^2^ and propagates their errors. The result has the column names that the calibration functions expect:
 
 ```{r}
-tempC <- c(5, 25, 50)
-tempErrorC <- c(0.5, 0.5, 1)
-tempK <- tempC + 273.15
-
-data.frame(
-  Temperature = 10^6 / tempK^2,
-  TempError = 2 * 10^6 * tempErrorC / tempK^3
-)
+temp2x(c(5, 25, 50), tempError = c(0.5, 0.5, 1))
 ```
+
+`x2temp()` converts them back to °C.
+
+### Averaging replicates
+
+When each sample has several replicate measurements, `avg.replicates()` averages them and returns the standard error of each mean as `D47error`:
+
+```{r}
+reps <- data.frame(
+  Sample = rep(c("A", "B"), each = 3),
+  D47 = c(0.601, 0.598, 0.605, 0.702, 0.695, 0.699),
+  Material = "calcite"
+)
+avg.replicates(reps)
+```
+
+By default, the SE comes from the SD of each sample's replicates. With few replicates, this SD is poorly constrained. The `pooledSD` argument uses a common SD instead, such as the long-term SD of standards measured in the same lab.
 
 ### Reconstruction data
 
-Reconstruction datasets need `Sample`, `D47`, and `D47error`. Mixed models also need `Material`, with the same labels used in the calibration. Reconstructed temperatures are always returned in °C.
+Reconstruction datasets need `Sample`, `D47`, and `D47error`. Mixed models also need `Material`, with the same labels used in the calibration.
 
 ## Simulated data
 
@@ -87,21 +100,31 @@ We fit an OLS calibration with 1,000 bootstrap replicates. Each row of the resul
 ```{r}
 ols <- cal.ols(data = ds, replicates = 1000)
 head(ols)
-colMeans(ols)
 ```
 
-Next, we create a reconstruction dataset for three samples and reconstruct their temperatures:
+`cal.summary()` summarizes any calibration in the same way:
+
+```{r}
+cal.summary(ols)
+```
+
+`estimate` is the mean of each parameter and `SE` is its standard error, which is the SD of the bootstrap replicates. `sigma` is itself an SD: the scatter of individual samples around the calibration line.
+
+Next, we create a reconstruction dataset for three samples, each measured three times, and reconstruct their temperatures:
 
 ```{r}
 recData <- data.frame(
   Sample = c("Sample 1", "Sample 2", "Sample 3"),
   D47 = c(0.6, 0.7, 0.8),
-  D47error = 0.01
+  D47error = 0.006,
+  N = 3
 )
 
 rec.clumped(recData = recData, obCal = ols)
 ```
 
-`meanTemp` is the reconstructed temperature in °C. `error` is its uncertainty (1 SD). It combines the error in `D47` with the uncertainty in the calibration.
+All temperatures are in °C. `meanTemp` is the temperature from the mean slope and intercept. `SE` is the standard error of the temperature, based on `D47error`, the standard error of the mean D47. `SD` is the uncertainty of the temperature of a single replicate, based on the SD of the replicates (`D47error` × sqrt(`N`)). Both include the uncertainty in the calibration. `SD` is `NA` when the dataset has neither `N` nor `D47sd`.
+
+`median`, `lower`, and `upper` are the median and the limits of the 95% interval, based on `SE`. Temperature is a nonlinear function of D47, so the interval is not symmetric around the median.
 
 From here, `vignette("frequentist", package = "bayclumpr")` compares the four frequentist models. `vignette("bayesian", package = "bayclumpr")` shows the same workflow under a Bayesian framework.

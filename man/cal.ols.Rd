@@ -4,15 +4,24 @@
 \alias{cal.ols}
 \title{Fit OLS regression models on a given calibration dataset}
 \usage{
-cal.ols(data, replicates, samples = NULL)
+cal.ols(data, replicates = 1000, samples = NULL)
 }
 \arguments{
 \item{data}{The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K) and \code{D47}.}
 
 \item{replicates}{Number of bootstrap replicates}
 
-\item{samples}{Number of samples per bootstrap replicate}
+\item{samples}{Number of samples per bootstrap replicate. Defaults to the number of rows in \code{data}.}
+}
+\value{
+A \code{data.frame} with one row per replicate and the columns \code{alpha} (intercept), \code{beta} (slope), and \code{sigma} (residual SD of D47 around the fitted line, including measurement error). Failed replicates are removed with a warning.
 }
 \description{
-Fit OLS regression models on a given calibration dataset
+Fits an ordinary least squares regression of D47 on temperature to bootstrap replicates of the calibration dataset. Measurement errors are not used.
+}
+\examples{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+ols <- cal.ols(ds, replicates = 100)
+colMeans(ols)
+
 }

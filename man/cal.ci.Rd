@@ -2,23 +2,31 @@
 % Please edit documentation in R/cal.ci.R
 \name{cal.ci}
 \alias{cal.ci}
-\title{This function is used to generate CI estimates at given intervals. It is currently
-used for plotting in BayClump.}
+\title{Calibration line with its interval}
 \usage{
-cal.ci(data, from, to, length.out = 100)
+cal.ci(data, from, to, length.out = 100, level = 0.95)
 }
 \arguments{
-\item{data}{A \code{data.frame} with two columns named as beta and alpha.
-This should be the result of bootstrapping or the posterior distribution
-for a given calibration set.}
+\item{data}{A \code{data.frame} with the columns \code{alpha} and \code{beta}, such as a result from \code{cal.ols()} or \code{cal.draws()}. For mixed models, use the rows of a single material.}
 
-\item{from}{the lower limit in x.}
+\item{from}{The lowest temperature (10^6/T^2).}
 
-\item{to}{the upper limit in x.}
+\item{to}{The highest temperature (10^6/T^2).}
 
-\item{length.out}{the number of breaks.}
+\item{length.out}{Number of temperatures between \code{from} and \code{to}.}
+
+\item{level}{Probability covered by the interval.}
+}
+\value{
+A \code{data.frame} with the columns \code{x} (temperature), \code{median_est} (median D47), and \code{ci_lower_est} and \code{ci_upper_est} (limits of the interval).
 }
 \description{
-This function is used to generate CI estimates at given intervals. It is currently
-used for plotting in BayClump.
+Computes the median calibration line and its interval over a range of temperatures. This is mostly used for plotting.
+}
+\examples{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+ols <- cal.ols(ds, replicates = 100)
+ci <- cal.ci(ols, from = min(ds$Temperature), to = max(ds$Temperature))
+head(ci)
+
 }

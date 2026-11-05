@@ -1,4 +1,61 @@
 url: https://tripati-lab.github.io/bayclumpr/
+
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    left: [intro, articles, reference, news]
+    right: [search, github]
+
+articles:
+- title: Guides
+  navbar: ~
+  contents:
+  - frequentist
+  - bayesian
+  - covariates
+  - comparison
+
+reference:
+- title: Prepare data
+  desc: Convert temperatures, average replicates, and simulate datasets.
+  contents:
+  - temp2x
+  - avg.replicates
+  - cal.dataset
+
+- title: Calibrate (frequentist)
+  desc: Bootstrap calibrations. Each returns a table of alpha, beta, and sigma.
+  contents:
+  - cal.ols
+  - cal.wols
+  - cal.deming
+  - cal.york
+
+- title: Calibrate (Bayesian)
+  desc: Calibrations in Stan, posterior draws, and model comparison.
+  contents:
+  - cal.bayesian
+  - cal.ion.bayesian
+  - cal.draws
+  - cal.compare
+
+- title: Priors
+  desc: Draw from the priors used in the Bayesian calibrations.
+  contents:
+  - cal.prior
+  - rec.prior
+
+- title: Reconstruct
+  desc: Reconstruct temperatures from a table of alpha, beta, and sigma.
+  contents:
+  - rec.clumped
+  - rec.bayesian
+  - rec.ion.bayesian
+
+- title: Summarize and plot
+  desc: Estimates with their standard errors, and calibration lines with their intervals.
+  contents:
+  - cal.summary
+  - cal.ci

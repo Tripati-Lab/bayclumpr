@@ -2,20 +2,35 @@
 % Please edit documentation in R/rec.clumped.R
 \name{rec.clumped}
 \alias{rec.clumped}
-\title{This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).}
+\title{Temperature reconstructions from bootstrap calibrations}
 \usage{
-rec.clumped(recData, obCal, ndraws = 10000)
+rec.clumped(recData, obCal, ndraws = 10000, prediction = FALSE, level = 0.95)
 }
 \arguments{
-\item{recData}{Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error.}
+\item{recData}{Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error. Add \code{N} (number of replicates) or \code{D47sd} (SD of the replicates) to also get \code{SD}. The output of \code{avg.replicates()} has both.}
 
-\item{obCal}{A \code{data.frame} summarizing the distribution of slopes and intercepts}
+\item{obCal}{A \code{data.frame} with the slopes and intercepts of the calibration, such as a result from \code{cal.ols()}. It also needs \code{sigma} when \code{prediction = TRUE}.}
 
-\item{ndraws}{Number of Monte Carlo draws used to estimate the error.}
+\item{ndraws}{Number of Monte Carlo draws used for each sample.}
+
+\item{prediction}{Whether to include the residual scatter of the calibration (\code{sigma}). Use \code{TRUE} to get the same kind of uncertainty as \code{rec.bayesian()}.}
+
+\item{level}{Probability covered by the interval.}
 }
 \value{
-A \code{data.frame} with \code{meanTemp} (temperature from the mean slope and intercept, in degrees C) and \code{error} (1 SD) for each sample. The error propagates \code{D47error} and the joint spread of slopes and intercepts in \code{obCal}. It does not include the residual scatter of the calibration.
+A \code{data.frame} with one row per sample. \code{meanTemp} is the temperature from the mean slope and intercept (in degrees C). \code{SE} is the standard error of the temperature, propagated from \code{D47error}. \code{SD} is the SD of the temperature of a single replicate, propagated from the SD of the replicates (\code{D47error} x sqrt(\code{N}), or \code{D47sd} when \code{N} is missing). It is \code{NA} without replicate information. Both include the uncertainty in the calibration. \code{median}, \code{lower}, and \code{upper} are the median and the limits of the interval, based on \code{SE}.
 }
 \description{
-This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).
+Reconstructs temperatures (in degrees C) from the bootstrap replicates of a calibration on 10^6/T^2 (T in K) and the measured D47 of each sample.
+}
+\details{
+The uncertainty always includes \code{D47error} and the joint spread of slopes and intercepts in \code{obCal}. With \code{prediction = FALSE}, it describes the temperature predicted by the calibration line. With \code{prediction = TRUE}, it also includes the scatter of individual samples around that line. Draws with 10^6/T^2 at or below zero are not physically possible. They are removed with a warning.
+}
+\examples{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+ols <- cal.ols(ds, replicates = 100)
+recData <- data.frame(Sample = c("A", "B"), D47 = c(0.6, 0.7), D47error = 0.01, N = 3)
+rec.clumped(recData, ols)
+rec.clumped(recData, ols, prediction = TRUE)
+
 }

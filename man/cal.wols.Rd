@@ -4,15 +4,27 @@
 \alias{cal.wols}
 \title{Fit weighted OLS regression models on a given calibration dataset}
 \usage{
-cal.wols(data, replicates, samples = NULL)
+cal.wols(data, replicates = 1000, samples = NULL)
 }
 \arguments{
 \item{data}{The calibration dataset. It needs the columns \code{Temperature} (10^6/T^2, with T in K) and \code{D47}.}
 
 \item{replicates}{Number of bootstrap replicates}
 
-\item{samples}{Number of samples per bootstrap replicate}
+\item{samples}{Number of samples per bootstrap replicate. Defaults to the number of rows in \code{data}.}
+}
+\value{
+A \code{data.frame} with one row per replicate and the columns \code{alpha} (intercept), \code{beta} (slope), and \code{sigma} (residual SD of D47 around the fitted line, including measurement error). Failed replicates are removed with a warning.
 }
 \description{
-Fit weighted OLS regression models on a given calibration dataset
+Fits a weighted least squares regression of D47 on temperature to bootstrap replicates of the calibration dataset. The weights don't come from the reported errors. They come from a regression of the absolute OLS residuals on the fitted values, so observations in regions with more scatter get less weight.
+}
+\details{
+A replicate fails when the regression of the residuals predicts a non-positive value, since the weights can't be computed.
+}
+\examples{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+wols <- cal.wols(ds, replicates = 100)
+colMeans(wols)
+
 }

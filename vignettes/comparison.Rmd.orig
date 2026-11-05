@@ -1,0 +1,329 @@
+---
+title: "5. Comparing frequentist and Bayesian approaches"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5. Comparing frequentist and Bayesian approaches}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "comparison-",
+  fig.width = 8,
+  fig.height = 3.5
+)
+```
+
+This vignette fits frequentist and Bayesian calibrations to the same dataset and compares their parameters and reconstructions. It then shows two cases where the Bayesian approach narrows uncertainty: small datasets with informative priors, and mixed models where one material has few observations. We use simulated datasets, so we know the true values. It builds on `vignette("frequentist", package = "bayclumpr")` and `vignette("bayesian", package = "bayclumpr")`.
+
+```{r setup}
+library(bayclumpr)
+```
+
+## The dataset
+
+We simulate 50 observations under the intermediate error scenario. The true intercept is 0.268 and the true slope is 0.0369.
+
+```{r}
+set.seed(3)
+ds <- cal.dataset(error = "S2", nobs = 50)
+```
+
+Two true values of `sigma` are useful here. The scatter of individual samples around the line, without measurement error, is 0.0225. Adding the measurement errors in `D47` and `Temperature` raises it to about 0.0239.
+
+## Fitting the calibrations
+
+We fit the four frequentist models and two Bayesian models: one that uses measurement errors and one that ignores them. We use weak priors, so the Bayesian results depend on the data and not on prior information. This makes the comparison with the frequentist models fair.
+
+```{r, message = FALSE}
+freq <- list(
+  OLS = cal.ols(data = ds),
+  WOLS = cal.wols(data = ds),
+  Deming = cal.deming(data = ds),
+  York = cal.york(data = ds)
+)
+
+bayes <- cal.bayesian(calibrationData = ds, models = c("errors", "noerrors"), priors = "Weak")
+```
+
+`cal.draws()` puts the Bayesian draws in the same shape as the bootstrap replicates, so we can store all six calibrations in one list:
+
+```{r}
+fits <- c(freq, list(
+  BayesErrors = cal.draws(bayes, model = "errors"),
+  BayesNoErrors = cal.draws(bayes, model = "noerrors")
+))
+```
+
+## Comparing parameters
+
+`cal.summary()` summarizes every calibration in the same way. We combine the six summaries into one table:
+
+```{r}
+pars <- do.call(rbind, lapply(names(fits), function(m) cbind(method = m, cal.summary(fits[[m]]))))
+pars
+```
+
+To plot them, we use a small function that draws the median and the 95% interval of each method:
+
+```{r}
+# Median and interval of each method, with the true value as a dashed line
+plotRanges <- function(est, lower, upper, labels, truth, xlab, main) {
+  y <- rev(seq_along(est))
+  plot(est, y, xlim = range(lower, upper, truth), ylim = c(0.5, length(est) + 0.5),
+       yaxt = "n", pch = 16, xlab = xlab, ylab = "", main = main)
+  segments(lower, y, upper, y)
+  axis(2, at = y, labels = labels, las = 1, cex.axis = 0.8)
+  abline(v = truth, lty = 2, col = "grey40")
+}
+```
+
+```{r parameters}
+op <- par(mfrow = c(1, 3), mar = c(4, 8, 2, 1))
+for (p in c("alpha", "beta", "sigma")) {
+  d <- pars[pars$parameter == p, ]
+  truth <- switch(p, alpha = 0.268, beta = 0.0369, sigma = c(0.0225, 0.0239))
+  plotRanges(d$median, d$lower, d$upper, d$method, truth, xlab = p, main = p)
+}
+par(op)
+```
+
+A few things to look for in these plots:
+
+- In this scenario, the errors in `Temperature` are small relative to the spread of temperatures. Ignoring them shrinks the OLS slope by only about 0.15%, so all methods should recover similar slopes.
+- Bootstrap intervals and posterior intervals answer different questions, but with 50 observations and weak priors, they tend to have similar widths.
+- `sigma` differs by design. The Bayesian errors model removes the measurement errors, so its `sigma` estimates 0.0225. The other methods report the residual SD around the fitted line, so their `sigma` estimates 0.0239. With 50 observations, each estimate has a standard error of about 0.002, so they won't match these values exactly.
+
+## Comparing reconstructions
+
+We create four samples with known temperatures: 0, 15, 30, and 45 °C. Their D47 values fall exactly on the true calibration line. Each sample is the mean of four replicates with a standard error of 0.005.
+
+```{r}
+trueTemp <- c(0, 15, 30, 45)
+
+recData <- data.frame(
+  Sample = paste(trueTemp, "C"),
+  D47 = 0.268 + 0.0369 * temp2x(trueTemp)$Temperature,
+  D47error = 0.005,
+  N = 4
+)
+```
+
+The Bayesian reconstructions include the scatter of individual samples around the calibration line (`sigma`). For a fair comparison, we use `prediction = TRUE` in `rec.clumped()`, so the frequentist reconstructions include it too.
+
+```{r}
+recs <- do.call(rbind, lapply(names(fits), function(m) {
+  r <- if (m %in% names(freq)) {
+    rec.clumped(recData = recData, obCal = fits[[m]], prediction = TRUE)
+  } else {
+    rec.bayesian(calModel = fits[[m]], recData = recData)
+  }
+  cbind(method = m, r)
+}))
+
+recs[, c("method", "Sample", "meanTemp", "SD", "SE", "median", "lower", "upper")]
+```
+
+We plot the median and the 95% interval of each sample under each method. The dashed lines show the true temperatures.
+
+```{r reconstructions, fig.height = 6}
+op <- par(mfrow = c(2, 2), mar = c(4, 8, 2, 1))
+for (i in seq_along(trueTemp)) {
+  d <- recs[recs$Sample == recData$Sample[i], ]
+  plotRanges(d$median, d$lower, d$upper, d$method, trueTemp[i], xlab = "Temperature (°C)", main = recData$Sample[i])
+}
+par(op)
+```
+
+A few things to look for in these plots:
+
+- The intervals widen at higher temperatures. D47 changes less per degree when it's warm, so the same error in D47 spans more degrees.
+- The intervals are not symmetric around the median, for the same reason.
+- In this dataset, most of the width comes from `sigma`, the scatter of individual samples around the calibration line. It is about five times larger than `D47error`. Without it (`prediction = FALSE`), the frequentist intervals only describe the temperature predicted by the line, and they are much narrower.
+
+## Without the residual scatter
+
+To see how much `sigma` contributes, we compare the standard errors of the OLS reconstructions with and without it:
+
+```{r}
+data.frame(
+  Sample = recData$Sample,
+  SE_line = rec.clumped(recData = recData, obCal = fits$OLS)$SE,
+  SE_prediction = rec.clumped(recData = recData, obCal = fits$OLS, prediction = TRUE)$SE
+)
+```
+
+Use `prediction = FALSE` when the question is about the temperature predicted by the calibration line. Use `prediction = TRUE`, or `rec.bayesian()`, when the question is about the temperature of an individual sample.
+
+## When the Bayesian approach narrows uncertainty
+
+The frequentist and Bayesian results above are very similar. This is expected. Both fit the same model to the same 50 observations, and the weak priors add almost no information. A Bayesian model narrows uncertainty only when it uses information that the frequentist fit doesn't have. The next two cases show this.
+
+### Small datasets with informative priors
+
+The precision of a prior adds to the precision of the data. With 50 observations, the slope has an SE of about 0.0017 from the data alone. A prior SD of 0.004 narrows it by only about 8%. With 10 observations, the SE from the data alone is about 0.004, the same as the prior SD. The prior should then narrow the slope's interval by about 30%.
+
+We simulate 10 observations and fit OLS and three Bayesian versions of the errors model:
+
+- `BayesWeak` uses weak priors.
+- `BayesInformative` uses the informative preset. Its means (0.231 and 0.039) are not the true values of this simulation (0.268 and 0.0369).
+- `BayesMatched` uses the same SDs as the informative preset, centered on the true values. This is what a prior from an earlier calibration in the same reference frame would look like.
+
+```{r, message = FALSE}
+small <- cal.dataset(error = "S2", nobs = 10)
+matched <- list(alpha = c(0.268, 0.065), beta = c(0.0369, 0.004))
+
+smallFits <- list(
+  OLS = cal.ols(data = small),
+  BayesWeak = cal.draws(cal.bayesian(calibrationData = small, models = "errors", priors = "Weak")),
+  BayesInformative = cal.draws(cal.bayesian(calibrationData = small, models = "errors", priors = "Informative")),
+  BayesMatched = cal.draws(cal.bayesian(calibrationData = small, models = "errors", priors = matched))
+)
+
+smallPars <- do.call(rbind, lapply(names(smallFits), function(m) cbind(method = m, cal.summary(smallFits[[m]]))))
+smallPars
+```
+
+```{r small-parameters, fig.height = 3}
+op <- par(mfrow = c(1, 2), mar = c(4, 9, 2, 1))
+for (p in c("alpha", "beta")) {
+  d <- smallPars[smallPars$parameter == p, ]
+  plotRanges(d$median, d$lower, d$upper, d$method, switch(p, alpha = 0.268, beta = 0.0369), xlab = p, main = p)
+}
+par(op)
+```
+
+Both informative priors should give narrower intervals than OLS and the weak priors. The matched prior narrows them around the true values. The informative preset can also pull the estimates toward its own means. A prior that doesn't suit the data gives narrower intervals around the wrong values.
+
+How much does this help reconstructions? `rec.clumped()` works with any table of draws, Bayesian ones included. We use it to reconstruct the four samples from earlier in two ways: for the calibration line alone (`prediction = FALSE`) and for individual samples (`prediction = TRUE`).
+
+```{r}
+smallLine <- lapply(smallFits, function(f) rec.clumped(recData = recData, obCal = f))
+smallSample <- lapply(smallFits, function(f) rec.clumped(recData = recData, obCal = f, prediction = TRUE))
+```
+
+To plot both, we use a second function. For each method, the thick blue segment is the 95% interval for the calibration line and the thin black segment is the 95% interval for an individual sample.
+
+```{r}
+# Intervals for the calibration line (thick) and for individual samples (thin)
+plotRecs <- function(line, sample, labels, truth, main) {
+  y <- rev(seq_along(labels))
+  plot(sample$median, y, xlim = range(sample$lower, sample$upper, truth), ylim = c(0.5, length(y) + 0.5),
+       yaxt = "n", pch = 16, xlab = "Temperature (°C)", ylab = "", main = main)
+  segments(sample$lower, y, sample$upper, y)
+  segments(line$lower, y, line$upper, y, lwd = 4, col = "steelblue")
+  axis(2, at = y, labels = labels, las = 1, cex.axis = 0.8)
+  abline(v = truth, lty = 2, col = "grey40")
+}
+```
+
+```{r small-reconstructions, fig.height = 6}
+op <- par(mfrow = c(2, 2), mar = c(4, 9, 2, 1))
+for (i in seq_along(trueTemp)) {
+  line <- do.call(rbind, lapply(smallLine, function(r) r[i, ]))
+  sample <- do.call(rbind, lapply(smallSample, function(r) r[i, ]))
+  plotRecs(line, sample, names(smallFits), trueTemp[i], main = recData$Sample[i])
+}
+par(op)
+```
+
+The same comparison as SEs:
+
+```{r}
+lineSE <- sapply(smallLine, function(r) r$SE)
+sampleSE <- sapply(smallSample, function(r) r$SE)
+rownames(lineSE) <- rownames(sampleSE) <- recData$Sample
+
+round(lineSE, 2)
+round(sampleSE, 2)
+```
+
+The informative priors should narrow the thick segments, which describe the calibration line. The thin segments change much less. For individual samples, `sigma` still makes up most of the uncertainty, and priors on `alpha` and `beta` can't reduce it.
+
+### Unbalanced materials in mixed models
+
+Mixed models help when one material has few observations. Its intercept and slope borrow strength from the other materials, and `sigma` is estimated from all observations.
+
+We simulate three materials with the same slope. Materials A and C have 40 observations each. Material B has only 5, and its D47 values are 0.02 higher, so its true intercept is 0.288.
+
+```{r}
+dsA <- cal.dataset(error = "S2", nobs = 40)
+dsA$Material <- "A"
+dsB <- cal.dataset(error = "S2", nobs = 5)
+dsB$Material <- "B"
+dsB$D47 <- dsB$D47 + 0.02
+dsC <- cal.dataset(error = "S2", nobs = 40)
+dsC$Material <- "C"
+dsC$D47 <- dsC$D47 - 0.01
+dsAll <- rbind(dsA, dsB, dsC)
+```
+
+We compare three ways to calibrate material B: OLS on B alone, a Bayesian model on B alone, and a mixed model with all three materials. Bootstrapping five observations is fragile, so a few replicates may fail.
+
+```{r, message = FALSE}
+mixedDraws <- cal.draws(cal.bayesian(calibrationData = dsAll, models = "mixed_noerrors", priors = "Weak"))
+
+matFits <- list(
+  OLS_B = cal.ols(data = dsB),
+  Bayes_B = cal.draws(cal.bayesian(calibrationData = dsB, models = "noerrors", priors = "Weak")),
+  Mixed = mixedDraws[mixedDraws$Material == "B", ]
+)
+
+cols <- c("parameter", "estimate", "SE", "median", "lower", "upper")
+matPars <- do.call(rbind, lapply(names(matFits), function(m) cbind(method = m, cal.summary(matFits[[m]])[, cols])))
+matPars
+```
+
+```{r mixed-parameters, fig.height = 3}
+op <- par(mfrow = c(1, 2), mar = c(4, 9, 2, 1))
+for (p in c("alpha", "beta")) {
+  d <- matPars[matPars$parameter == p, ]
+  plotRanges(d$median, d$lower, d$upper, d$method, switch(p, alpha = 0.288, beta = 0.0369), xlab = p, main = p)
+}
+par(op)
+```
+
+The mixed model should give much narrower intervals for material B, since its slope is pulled toward the slopes of A and C.
+
+Next, we reconstruct four samples of material B with the same true temperatures as before. Their D47 values are 0.02 higher, as in the calibration.
+
+```{r}
+recB <- recData
+recB$D47 <- recB$D47 + 0.02
+recB$Material <- "B"
+
+matLine <- lapply(matFits, function(f) rec.clumped(recData = recB, obCal = f))
+matSample <- lapply(matFits, function(f) rec.clumped(recData = recB, obCal = f, prediction = TRUE))
+```
+
+```{r mixed-reconstructions, fig.height = 6}
+op <- par(mfrow = c(2, 2), mar = c(4, 9, 2, 1))
+for (i in seq_along(trueTemp)) {
+  line <- do.call(rbind, lapply(matLine, function(r) r[i, ]))
+  sample <- do.call(rbind, lapply(matSample, function(r) r[i, ]))
+  plotRecs(line, sample, names(matFits), trueTemp[i], main = recB$Sample[i])
+}
+par(op)
+```
+
+The same comparison as SEs:
+
+```{r}
+matLineSE <- sapply(matLine, function(r) r$SE)
+matSampleSE <- sapply(matSample, function(r) r$SE)
+rownames(matLineSE) <- rownames(matSampleSE) <- recB$Sample
+
+round(matLineSE, 2)
+round(matSampleSE, 2)
+```
+
+Here, both segments should narrow under the mixed model. The thick segments narrow because the slope of material B borrows strength from A and C. The thin segments narrow too, because `sigma` is now estimated from 85 observations instead of 5. With only five observations, `sigma` is poorly known, and the Bayesian model on B alone carries that uncertainty into its reconstructions.
+
+Partial pooling assumes that materials are similar. Here, all three share the same slope, so pooling helps. If material B truly had a different slope, the mixed model would pull it toward the others. Also, with only three materials, the SDs among materials mostly reflect their priors.
+
+## A note on single datasets
+
+This vignette compares methods on one simulated dataset. A single dataset can't show which method is better on average, since every method will miss the true values by chance in some datasets. To evaluate methods, repeat the same steps on many simulated datasets and count how often each 95% interval contains the true value.

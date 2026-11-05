@@ -5,6 +5,11 @@
 #'
 #' @return A \code{data.frame} with \code{n} draws of \code{alpha} and \code{beta}.
 #'
+#' @examples
+#' pr <- cal.prior("Informative", n = 1000)
+#' quantile(pr$beta, c(0.025, 0.975))
+#' cal.prior(list(alpha = c(0.25, 0.05), beta = c(0.038, 0.003)), n = 5)
+#'
 #' @importFrom stats rnorm
 #'
 #' @export

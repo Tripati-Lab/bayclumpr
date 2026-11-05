@@ -16,5 +16,13 @@ The result of \code{loo::loo_compare()}. The best model is in the first row.
 Compares the models in a \code{cal.bayesian()} result using approximate leave-one-out cross-validation (PSIS-LOO).
 }
 \details{
-In the errors model, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
+In models with measurement errors, the pointwise log-likelihood is conditional on the latent true temperatures. A warning is given when any Pareto k value is above 0.7, since the comparison may then be unreliable.
+}
+\examples{
+\donttest{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+fit <- cal.bayesian(ds, models = c("errors", "noerrors"), numSavedSteps = 1000)
+cal.compare(fit)
+}
+
 }

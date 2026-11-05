@@ -19,3 +19,8 @@ A \code{data.frame} with the true and measured values of \code{Temperature} and 
 \description{
 Simulates a calibration dataset with alpha = 0.268 and beta = 0.0369. True temperatures (10^6/T^2) are drawn from a normal distribution with mean 12 and SD 2.
 }
+\examples{
+ds <- cal.dataset(error = "S2", nobs = 50, seed = 1)
+head(ds)
+
+}

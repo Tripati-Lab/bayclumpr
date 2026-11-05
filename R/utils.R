@@ -1,7 +1,7 @@
-# Internal helpers shared by the Bayesian functions
+# Internal helpers shared by the calibration and reconstruction functions
 
-# Names of the models in the returned objects
-.model_names <- c(errors = "BLM1_fit", noerrors = "BLM1_fit_NoErrors", mixed = "BLM3_fit")
+# Names of the Bayesian models in the returned objects
+.model_names <- c(errors = "BLM1_fit", noerrors = "BLM1_fit_NoErrors", mixed_errors = "BLM3_fit_Errors", mixed_noerrors = "BLM3_fit")
 
 # Models compiled during the session
 .models <- new.env(parent = emptyenv())
@@ -17,7 +17,10 @@
     return(get("stanmodels", envir = ns)[[name]])
   }
   if (is.null(.models[[name]])) {
-    file <- system.file("stan", paste0(name, ".stan"), package = "bayclumpr", mustWork = TRUE)
+    file <- system.file("stan", paste0(name, ".stan"), package = "bayclumpr")
+    if (!nzchar(file)) {
+      stop("The Stan model ", name, ".stan was not found in the installed package. Check that inst/stan in the package source has the six .stan files, then reinstall bayclumpr.")
+    }
     .models[[name]] <- rstan::stan_model(file = file, model_name = name)
   }
   .models[[name]]
@@ -57,7 +60,7 @@
     stop("The calibration dataset has missing values.")
   }
   if (max(data$Temperature) > 20) {
-    warning("Temperature should be in 10^6/T^2 (T in K). Values above 20 suggest Celsius or Kelvin.")
+    warning("Temperature should be in 10^6/T^2 (T in K). Values above 20 suggest Celsius or Kelvin. See temp2x().")
   }
   if ("TempError" %in% cols && !all(data$TempError > 0)) {
     stop("TempError must be a positive 1 SD for every observation.")
@@ -82,7 +85,40 @@
   if (!all(data$D47error >= 0)) {
     stop("D47error must be a non-negative 1 SD for every sample.")
   }
+  if (!is.null(data$N) && !isTRUE(all(data$N >= 1))) {
+    stop("N must be at least 1 for every sample.")
+  }
   invisible(TRUE)
+}
+
+#' Residual SD of D47 around a calibration line
+#'
+#' @noRd
+.resid_sd <- function(d, alpha, beta) {
+  sqrt(sum((d$D47 - alpha - beta * d$Temperature)^2) / (nrow(d) - 2))
+}
+
+#' Bootstrap a calibration
+#'
+#' Resamples the rows of the dataset, fits the model, and returns one row per replicate. Failed replicates are removed with a warning.
+#'
+#' @noRd
+.bootstrap <- function(data, replicates, samples, fit) {
+  if (is.null(samples)) samples <- nrow(data)
+  reps <- lapply(seq_len(replicates), function(i) {
+    d <- data[sample(nrow(data), samples, replace = TRUE), ]
+    res <- tryCatch(fit(d), error = function(e) NULL)
+    if (is.null(res) || !all(is.finite(res))) NULL else res
+  })
+
+  failed <- sum(sapply(reps, is.null))
+  if (failed == replicates) {
+    stop("All bootstrap replicates failed.")
+  }
+  if (failed > 0) {
+    warning(failed, " of ", replicates, " bootstrap replicates failed and were removed.")
+  }
+  as.data.frame(do.call(rbind, reps))
 }
 
 #' Sample a compiled model with the settings shared by all fits
@@ -134,10 +170,12 @@
 
 #' Reconstruct temperatures from calibration draws
 #'
-#' With a flat prior on 10^6/T^2, the posterior of 10^6/T^2 for each calibration draw is normal, so it is sampled directly.
+#' With a flat prior on 10^6/T^2, the posterior of 10^6/T^2 for each calibration draw is normal, so it is sampled directly. Returns the mean, SD, SE, median, and interval of the temperatures, plus the temperature from the mean slope and intercept.
+#'
+#' The SE propagates D47error, the standard error of the mean D47. The SD propagates the SD of a single replicate, taken from D47error * sqrt(N) or from D47sd. It is NA without replicate information. The interval is based on the SE.
 #'
 #' @noRd
-.rec_exact <- function(draws, recData, ndraws, useIon = FALSE, useIonError = FALSE) {
+.rec_exact <- function(draws, recData, ndraws, level = 0.95, useIon = FALSE, useIonError = FALSE) {
   if (!all(c("alpha", "beta", "sigma") %in% names(draws))) {
     stop("Calibration draws need the columns alpha, beta, and sigma.")
   }
@@ -148,7 +186,18 @@
   # Mixed models give one set of draws per material
   mixed <- "Material" %in% names(draws)
   if (mixed && (is.null(recData$Material) || !all(as.character(recData$Material) %in% as.character(draws$Material)))) {
-    stop("Materials in recData must match those in the calibration.")
+    stop("Materials in recData must match those in the calibration. Use newMaterial = TRUE for materials that are not in the calibration.")
+  }
+
+  probs <- c(0.5, (1 - level) / 2, 1 - (1 - level) / 2)
+
+  # D47 SD of a single replicate, when replicate information is available
+  oneSD <- if (!is.null(recData$N)) {
+    recData$D47error * sqrt(recData$N)
+  } else if (!is.null(recData$D47sd)) {
+    recData$D47sd
+  } else {
+    rep(NA_real_, nrow(recData))
   }
 
   res <- t(sapply(seq_len(nrow(recData)), function(i) {
@@ -162,23 +211,35 @@
       mu <- mu - d$gamma[k] * ion
     }
 
-    x <- (mu + rnorm(ndraws, 0, sqrt(d$sigma[k]^2 + recData$D47error[i]^2))) / d$beta[k]
+    # Temperatures for a given measurement error in D47, keeping physically possible values of 10^6/T^2
+    temps <- function(err) {
+      x <- (mu + rnorm(ndraws, 0, sqrt(d$sigma[k]^2 + err^2))) / d$beta[k]
+      sqrt(10^6 / x[x > 0]) - 273.15
+    }
+    tempSE <- temps(recData$D47error[i])
+    tempSD <- if (is.na(oneSD[i])) NA else sd(temps(oneSD[i]))
 
-    # Keep physically possible values of 10^6/T^2
-    ok <- x > 0
-    temp <- sqrt(10^6 / x[ok]) - 273.15
-    c(mean(temp), sd(temp), sum(!ok))
+    # Temperature from the mean slope and intercept
+    plug <- sqrt(10^6 * mean(d$beta) / (recData$D47[i] - mean(d$alpha))) - 273.15
+
+    c(mean(tempSE), tempSD, sd(tempSE), quantile(tempSE, probs, names = FALSE), plug, ndraws - length(tempSE))
   }))
 
-  if (sum(res[, 3]) > 0) {
-    warning(sum(res[, 3]), " draws had 10^6/T^2 at or below zero and were removed.")
+  if (sum(res[, 8]) > 0) {
+    warning(sum(res[, 8]), " draws had 10^6/T^2 at or below zero and were removed.")
   }
 
-  cbind.data.frame(
+  out <- cbind.data.frame(
     Sample = recData$Sample,
     D47 = recData$D47,
     D47error = recData$D47error,
     meanTemp = res[, 1],
-    error = res[, 2]
+    SD = res[, 2],
+    SE = res[, 3],
+    median = res[, 4],
+    lower = res[, 5],
+    upper = res[, 6]
   )
+  attr(out, "plug") <- res[, 7]
+  out
 }

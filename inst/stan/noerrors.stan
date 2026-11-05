@@ -10,24 +10,34 @@ data {
   real<lower=0> beta_sd;
 }
 
+transformed data {
+  // Temperature is centered to improve sampling
+  real x_mean = mean(x);
+}
+
 parameters {
-  real alpha;
+  real alpha_c;
   real beta;
   real<lower=0> sigma;
 }
 
+transformed parameters {
+  // Intercept at 10^6/T^2 = 0, where the priors are set
+  real alpha = alpha_c - beta * x_mean;
+}
+
 model {
   if (flat == 0) {
-    alpha ~ normal(alpha_mu, alpha_sd);
-    beta ~ normal(beta_mu, beta_sd);
+    target += normal_lpdf(alpha | alpha_mu, alpha_sd);
+    target += normal_lpdf(beta | beta_mu, beta_sd);
   }
   sigma ~ cauchy(0, 5);
-  y ~ normal(alpha + beta * x, sigma);
+  y ~ normal(alpha_c + beta * (x - x_mean), sigma);
 }
 
 generated quantities {
   vector[N] log_lik;
   for (i in 1:N) {
-    log_lik[i] = normal_lpdf(y[i] | alpha + beta * x[i], sigma);
+    log_lik[i] = normal_lpdf(y[i] | alpha_c + beta * (x[i] - x_mean), sigma);
   }
 }

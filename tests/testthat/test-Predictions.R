@@ -13,7 +13,7 @@ test_that("Number of samples is correct", {
   expect_equal(nrow(a), 2)
 })
 
-test_that("Number of columns is correct", {
+test_that("Columns are correct", {
   a <- rec.clumped(recData = recData, obCal = paramdist)
-  expect_equal(ncol(a), 5)
+  expect_equal(colnames(a), c("Sample", "D47", "D47error", "meanTemp", "SD", "SE", "median", "lower", "upper"))
 })

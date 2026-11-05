@@ -1,44 +1,43 @@
-#' This function performs temperature reconstructions (in degrees C) from a calibration fit on 10^6/T^2 (T in K).
+#' Temperature reconstructions from bootstrap calibrations
 #'
-#' @param recData Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error.
-#' @param obCal A \code{data.frame} summarizing the distribution of slopes and intercepts
-#' @param ndraws Number of Monte Carlo draws used to estimate the error.
+#' Reconstructs temperatures (in degrees C) from the bootstrap replicates of a calibration on 10^6/T^2 (T in K) and the measured D47 of each sample.
 #'
-#' @return A \code{data.frame} with \code{meanTemp} (temperature from the mean slope and intercept, in degrees C) and \code{error} (1 SD) for each sample. The error propagates \code{D47error} and the joint spread of slopes and intercepts in \code{obCal}. It does not include the residual scatter of the calibration.
+#' @param recData Reconstruction dataset. It needs the columns \code{Sample}, \code{D47}, and \code{D47error} (1 SD of the D47 value). If D47 is the mean of several replicates, \code{D47error} should be its standard error. Add \code{N} (number of replicates) or \code{D47sd} (SD of the replicates) to also get \code{SD}. The output of \code{avg.replicates()} has both.
+#' @param obCal A \code{data.frame} with the slopes and intercepts of the calibration, such as a result from \code{cal.ols()}. It also needs \code{sigma} when \code{prediction = TRUE}.
+#' @param ndraws Number of Monte Carlo draws used for each sample.
+#' @param prediction Whether to include the residual scatter of the calibration (\code{sigma}). Use \code{TRUE} to get the same kind of uncertainty as \code{rec.bayesian()}.
+#' @param level Probability covered by the interval.
 #'
-#' @importFrom stats rnorm sd
+#' @details The uncertainty always includes \code{D47error} and the joint spread of slopes and intercepts in \code{obCal}. With \code{prediction = FALSE}, it describes the temperature predicted by the calibration line. With \code{prediction = TRUE}, it also includes the scatter of individual samples around that line. Draws with 10^6/T^2 at or below zero are not physically possible. They are removed with a warning.
+#'
+#' @return A \code{data.frame} with one row per sample. \code{meanTemp} is the temperature from the mean slope and intercept (in degrees C). \code{SE} is the standard error of the temperature, propagated from \code{D47error}. \code{SD} is the SD of the temperature of a single replicate, propagated from the SD of the replicates (\code{D47error} x sqrt(\code{N}), or \code{D47sd} when \code{N} is missing). It is \code{NA} without replicate information. Both include the uncertainty in the calibration. \code{median}, \code{lower}, and \code{upper} are the median and the limits of the interval, based on \code{SE}.
+#'
+#' @examples
+#' ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+#' ols <- cal.ols(ds, replicates = 100)
+#' recData <- data.frame(Sample = c("A", "B"), D47 = c(0.6, 0.7), D47error = 0.01, N = 3)
+#' rec.clumped(recData, ols)
+#' rec.clumped(recData, ols, prediction = TRUE)
 #'
 #' @export
 
 rec.clumped <- function(recData,
-                       obCal,
-                       ndraws = 10000) {
+                        obCal,
+                        ndraws = 10000,
+                        prediction = FALSE,
+                        level = 0.95) {
 
-  # Slopes against 10^6/T^2 are positive
-  if (mean(obCal$beta) <= 0) {
-    stop("The calibration must use Temperature in 10^6/T^2 (T in K).")
+  .check_rec_data(recData, c("Sample", "D47", "D47error"))
+
+  if (prediction && is.null(obCal$sigma)) {
+    stop("obCal needs a sigma column when prediction = TRUE. Refit the calibration with this version of bayclumpr.")
   }
+  if (!prediction) obCal$sigma <- 0
 
-  temp <- sqrt((mean(obCal$beta) * 10^6) /
-    (recData$D47 - mean(obCal$alpha))) - 273.15
+  res <- .rec_exact(obCal, recData, ndraws, level = level)
 
-  # Resample slope and intercept pairs from the calibration
-  idx <- sample(nrow(obCal), ndraws, replace = TRUE)
-  alpha <- obCal$alpha[idx]
-  beta <- obCal$beta[idx]
-
-  # Propagate calibration and D47 uncertainty for each sample
-  error <- sapply(seq_len(nrow(recData)), function(i) {
-    d47 <- rnorm(ndraws, recData$D47[i], recData$D47error[i])
-    sd(sqrt((beta * 10^6) / (d47 - alpha)) - 273.15, na.rm = TRUE)
-  })
-
-  recTempS <- cbind.data.frame(
-    Sample = recData$Sample,
-    D47 = recData$D47,
-    D47error = recData$D47error,
-    meanTemp = temp,
-    error = error
-  )
-  return(recTempS)
+  # Use the temperature from the mean slope and intercept as the point estimate
+  res$meanTemp <- attr(res, "plug")
+  attr(res, "plug") <- NULL
+  res
 }

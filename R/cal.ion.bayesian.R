@@ -9,9 +9,17 @@
 #' @param cores Number of cores used to run the chains in parallel.
 #' @param MC Deprecated. Use \code{cores} instead.
 #'
-#' @details The model accounts for errors in \code{Temperature} and \code{D47}, and in \code{Ion} when \code{IonError} is given. Its \code{sigma} is the scatter left after removing the measurement error in \code{D47}. The true values of each predictor have a normal prior with a mean and SD estimated from the data. The intercept (alpha) and both slopes (beta and gamma) have flat priors.
+#' @details The model accounts for errors in \code{Temperature} and \code{D47}, and in \code{Ion} when \code{IonError} is given. Its \code{sigma} is the scatter left after removing the measurement error in \code{D47}. The true values of each predictor have a normal prior with a mean and SD estimated from the data. The intercept (alpha) and both slopes (beta and gamma) have flat priors. Both predictors are centered inside the model to improve sampling, and alpha is reported for \code{Temperature} = 0 and \code{Ion} = 0.
 #'
 #' @return An object of class \code{bayclump_cal} with a single \code{stanfit} named \code{BLM1_fit}. Use \code{cal.draws()} to get the posterior draws.
+#'
+#' @examples
+#' \donttest{
+#' ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+#' ds$Ion <- rnorm(nrow(ds))
+#' fit <- cal.ion.bayesian(ds, IonError = 0.1, numSavedSteps = 1000)
+#' fit
+#' }
 #'
 #' @import rstan
 #'

@@ -4,16 +4,26 @@
 \alias{cal.draws}
 \title{Posterior draws from a Bayesian calibration}
 \usage{
-cal.draws(fit, model = NULL)
+cal.draws(fit, model = NULL, newMaterial = FALSE)
 }
 \arguments{
 \item{fit}{A result from \code{cal.bayesian()} or \code{cal.ion.bayesian()}, or a single \code{stanfit} from it.}
 
-\item{model}{The model to use when \code{fit} holds more than one. Use \code{"errors"}, \code{"noerrors"}, or \code{"mixed"}, or the name of the element (such as \code{"BLM1_fit"}).}
+\item{model}{The model to use when \code{fit} holds more than one. Use \code{"errors"}, \code{"noerrors"}, \code{"mixed_errors"}, or \code{"mixed_noerrors"}, or the name of the element (such as \code{"BLM1_fit"}).}
+
+\item{newMaterial}{For mixed models, whether to return draws for a material that is not in the calibration. These draws combine the uncertainty in the shared means with the spread among materials.}
 }
 \value{
-A \code{data.frame} with one row per draw and the columns \code{alpha}, \code{beta}, and \code{sigma}. Models with a second predictor also have \code{gamma}. Mixed models have one set of draws per material, stacked, with a \code{Material} column.
+A \code{data.frame} with one row per draw and the columns \code{alpha}, \code{beta}, and \code{sigma}. Models with a second predictor also have \code{gamma}. Mixed models have one set of draws per material, stacked, with a \code{Material} column. With \code{newMaterial = TRUE}, there is a single set of draws and no \code{Material} column.
 }
 \description{
 Returns the posterior draws of a Bayesian calibration as a \code{data.frame}, in the same shape as the results of the bootstrap calibrations (\code{cal.ols()} and others). The result can be passed to \code{rec.bayesian()}, \code{rec.clumped()}, or \code{cal.ci()}.
+}
+\examples{
+\donttest{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+fit <- cal.bayesian(ds, models = "errors", numSavedSteps = 1000)
+head(cal.draws(fit))
+}
+
 }

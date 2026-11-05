@@ -20,19 +20,20 @@ This vignette covers Bayesian calibrations in `bayclumpr`. We fit the models, ch
 library(bayclumpr)
 ```
 
-## The three models
+## The four models
 
-`cal.bayesian()` fits up to three models. We choose them with the `models` argument.
+`cal.bayesian()` fits up to four models. They cover every combination of two choices: whether measurement errors are used, and whether intercepts and slopes vary by `Material`. We choose them with the `models` argument.
 
-| `models` | Name in the result | Errors in `Temperature` | Errors in `D47` | Varies by `Material` |
-|:---------|:-------------------|:-----------------------:|:---------------:|:--------------------:|
-| `"errors"` | `BLM1_fit` | Yes | Yes | No |
-| `"noerrors"` | `BLM1_fit_NoErrors` | No | No | No |
-| `"mixed"` | `BLM3_fit` | No | No | Yes |
+| `models` | Name in the result | Measurement errors | Varies by `Material` |
+|:---------|:-------------------|:------------------:|:--------------------:|
+| `"errors"` | `BLM1_fit` | Yes | No |
+| `"noerrors"` | `BLM1_fit_NoErrors` | No | No |
+| `"mixed_errors"` | `BLM3_fit_Errors` | Yes | Yes |
+| `"mixed_noerrors"` | `BLM3_fit` | No | Yes |
 
-All three models estimate `sigma`, the scatter around the calibration line. In the errors model, `sigma` is the scatter left after removing the measurement error in `D47`. In the other two models, it includes the measurement error.
+Models with measurement errors use `TempError` and `D47error` for each observation. All models estimate `sigma`, the scatter around the calibration line. With measurement errors, `sigma` is the scatter left after removing the measurement error in `D47`. Without them, it includes the measurement error.
 
-The mixed model lets intercepts and slopes vary by `Material` around shared means. It needs at least two materials and is skipped otherwise.
+Mixed models let intercepts and slopes vary by `Material` around shared means. They need at least two materials and are skipped otherwise.
 
 The models run in Stan. If they weren't compiled when `bayclumpr` was installed, the first fit of each model in a session compiles it. This can take a minute or more. Later fits in the same session start right away.
 
@@ -52,7 +53,7 @@ fit <- cal.bayesian(calibrationData = ds, models = "errors")
 fit
 ```
 
-The first table summarizes the posterior distribution of each parameter. The second table checks convergence. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
+The first table is the same summary given by `cal.summary()`. `estimate` is the posterior mean of each parameter and `SE` is its standard error, which is the SD of the posterior draws. `sigma` is itself an SD: the scatter of individual samples around the calibration line. The second table checks convergence. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
 
 ## Choosing priors
 
@@ -101,7 +102,7 @@ The best model is in the first row. When `elpd_diff` is small relative to `se_di
 
 ## Mixed models
 
-To show the mixed model, we simulate a second material with an intercept that is 0.02 higher:
+To show the mixed models, we simulate a second material with D47 values that are 0.02 higher:
 
 ```{r}
 ds1 <- cal.dataset(error = "S2", nobs = 50)
@@ -110,15 +111,15 @@ ds2$D47 <- ds2$D47 + 0.02
 ds2$Material <- 2
 dsMixed <- rbind(ds1, ds2)
 
-fitMixed <- cal.bayesian(calibrationData = dsMixed, models = "mixed")
+fitMixed <- cal.bayesian(calibrationData = dsMixed, models = c("mixed_errors", "mixed_noerrors"))
 fitMixed
 ```
 
-The intercepts and slopes of the two materials are pulled toward shared means (partial pooling). The SDs among materials have half-normal priors with scales of 0.1 for intercepts and 0.01 for slopes. With fewer than five materials, these SDs mostly reflect their priors.
+The intercepts and slopes of the two materials are pulled toward shared means (partial pooling). The SDs among materials have half-normal priors with scales of 0.1 for the intercept at the mean calibration temperature and 0.01 for the slope. With fewer than five materials, these SDs mostly reflect their priors.
 
 ## Reconstructing temperatures
 
-`cal.draws()` returns the posterior draws of a model as a table. It has the same shape as the frequentist tables in `vignette("frequentist", package = "bayclumpr")`, plus a column for `sigma`.
+`cal.draws()` returns the posterior draws of a model as a table. It has the same columns as the frequentist tables in `vignette("frequentist", package = "bayclumpr")`.
 
 ```{r}
 draws <- cal.draws(fit)
@@ -131,13 +132,14 @@ We create a reconstruction dataset and pass it to `rec.bayesian()` with the draw
 recData <- data.frame(
   Sample = paste("Sample", 1:6),
   D47 = rep(c(0.6, 0.7, 0.8), 2),
-  D47error = rep(c(0.005, 0.02), each = 3)
+  D47error = rep(c(0.005, 0.02), each = 3),
+  N = 3
 )
 
 rec.bayesian(calModel = draws, recData = recData)
 ```
 
-`meanTemp` is the posterior mean temperature in °C. `error` is 1 SD. It includes the uncertainty in the calibration, the scatter around the calibration line (`sigma`), and the error in `D47`. For this reason, these errors are larger than those from `rec.clumped()`, which doesn't include `sigma`.
+`meanTemp` is the posterior mean temperature in °C. `SE` is the standard error of the temperature, based on `D47error`, the standard error of the mean D47. `SD` is the uncertainty of the temperature of a single replicate, based on `D47error` × sqrt(`N`). `SD` is `NA` when the dataset has neither `N` nor `D47sd`. `median`, `lower`, and `upper` describe the 95% posterior interval, based on `SE`. Both `SD` and `SE` include the calibration, the scatter around the calibration line (`sigma`), and the error in `D47`. `rec.clumped()` gives the same kind of uncertainty with `prediction = TRUE`.
 
 `rec.bayesian()` doesn't run another MCMC. For each posterior draw, the temperature has a known distribution, so it's sampled directly. This takes less than a second.
 
@@ -146,6 +148,8 @@ We can also pass the result of `cal.bayesian()` and name the model:
 ```{r}
 rec.bayesian(calModel = fits, recData = recData, model = "noerrors")
 ```
+
+### Reconstructions with mixed models
 
 For mixed models, the reconstruction dataset needs a `Material` column with the same labels used in the calibration:
 
@@ -157,7 +161,14 @@ recMixed <- data.frame(
   Material = c(1, 2)
 )
 
-rec.bayesian(calModel = fitMixed, recData = recMixed)
+rec.bayesian(calModel = fitMixed, recData = recMixed, model = "mixed_errors")
+```
+
+Mixed models can also reconstruct temperatures for a material that is not in the calibration. With `newMaterial = TRUE`, the intercept and slope are drawn from the shared means and the spread among materials. The intervals are wider, since we don't know where the new material falls among the others.
+
+```{r}
+recNew <- data.frame(Sample = "Sample 3", D47 = 0.62, D47error = 0.01)
+rec.bayesian(calModel = fitMixed, recData = recNew, model = "mixed_errors", newMaterial = TRUE)
 ```
 
 ## Tips for faster fits

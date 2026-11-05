@@ -8,6 +8,10 @@
 #'
 #' @return A \code{data.frame} with the true and measured values of \code{Temperature} and \code{D47}, their errors (1 SD), and \code{Material} (always 1).
 #'
+#' @examples
+#' ds <- cal.dataset(error = "S2", nobs = 50, seed = 1)
+#' head(ds)
+#'
 #' @importFrom stats rnorm
 #'
 #' @export

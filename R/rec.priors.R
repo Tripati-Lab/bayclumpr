@@ -7,6 +7,9 @@
 #'
 #' @return A \code{data.frame} with \code{n} rows and the columns \code{alpha}, \code{beta}, \code{x}, and \code{xC}.
 #'
+#' @examples
+#' head(rec.prior("Weak", n = 100))
+#'
 #' @importFrom stats rnorm
 #'
 #' @export
