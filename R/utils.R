@@ -21,7 +21,13 @@
     if (!nzchar(file)) {
       stop("The Stan model ", name, ".stan was not found in the installed package. Check that inst/stan in the package source has the six .stan files, then reinstall bayclumpr.")
     }
-    .models[[name]] <- rstan::stan_model(file = file, model_name = name)
+    # Compiling at run time needs BH, RcppEigen, and StanHeaders, which binary installs of rstan don't include
+    .models[[name]] <- tryCatch(
+      rstan::stan_model(file = file, model_name = name),
+      error = function(e) {
+        stop("Compiling the Stan model ", name, " failed: ", conditionMessage(e), " Install bayclumpr from source so the models are compiled at install time, or install the packages BH, RcppEigen, and StanHeaders.", call. = FALSE)
+      }
+    )
   }
   .models[[name]]
 }
