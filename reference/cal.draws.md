@@ -12,7 +12,7 @@ or
 ## Usage
 
 ``` r
-cal.draws(fit, model = NULL)
+cal.draws(fit, model = NULL, newMaterial = FALSE)
 ```
 
 ## Arguments
@@ -28,12 +28,31 @@ cal.draws(fit, model = NULL)
 - model:
 
   The model to use when `fit` holds more than one. Use `"errors"`,
-  `"noerrors"`, or `"mixed"`, or the name of the element (such as
-  `"BLM1_fit"`).
+  `"noerrors"`, `"mixed_errors"`, or `"mixed_noerrors"`, or the name of
+  the element (such as `"BLM1_fit"`).
+
+- newMaterial:
+
+  For mixed models, whether to return draws for a material that is not
+  in the calibration. These draws combine the uncertainty in the shared
+  means with the spread among materials.
 
 ## Value
 
 A `data.frame` with one row per draw and the columns `alpha`, `beta`,
 and `sigma`. Models with a second predictor also have `gamma`. Mixed
 models have one set of draws per material, stacked, with a `Material`
-column.
+column. With `newMaterial = TRUE`, there is a single set of draws and no
+`Material` column.
+
+## Examples
+
+``` r
+# \donttest{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+fit <- cal.bayesian(ds, models = "errors", numSavedSteps = 1000)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+head(cal.draws(fit))
+#> Error: object 'fit' not found
+# }
+```

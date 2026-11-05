@@ -59,4 +59,19 @@ The model accounts for errors in `Temperature` and `D47`, and in `Ion`
 when `IonError` is given. Its `sigma` is the scatter left after removing
 the measurement error in `D47`. The true values of each predictor have a
 normal prior with a mean and SD estimated from the data. The intercept
-(alpha) and both slopes (beta and gamma) have flat priors.
+(alpha) and both slopes (beta and gamma) have flat priors. Both
+predictors are centered inside the model to improve sampling, and alpha
+is reported for `Temperature` = 0 and `Ion` = 0.
+
+## Examples
+
+``` r
+# \donttest{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+ds$Ion <- rnorm(nrow(ds))
+fit <- cal.ion.bayesian(ds, IonError = 0.1, numSavedSteps = 1000)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+fit
+#> Error: object 'fit' not found
+# }
+```

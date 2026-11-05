@@ -16,13 +16,14 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
-<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
     <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
-    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">5. Comparing frequentist and Bayesian approaches</a></li>
   </ul></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Tripati-Lab/bayclumpr/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -88,9 +89,22 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The model accounts for errors in <code>Temperature</code> and <code>D47</code>, and in <code>Ion</code> when <code>IonError</code> is given. Its <code>sigma</code> is the scatter left after removing the measurement error in <code>D47</code>. The true values of each predictor have a normal prior with a mean and SD estimated from the data. The intercept (alpha) and both slopes (beta and gamma) have flat priors.</p>
+    <p>The model accounts for errors in <code>Temperature</code> and <code>D47</code>, and in <code>Ion</code> when <code>IonError</code> is given. Its <code>sigma</code> is the scatter left after removing the measurement error in <code>D47</code>. The true values of each predictor have a normal prior with a mean and SD estimated from the data. The intercept (alpha) and both slopes (beta and gamma) have flat priors. Both predictors are centered inside the model to improve sampling, and alpha is reported for <code>Temperature</code> = 0 and <code>Ion</code> = 0.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ds</span><span class="op">$</span><span class="va">Ion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">cal.ion.bayesian</span><span class="op">(</span><span class="va">ds</span>, IonError <span class="op">=</span> <span class="fl">0.1</span>, numSavedSteps <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')</span>
+<span class="r-in"><span><span class="va">fit</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fit' not found</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

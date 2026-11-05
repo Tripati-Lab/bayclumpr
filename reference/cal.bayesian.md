@@ -1,14 +1,16 @@
 # Bayesian calibration of the clumped isotope paleothermometer
 
-Fits up to three Bayesian linear regressions of D47 on temperature using
-Stan.
+Fits up to four Bayesian linear regressions of D47 on temperature using
+Stan. The models cover every combination of two choices: whether
+measurement errors are used, and whether intercepts and slopes vary by
+material.
 
 ## Usage
 
 ``` r
 cal.bayesian(
   calibrationData,
-  models = c("errors", "noerrors", "mixed"),
+  models = c("errors", "noerrors", "mixed_errors", "mixed_noerrors"),
   priors = "Informative",
   numSavedSteps = 3000,
   chains = 4,
@@ -26,11 +28,13 @@ print(x, digits = 4, ...)
 
   The calibration dataset. It needs the columns `Temperature` (10^6/T^2,
   with T in K), `TempError` (1 SD of `Temperature`), `D47`, and
-  `D47error` (1 SD of `D47`). The mixed model also needs `Material`.
+  `D47error` (1 SD of `D47`). Mixed models also need `Material`.
 
 - models:
 
-  The models to fit. Use any of `"errors"`, `"noerrors"`, and `"mixed"`.
+  The models to fit. Use any of `"errors"`, `"noerrors"`,
+  `"mixed_errors"`, and `"mixed_noerrors"`. `"mixed"` is kept as another
+  name for `"mixed_noerrors"`.
 
 - priors:
 
@@ -62,7 +66,7 @@ print(x, digits = 4, ...)
 
 - digits:
 
-  Number of decimal places to print.
+  Number of significant digits to print.
 
 - ...:
 
@@ -71,31 +75,47 @@ print(x, digits = 4, ...)
 ## Value
 
 An object of class `bayclump_cal`. It is a list of `stanfit` objects
-named `BLM1_fit`, `BLM1_fit_NoErrors`, and `BLM3_fit`, with the priors
-and a convergence summary stored as attributes. Use
+named as in the table above, with the priors and a convergence summary
+stored as attributes. Printing it shows
+[`cal.summary()`](https://tripati-lab.github.io/bayclumpr/reference/cal.summary.md)
+for each model and the convergence summary. Use
+[`cal.summary()`](https://tripati-lab.github.io/bayclumpr/reference/cal.summary.md)
+to get these tables,
 [`cal.draws()`](https://tripati-lab.github.io/bayclumpr/reference/cal.draws.md)
-to get the posterior draws and
+to get the posterior draws, and
 [`cal.compare()`](https://tripati-lab.github.io/bayclumpr/reference/cal.compare.md)
 to compare models.
 
 ## Details
 
-The three models are:
+The four models are:
 
-- `"errors"` (`BLM1_fit`) accounts for errors in both `Temperature` and
-  `D47`. Its `sigma` is the scatter left after removing the measurement
-  error in `D47`. The true temperatures have a normal prior with a mean
-  and SD estimated from the data.
+|  |  |  |  |
+|----|----|----|----|
+| `models` | Name in the result | Measurement errors | Varies by `Material` |
+| `"errors"` | `BLM1_fit` | Yes | No |
+| `"noerrors"` | `BLM1_fit_NoErrors` | No | No |
+| `"mixed_errors"` | `BLM3_fit_Errors` | Yes | Yes |
+| `"mixed_noerrors"` | `BLM3_fit` | No | Yes |
 
-- `"noerrors"` (`BLM1_fit_NoErrors`) ignores both errors, so its `sigma`
-  includes the measurement error.
+Models with measurement errors use `TempError` and `D47error` for each
+observation. Their `sigma` is the scatter left after removing the
+measurement error in `D47`. The true temperatures have a normal prior
+with a mean and SD estimated from the data. Models without measurement
+errors ignore both errors, so their `sigma` includes the measurement
+error.
 
-- `"mixed"` (`BLM3_fit`) lets intercepts and slopes vary by `Material`
-  around shared means (partial pooling). It ignores measurement errors.
-  The priors apply to the shared means. The SDs among materials have
-  half-normal priors with scales of 0.1 (intercepts) and 0.01 (slopes).
-  With fewer than five materials, these SDs are mostly set by their
-  priors. The model is skipped when there are fewer than two materials.
+Mixed models let intercepts and slopes vary by `Material` around shared
+means (partial pooling). The priors set by `priors` apply to the shared
+means. The SDs among materials have half-normal priors with scales of
+0.1 for the intercept at the mean calibration temperature and 0.01 for
+the slope. With fewer than five materials, these SDs are mostly set by
+their priors. Mixed models are skipped when there are fewer than two
+materials.
+
+Temperature is centered inside every model to improve sampling. Results
+are reported for the usual intercept at 10^6/T^2 = 0, where the priors
+are also set.
 
 The `"Informative"` values are the ones used in earlier versions of this
 package. Check that they suit the reference frame of your data, or set
@@ -104,3 +124,15 @@ your own.
 A warning is given when a model shows signs of poor convergence: Rhat
 above 1.01, fewer than 100 effective draws per chain, or divergent
 transitions.
+
+## Examples
+
+``` r
+# \donttest{
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+fit <- cal.bayesian(ds, models = "errors", numSavedSteps = 1000)
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+fit
+#> Error: object 'fit' not found
+# }
+```

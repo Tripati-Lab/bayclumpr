@@ -34,15 +34,16 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+<li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
     <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
-    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">5. Comparing frequentist and Bayesian approaches</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -77,25 +78,23 @@ reconstruct temperatures. If you’re new to the package, start with
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">bayclumpr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="the-three-models">The three models<a class="anchor" aria-label="anchor" href="#the-three-models"></a>
+<h2 id="the-four-models">The four models<a class="anchor" aria-label="anchor" href="#the-four-models"></a>
 </h2>
-<p><code><a href="../reference/cal.bayesian.html">cal.bayesian()</a></code> fits up to three models. We choose them
-with the <code>models</code> argument.</p>
+<p><code><a href="../reference/cal.bayesian.html">cal.bayesian()</a></code> fits up to four models. They cover every
+combination of two choices: whether measurement errors are used, and
+whether intercepts and slopes vary by <code>Material</code>. We choose
+them with the <code>models</code> argument.</p>
 <table class="table">
 <colgroup>
-<col width="10%">
-<col width="21%">
-<col width="26%">
-<col width="18%">
-<col width="23%">
+<col width="13%">
+<col width="27%">
+<col width="27%">
+<col width="30%">
 </colgroup>
 <thead><tr class="header">
 <th align="left"><code>models</code></th>
 <th align="left">Name in the result</th>
-<th align="center">Errors in <code>Temperature</code>
-</th>
-<th align="center">Errors in <code>D47</code>
-</th>
+<th align="center">Measurement errors</th>
 <th align="center">Varies by <code>Material</code>
 </th>
 </tr></thead>
@@ -104,7 +103,6 @@ with the <code>models</code> argument.</p>
 <td align="left"><code>"errors"</code></td>
 <td align="left"><code>BLM1_fit</code></td>
 <td align="center">Yes</td>
-<td align="center">Yes</td>
 <td align="center">No</td>
 </tr>
 <tr class="even">
@@ -112,24 +110,30 @@ with the <code>models</code> argument.</p>
 <td align="left"><code>BLM1_fit_NoErrors</code></td>
 <td align="center">No</td>
 <td align="center">No</td>
-<td align="center">No</td>
 </tr>
 <tr class="odd">
-<td align="left"><code>"mixed"</code></td>
+<td align="left"><code>"mixed_errors"</code></td>
+<td align="left"><code>BLM3_fit_Errors</code></td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr class="even">
+<td align="left"><code>"mixed_noerrors"</code></td>
 <td align="left"><code>BLM3_fit</code></td>
-<td align="center">No</td>
 <td align="center">No</td>
 <td align="center">Yes</td>
 </tr>
 </tbody>
 </table>
-<p>All three models estimate <code>sigma</code>, the scatter around the
-calibration line. In the errors model, <code>sigma</code> is the scatter
-left after removing the measurement error in <code>D47</code>. In the
-other two models, it includes the measurement error.</p>
-<p>The mixed model lets intercepts and slopes vary by
-<code>Material</code> around shared means. It needs at least two
-materials and is skipped otherwise.</p>
+<p>Models with measurement errors use <code>TempError</code> and
+<code>D47error</code> for each observation. All models estimate
+<code>sigma</code>, the scatter around the calibration line. With
+measurement errors, <code>sigma</code> is the scatter left after
+removing the measurement error in <code>D47</code>. Without them, it
+includes the measurement error.</p>
+<p>Mixed models let intercepts and slopes vary by <code>Material</code>
+around shared means. They need at least two materials and are skipped
+otherwise.</p>
 <p>The models run in Stan. If they weren’t compiled when
 <code>bayclumpr</code> was installed, the first fit of each model in a
 session compiles it. This can take a minute or more. Later fits in the
@@ -152,21 +156,25 @@ The true values are <code>alpha</code> = 0.268 and <code>beta</code> =
 <span><span class="co">#&gt; Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM1_fit</span></span>
-<span><span class="co">#&gt;         mean     sd   2.5%  97.5%</span></span>
-<span><span class="co">#&gt; alpha 0.2589 0.0214 0.2160 0.2995</span></span>
-<span><span class="co">#&gt; beta  0.0375 0.0018 0.0341 0.0411</span></span>
-<span><span class="co">#&gt; sigma 0.0247 0.0028 0.0196 0.0310</span></span>
+<span><span class="co">#&gt;  parameter estimate       SE  median   lower   upper</span></span>
+<span><span class="co">#&gt;      alpha  0.25881 0.020695 0.25869 0.21710 0.29843</span></span>
+<span><span class="co">#&gt;       beta  0.03750 0.001717 0.03749 0.03419 0.04095</span></span>
+<span><span class="co">#&gt;      sigma  0.02463 0.002906 0.02439 0.01948 0.03066</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>
-<span><span class="co">#&gt;  BLM1_fit   0.9993    5838           0</span></span></code></pre></div>
-<p>The first table summarizes the posterior distribution of each
-parameter. The second table checks convergence. We look for
-<code>max_Rhat</code> at or below 1.01, <code>min_ESS</code> of at least
-100 per chain, and no divergences. <code><a href="../reference/cal.bayesian.html">cal.bayesian()</a></code> gives a
-warning when a model fails any of these checks. When that happens, try a
-larger <code>numSavedSteps</code> and check the data for outliers or
-wrong units.</p>
+<span><span class="co">#&gt;  BLM1_fit   0.9997    3997           0</span></span></code></pre></div>
+<p>The first table is the same summary given by
+<code><a href="../reference/cal.summary.html">cal.summary()</a></code>. <code>estimate</code> is the posterior mean
+of each parameter and <code>SE</code> is its standard error, which is
+the SD of the posterior draws. <code>sigma</code> is itself an SD: the
+scatter of individual samples around the calibration line. The second
+table checks convergence. We look for <code>max_Rhat</code> at or below
+1.01, <code>min_ESS</code> of at least 100 per chain, and no
+divergences. <code><a href="../reference/cal.bayesian.html">cal.bayesian()</a></code> gives a warning when a model
+fails any of these checks. When that happens, try a larger
+<code>numSavedSteps</code> and check the data for outliers or wrong
+units.</p>
 </div>
 <div class="section level2">
 <h2 id="choosing-priors">Choosing priors<a class="anchor" aria-label="anchor" href="#choosing-priors"></a>
@@ -222,8 +230,8 @@ slopes:</p>
 <span>  Weak <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="../reference/cal.draws.html">cal.draws</a></span><span class="op">(</span><span class="va">fitWeak</span><span class="op">)</span><span class="op">$</span><span class="va">beta</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;                   2.5%        50%      97.5%</span></span>
-<span><span class="co">#&gt; Informative 0.03413404 0.03745101 0.04105367</span></span>
-<span><span class="co">#&gt; Weak        0.03244945 0.03677519 0.04110373</span></span></code></pre></div>
+<span><span class="co">#&gt; Informative 0.03419203 0.03748993 0.04094567</span></span>
+<span><span class="co">#&gt; Weak        0.03260000 0.03677161 0.04075844</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparing-models">Comparing models<a class="anchor" aria-label="anchor" href="#comparing-models"></a>
@@ -235,8 +243,8 @@ cross-validation.</p>
 <code class="sourceCode R"><span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"errors"</span>, <span class="st">"noerrors"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/cal.compare.html">cal.compare</a></span><span class="op">(</span><span class="va">fits</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              model elpd_diff se_diff p_worse diag_diff diag_elpd</span></span>
-<span><span class="co">#&gt;           BLM1_fit       0.0     0.0      NA                    </span></span>
-<span><span class="co">#&gt;  BLM1_fit_NoErrors      -0.1     0.0    1.00   N &lt; 100</span></span>
+<span><span class="co">#&gt;  BLM1_fit_NoErrors       0.0     0.0      NA                    </span></span>
+<span><span class="co">#&gt;           BLM1_fit      -0.1     0.1    0.89   N &lt; 100</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Diagnostic flags present.</span></span>
 <span><span class="co">#&gt; See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)</span></span>
@@ -248,8 +256,8 @@ model.</p>
 <div class="section level2">
 <h2 id="mixed-models">Mixed models<a class="anchor" aria-label="anchor" href="#mixed-models"></a>
 </h2>
-<p>To show the mixed model, we simulate a second material with an
-intercept that is 0.02 higher:</p>
+<p>To show the mixed models, we simulate a second material with D47
+values that are 0.02 higher:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ds1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S2"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">ds2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S2"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
@@ -257,74 +265,102 @@ intercept that is 0.02 higher:</p>
 <span><span class="va">ds2</span><span class="op">$</span><span class="va">Material</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span><span class="va">dsMixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">ds1</span>, <span class="va">ds2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fitMixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">dsMixed</span>, models <span class="op">=</span> <span class="st">"mixed"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: There were 5 divergent transitions after warmup. See</span></span>
+<span><span class="va">fitMixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">dsMixed</span>, models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mixed_errors"</span>, <span class="st">"mixed_noerrors"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: There were 24 divergent transitions after warmup. See</span></span>
 <span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
 <span><span class="co">#&gt; to find out why this is a problem and how to eliminate them.</span></span>
 <span><span class="co">#&gt; Warning: Examine the pairs() plot to diagnose sampling problems</span></span>
-<span><span class="co">#&gt; Warning in .finish_fit(fits, prior, chains): Check convergence for: BLM3_fit. Print the</span></span>
-<span><span class="co">#&gt; result for details.</span></span>
+<span><span class="co">#&gt; Warning: There were 23 divergent transitions after warmup. See</span></span>
+<span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
+<span><span class="co">#&gt; to find out why this is a problem and how to eliminate them.</span></span>
+<span><span class="co">#&gt; Warning: Examine the pairs() plot to diagnose sampling problems</span></span>
+<span><span class="co">#&gt; Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span></span>
+<span><span class="co">#&gt; Running the chains for more iterations may help. See</span></span>
+<span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#bulk-ess</span></span>
+<span><span class="co">#&gt; Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span></span>
+<span><span class="co">#&gt; Running the chains for more iterations may help. See</span></span>
+<span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#tail-ess</span></span>
+<span><span class="co">#&gt; Warning in .finish_fit(fits, prior, chains): Check convergence for: BLM3_fit_Errors,</span></span>
+<span><span class="co">#&gt; BLM3_fit. Print the result for details.</span></span>
 <span><span class="va">fitMixed</span></span>
 <span><span class="co">#&gt; Bayesian clumped isotope calibration</span></span>
 <span><span class="co">#&gt; Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; BLM3_fit (materials: 1, 2)</span></span>
-<span><span class="co">#&gt;            mean     sd   2.5%  97.5%</span></span>
-<span><span class="co">#&gt; alpha[1] 0.2698 0.0159 0.2396 0.3012</span></span>
-<span><span class="co">#&gt; alpha[2] 0.2712 0.0189 0.2337 0.3088</span></span>
-<span><span class="co">#&gt; beta[1]  0.0374 0.0014 0.0347 0.0401</span></span>
-<span><span class="co">#&gt; beta[2]  0.0381 0.0016 0.0351 0.0412</span></span>
-<span><span class="co">#&gt; sigma    0.0257 0.0018 0.0223 0.0295</span></span>
+<span><span class="co">#&gt; BLM3_fit_Errors</span></span>
+<span><span class="co">#&gt;  Material parameter estimate       SE  median   lower   upper</span></span>
+<span><span class="co">#&gt;         1     alpha  0.26988 0.016214 0.26962 0.23926 0.30229</span></span>
+<span><span class="co">#&gt;         1      beta  0.03747 0.001399 0.03748 0.03463 0.04016</span></span>
+<span><span class="co">#&gt;         1     sigma  0.02435 0.001956 0.02421 0.02084 0.02837</span></span>
+<span><span class="co">#&gt;         2     alpha  0.26863 0.021463 0.26867 0.22481 0.31017</span></span>
+<span><span class="co">#&gt;         2      beta  0.03833 0.001765 0.03833 0.03483 0.04192</span></span>
+<span><span class="co">#&gt;         2     sigma  0.02435 0.001956 0.02421 0.02084 0.02837</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; BLM3_fit</span></span>
+<span><span class="co">#&gt;  Material parameter estimate       SE  median   lower   upper</span></span>
+<span><span class="co">#&gt;         1     alpha  0.27035 0.016371 0.26990 0.23813 0.30256</span></span>
+<span><span class="co">#&gt;         1      beta  0.03744 0.001407 0.03745 0.03462 0.04016</span></span>
+<span><span class="co">#&gt;         1     sigma  0.02570 0.001887 0.02558 0.02224 0.02966</span></span>
+<span><span class="co">#&gt;         2     alpha  0.26913 0.021344 0.26930 0.22539 0.31011</span></span>
+<span><span class="co">#&gt;         2      beta  0.03828 0.001749 0.03827 0.03488 0.04184</span></span>
+<span><span class="co">#&gt;         2     sigma  0.02570 0.001887 0.02558 0.02224 0.02966</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
-<span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>
-<span><span class="co">#&gt;  BLM3_fit   0.9993    1964           5</span></span></code></pre></div>
+<span><span class="co">#&gt;            model max_Rhat min_ESS divergences</span></span>
+<span><span class="co">#&gt;  BLM3_fit_Errors    1.002    2692          24</span></span>
+<span><span class="co">#&gt;         BLM3_fit    1.003    1739          23</span></span></code></pre></div>
 <p>The intercepts and slopes of the two materials are pulled toward
 shared means (partial pooling). The SDs among materials have half-normal
-priors with scales of 0.1 for intercepts and 0.01 for slopes. With fewer
-than five materials, these SDs mostly reflect their priors.</p>
+priors with scales of 0.1 for the intercept at the mean calibration
+temperature and 0.01 for the slope. With fewer than five materials,
+these SDs mostly reflect their priors.</p>
 </div>
 <div class="section level2">
 <h2 id="reconstructing-temperatures">Reconstructing temperatures<a class="anchor" aria-label="anchor" href="#reconstructing-temperatures"></a>
 </h2>
 <p><code><a href="../reference/cal.draws.html">cal.draws()</a></code> returns the posterior draws of a model as a
-table. It has the same shape as the frequentist tables in
-<code><a href="../articles/frequentist.html">vignette("frequentist", package = "bayclumpr")</a></code>, plus a
-column for <code>sigma</code>.</p>
+table. It has the same columns as the frequentist tables in
+<code><a href="../articles/frequentist.html">vignette("frequentist", package = "bayclumpr")</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">draws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.draws.html">cal.draws</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">draws</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       alpha       beta      sigma</span></span>
-<span><span class="co">#&gt; 1 0.3021960 0.03395156 0.02669041</span></span>
-<span><span class="co">#&gt; 2 0.2236944 0.04069044 0.02557638</span></span>
-<span><span class="co">#&gt; 3 0.2705610 0.03666542 0.02856427</span></span>
-<span><span class="co">#&gt; 4 0.2764546 0.03628994 0.02398676</span></span>
-<span><span class="co">#&gt; 5 0.3015556 0.03408810 0.02169374</span></span>
-<span><span class="co">#&gt; 6 0.2594430 0.03664949 0.02289845</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 0.2913857 0.03403879 0.02635096</span></span>
+<span><span class="co">#&gt; 2 0.2286358 0.03961537 0.02440160</span></span>
+<span><span class="co">#&gt; 3 0.2765121 0.03592458 0.02101763</span></span>
+<span><span class="co">#&gt; 4 0.2381617 0.03879429 0.02470852</span></span>
+<span><span class="co">#&gt; 5 0.2492998 0.03765331 0.01982520</span></span>
+<span><span class="co">#&gt; 6 0.2539153 0.03745754 0.02471296</span></span></code></pre></div>
 <p>We create a reconstruction dataset and pass it to
 <code><a href="../reference/rec.bayesian.html">rec.bayesian()</a></code> with the draws:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Sample"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
 <span>  D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.02</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span>  D47error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.02</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  N <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">draws</span>, recData <span class="op">=</span> <span class="va">recData</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.273404 13.031189</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.876373  8.552529</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -9.842059  6.395533</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.020 59.521523 16.163257</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.020 18.851290 10.861169</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.020 -9.700610  7.888241</span></span></code></pre></div>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp        SD        SE     median      lower     upper</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.169525 13.492686 12.919351  58.141071  36.176558 86.901763</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.679092  8.878960  8.507950  18.238345   2.936739 36.380216</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -9.781490  6.594663  6.322624  -9.933485 -21.692635  3.210007</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.020 59.489531 21.596755 16.403661  58.415102  30.709281 95.152623</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.020 18.852540 14.311770 10.866998  18.135342  -0.351929 42.237888</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.020 -9.734762 10.696587  7.841322 -10.021680 -24.568806  5.917603</span></span></code></pre></div>
 <p><code>meanTemp</code> is the posterior mean temperature in °C.
-<code>error</code> is 1 SD. It includes the uncertainty in the
-calibration, the scatter around the calibration line
-(<code>sigma</code>), and the error in <code>D47</code>. For this
-reason, these errors are larger than those from
-<code><a href="../reference/rec.clumped.html">rec.clumped()</a></code>, which doesn’t include
-<code>sigma</code>.</p>
+<code>SE</code> is the standard error of the temperature, based on
+<code>D47error</code>, the standard error of the mean D47.
+<code>SD</code> is the uncertainty of the temperature of a single
+replicate, based on <code>D47error</code> × sqrt(<code>N</code>).
+<code>SD</code> is <code>NA</code> when the dataset has neither
+<code>N</code> nor <code>D47sd</code>. <code>median</code>,
+<code>lower</code>, and <code>upper</code> describe the 95% posterior
+interval, based on <code>SE</code>. Both <code>SD</code> and
+<code>SE</code> include the calibration, the scatter around the
+calibration line (<code>sigma</code>), and the error in
+<code>D47</code>. <code><a href="../reference/rec.clumped.html">rec.clumped()</a></code> gives the same kind of
+uncertainty with <code>prediction = TRUE</code>.</p>
 <p><code><a href="../reference/rec.bayesian.html">rec.bayesian()</a></code> doesn’t run another MCMC. For each
 posterior draw, the temperature has a known distribution, so it’s
 sampled directly. This takes less than a second.</p>
@@ -332,13 +368,16 @@ sampled directly. This takes less than a second.</p>
 the model:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">fits</span>, recData <span class="op">=</span> <span class="va">recData</span>, model <span class="op">=</span> <span class="st">"noerrors"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error  meanTemp     error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.376185 13.761447</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.834242  8.947053</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -9.707001  6.725816</span></span>
-<span><span class="co">#&gt; 4 Sample 4 0.6    0.020 59.996891 16.881775</span></span>
-<span><span class="co">#&gt; 5 Sample 5 0.7    0.020 19.220210 11.002130</span></span>
-<span><span class="co">#&gt; 6 Sample 6 0.8    0.020 -9.569373  8.136530</span></span></code></pre></div>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp        SD        SE     median       lower     upper</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.005 59.582528 13.850920 13.356362  58.760144  35.6641789 87.739793</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.005 18.738866  9.209379  8.807402  18.453100   2.3154928 36.871627</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.005 -9.680912  6.965055  6.621272  -9.908738 -22.0689063  3.782275</span></span>
+<span><span class="co">#&gt; 4 Sample 4 0.6    0.020 59.743116 22.361167 16.759462  58.531780  30.6149554 95.806125</span></span>
+<span><span class="co">#&gt; 5 Sample 5 0.7    0.020 19.093028 14.569364 10.940762  18.535532  -0.3365017 42.545939</span></span>
+<span><span class="co">#&gt; 6 Sample 6 0.8    0.020 -9.661798 10.738637  8.158392 -10.011537 -24.7372205  6.941973</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="reconstructions-with-mixed-models">Reconstructions with mixed models<a class="anchor" aria-label="anchor" href="#reconstructions-with-mixed-models"></a>
+</h3>
 <p>For mixed models, the reconstruction dataset needs a
 <code>Material</code> column with the same labels used in the
 calibration:</p>
@@ -350,10 +389,23 @@ calibration:</p>
 <span>  Material <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">fitMixed</span>, recData <span class="op">=</span> <span class="va">recMixed</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample  D47 D47error meanTemp    error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.62     0.01 54.56164 13.14680</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.62     0.01 58.42695 13.60663</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">fitMixed</span>, recData <span class="op">=</span> <span class="va">recMixed</span>, model <span class="op">=</span> <span class="st">"mixed_errors"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Sample  D47 D47error meanTemp SD       SE   median    lower    upper</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.62     0.01 54.89756 NA 12.72386 54.08777 32.33342 82.54673</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.62     0.01 58.08932 NA 13.09937 57.30202 34.82513 86.17134</span></span></code></pre></div>
+<p>Mixed models can also reconstruct temperatures for a material that is
+not in the calibration. With <code>newMaterial = TRUE</code>, the
+intercept and slope are drawn from the shared means and the spread among
+materials. The intervals are wider, since we don’t know where the new
+material falls among the others.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">recNew</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="st">"Sample 3"</span>, D47 <span class="op">=</span> <span class="fl">0.62</span>, D47error <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/rec.bayesian.html">rec.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">fitMixed</span>, recData <span class="op">=</span> <span class="va">recNew</span>, model <span class="op">=</span> <span class="st">"mixed_errors"</span>, newMaterial <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in .rec_exact(draws, recData, ndraws, level = level): 27 draws had 10^6/T^2 at or</span></span>
+<span><span class="co">#&gt; below zero and were removed.</span></span>
+<span><span class="co">#&gt;     Sample  D47 D47error meanTemp SD       SE   median    lower    upper</span></span>
+<span><span class="co">#&gt; 1 Sample 3 0.62     0.01 60.44808 NA 62.03957 54.12968 9.942506 136.8542</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="tips-for-faster-fits">Tips for faster fits<a class="anchor" aria-label="anchor" href="#tips-for-faster-fits"></a>

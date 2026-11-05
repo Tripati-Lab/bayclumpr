@@ -45,15 +45,15 @@ fit
 #> Priors: Flat 
 #> 
 #> BLM1_fit
-#>         mean     sd   2.5%  97.5%
-#> alpha 0.2725 0.0097 0.2536 0.2910
-#> beta  0.0366 0.0008 0.0351 0.0382
-#> gamma 0.0051 0.0013 0.0025 0.0075
-#> sigma 0.0136 0.0010 0.0118 0.0157
+#>  parameter estimate        SE   median    lower    upper
+#>      alpha 0.272221 0.0101978 0.272289 0.252790 0.292457
+#>       beta 0.036662 0.0008437 0.036654 0.035025 0.038262
+#>      gamma 0.005016 0.0012738 0.005045 0.002435 0.007419
+#>      sigma 0.013616 0.0010132 0.013565 0.011776 0.015795
 #> 
 #> Convergence
 #>     model max_Rhat min_ESS divergences
-#>  BLM1_fit        1    2348           0
+#>  BLM1_fit   0.9997    2474           0
 ```
 
 `gamma` is the slope for `Ion`. Its posterior should be close to the
@@ -69,15 +69,15 @@ fitKnown
 #> Priors: Flat 
 #> 
 #> BLM1_fit
-#>         mean     sd   2.5%  97.5%
-#> alpha 0.2723 0.0098 0.2533 0.2917
-#> beta  0.0367 0.0008 0.0351 0.0382
-#> gamma 0.0050 0.0012 0.0026 0.0074
-#> sigma 0.0136 0.0010 0.0117 0.0158
+#>  parameter estimate        SE   median    lower    upper
+#>      alpha 0.272166 0.0097646 0.272049 0.253372 0.291367
+#>       beta 0.036670 0.0008032 0.036674 0.035068 0.038200
+#>      gamma 0.005044 0.0012516 0.005059 0.002507 0.007482
+#>      sigma 0.013589 0.0010361 0.013542 0.011749 0.015711
 #> 
 #> Convergence
 #>     model max_Rhat min_ESS divergences
-#>  BLM1_fit   0.9999    2776           0
+#>  BLM1_fit   0.9997    2634           0
 ```
 
 ## Reconstructing temperatures
@@ -102,10 +102,10 @@ reconstructed temperatures:
 ``` r
 
 rec.ion.bayesian(calModel = fit, recData = recData, useIonError = TRUE)
-#>     Sample D47 D47error  meanTemp    error
-#> 1 Sample 1 0.6     0.01 59.179098 8.545411
-#> 2 Sample 2 0.7     0.01 19.941494 5.798269
-#> 3 Sample 3 0.8     0.01 -8.170901 4.334123
+#>     Sample D47 D47error  meanTemp SD       SE   median      lower      upper
+#> 1 Sample 1 0.6     0.01 59.156851 NA 8.567143 58.98611  43.048420 76.4799251
+#> 2 Sample 2 0.7     0.01 19.920086 NA 5.793169 19.65157   9.238422 32.0191140
+#> 3 Sample 3 0.8     0.01 -8.176717 NA 4.342052 -8.29918 -16.420039  0.6563953
 ```
 
 With `useIonError = FALSE`, `Ion` is treated as known:
@@ -113,13 +113,17 @@ With `useIonError = FALSE`, `Ion` is treated as known:
 ``` r
 
 rec.ion.bayesian(calModel = fit, recData = recData, useIonError = FALSE)
-#>     Sample D47 D47error  meanTemp    error
-#> 1 Sample 1 0.6     0.01 59.160601 8.639737
-#> 2 Sample 2 0.7     0.01 19.739268 5.778040
-#> 3 Sample 3 0.8     0.01 -8.261234 4.350976
+#>     Sample D47 D47error  meanTemp SD       SE    median     lower     upper
+#> 1 Sample 1 0.6     0.01 59.118286 NA 8.613112 58.910189  43.18238 77.029470
+#> 2 Sample 2 0.7     0.01 19.722917 NA 5.792888 19.650943   8.92384 31.400810
+#> 3 Sample 3 0.8     0.01 -8.261464 NA 4.338728 -8.299877 -16.58234  0.606063
 ```
 
-As for
-[`rec.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.md),
-the error (1 SD) includes the uncertainty in the calibration, the
+The columns are the same as in
+[`rec.bayesian()`](https://tripati-lab.github.io/bayclumpr/reference/rec.bayesian.md).
+`meanTemp` is the posterior mean temperature in °C, and `SE` is its
+standard error. `SD` is `NA` here because the dataset has neither `N`
+nor `D47sd`. Add one of them to get the uncertainty of a single
+replicate. `median`, `lower`, and `upper` describe the 95% posterior
+interval, based on `SE`. The uncertainty includes the calibration, the
 scatter around the calibration line, and the error in `D47`.

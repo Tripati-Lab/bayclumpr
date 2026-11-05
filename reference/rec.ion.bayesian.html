@@ -16,13 +16,14 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
-<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
     <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
-    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">5. Comparing frequentist and Bayesian approaches</a></li>
   </ul></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/Tripati-Lab/bayclumpr/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -44,7 +45,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rec.ion.bayesian</span><span class="op">(</span><span class="va">calModel</span>, <span class="va">recData</span>, ndraws <span class="op">=</span> <span class="fl">10000</span>, useIonError <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rec.ion.bayesian</span><span class="op">(</span></span>
+<span>  <span class="va">calModel</span>,</span>
+<span>  <span class="va">recData</span>,</span>
+<span>  ndraws <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  useIonError <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -56,7 +64,7 @@
 
 
 <dt id="arg-recdata">recData<a class="anchor" aria-label="anchor" href="#arg-recdata"></a></dt>
-<dd><p>The reconstruction dataset. It needs the columns <code>Sample</code>, <code>D47</code>, <code>D47error</code> (1 SD of the D47 value), and <code>Ion</code>. It also needs <code>IonError</code> (1 SD of <code>Ion</code>) when <code>useIonError = TRUE</code>.</p></dd>
+<dd><p>The reconstruction dataset. It needs the columns <code>Sample</code>, <code>D47</code>, <code>D47error</code> (1 SD of the D47 value), and <code>Ion</code>. Add <code>N</code> (number of replicates) or <code>D47sd</code> (SD of the replicates) to also get <code>SD</code>. The output of <code><a href="avg.replicates.html">avg.replicates()</a></code> has both. It also needs <code>IonError</code> (1 SD of <code>Ion</code>) when <code>useIonError = TRUE</code>.</p></dd>
 
 
 <dt id="arg-ndraws">ndraws<a class="anchor" aria-label="anchor" href="#arg-ndraws"></a></dt>
@@ -67,19 +75,38 @@
 <dd><p>Whether to account for the error in <code>Ion</code>.</p></dd>
 
 
+<dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
+<dd><p>Probability covered by the interval.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Arguments from earlier versions (<code>iter</code>, <code>postcalsamples</code>, and <code>MC</code>). They are ignored.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code> with <code>meanTemp</code> (posterior mean, in degrees C) and <code>error</code> (1 SD) for each sample. The error includes uncertainty in the calibration parameters, the residual SD of the calibration (<code>sigma</code>), <code>D47error</code>, and <code>IonError</code> when used.</p>
+    <p>A <code>data.frame</code> with one row per sample. <code>meanTemp</code> is the posterior mean temperature (in degrees C). <code>SE</code> is the standard error of the temperature, propagated from <code>D47error</code>. <code>SD</code> is the SD of the temperature of a single replicate, propagated from the SD of the replicates (<code>D47error</code> x sqrt(<code>N</code>), or <code>D47sd</code> when <code>N</code> is missing). It is <code>NA</code> without replicate information. Both include the uncertainty in the calibration. <code>median</code>, <code>lower</code>, and <code>upper</code> are the posterior median and the limits of the interval, based on <code>SE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>With flat priors on 10^6/T^2 and <code>Ion</code>, the posterior of <code>Ion</code> follows its measurement, and the posterior of 10^6/T^2 for each draw is normal. Both are sampled directly, so no MCMC run is needed. Draws with 10^6/T^2 at or below zero are not physically possible. They are removed with a warning.</p>
+<p>The uncertainty includes the calibration parameters, the residual SD of the calibration (<code>sigma</code>), <code>D47error</code>, and <code>IonError</code> when used.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ds</span><span class="op">$</span><span class="va">Ion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.ion.bayesian.html">cal.ion.bayesian</a></span><span class="op">(</span><span class="va">ds</span>, IonError <span class="op">=</span> <span class="fl">0.1</span>, numSavedSteps <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')</span>
+<span class="r-in"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="st">"A"</span>, D47 <span class="op">=</span> <span class="fl">0.6</span>, D47error <span class="op">=</span> <span class="fl">0.01</span>, Ion <span class="op">=</span> <span class="fl">0</span>, IonError <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">rec.ion.bayesian</span><span class="op">(</span><span class="va">fit</span>, <span class="va">recData</span>, useIonError <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fit' not found</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

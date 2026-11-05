@@ -34,15 +34,16 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+<li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
     <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
-    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">5. Comparing frequentist and Bayesian approaches</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -110,15 +111,15 @@ per sample.</p>
 <span><span class="co">#&gt; Priors: Flat </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM1_fit</span></span>
-<span><span class="co">#&gt;         mean     sd   2.5%  97.5%</span></span>
-<span><span class="co">#&gt; alpha 0.2725 0.0097 0.2536 0.2910</span></span>
-<span><span class="co">#&gt; beta  0.0366 0.0008 0.0351 0.0382</span></span>
-<span><span class="co">#&gt; gamma 0.0051 0.0013 0.0025 0.0075</span></span>
-<span><span class="co">#&gt; sigma 0.0136 0.0010 0.0118 0.0157</span></span>
+<span><span class="co">#&gt;  parameter estimate        SE   median    lower    upper</span></span>
+<span><span class="co">#&gt;      alpha 0.272221 0.0101978 0.272289 0.252790 0.292457</span></span>
+<span><span class="co">#&gt;       beta 0.036662 0.0008437 0.036654 0.035025 0.038262</span></span>
+<span><span class="co">#&gt;      gamma 0.005016 0.0012738 0.005045 0.002435 0.007419</span></span>
+<span><span class="co">#&gt;      sigma 0.013616 0.0010132 0.013565 0.011776 0.015795</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>
-<span><span class="co">#&gt;  BLM1_fit        1    2348           0</span></span></code></pre></div>
+<span><span class="co">#&gt;  BLM1_fit   0.9997    2474           0</span></span></code></pre></div>
 <p><code>gamma</code> is the slope for <code>Ion</code>. Its posterior
 should be close to the simulated value of 0.005.</p>
 <p>When <code>Ion</code> is known without error, we leave out
@@ -130,15 +131,15 @@ should be close to the simulated value of 0.005.</p>
 <span><span class="co">#&gt; Priors: Flat </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM1_fit</span></span>
-<span><span class="co">#&gt;         mean     sd   2.5%  97.5%</span></span>
-<span><span class="co">#&gt; alpha 0.2723 0.0098 0.2533 0.2917</span></span>
-<span><span class="co">#&gt; beta  0.0367 0.0008 0.0351 0.0382</span></span>
-<span><span class="co">#&gt; gamma 0.0050 0.0012 0.0026 0.0074</span></span>
-<span><span class="co">#&gt; sigma 0.0136 0.0010 0.0117 0.0158</span></span>
+<span><span class="co">#&gt;  parameter estimate        SE   median    lower    upper</span></span>
+<span><span class="co">#&gt;      alpha 0.272166 0.0097646 0.272049 0.253372 0.291367</span></span>
+<span><span class="co">#&gt;       beta 0.036670 0.0008032 0.036674 0.035068 0.038200</span></span>
+<span><span class="co">#&gt;      gamma 0.005044 0.0012516 0.005059 0.002507 0.007482</span></span>
+<span><span class="co">#&gt;      sigma 0.013589 0.0010361 0.013542 0.011749 0.015711</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>
-<span><span class="co">#&gt;  BLM1_fit   0.9999    2776           0</span></span></code></pre></div>
+<span><span class="co">#&gt;  BLM1_fit   0.9997    2634           0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reconstructing-temperatures">Reconstructing temperatures<a class="anchor" aria-label="anchor" href="#reconstructing-temperatures"></a>
@@ -157,21 +158,27 @@ and <code>IonError</code> when we account for its uncertainty:</p>
 is included in the reconstructed temperatures:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rec.ion.bayesian.html">rec.ion.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">fit</span>, recData <span class="op">=</span> <span class="va">recData</span>, useIonError <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6     0.01 59.179098 8.545411</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7     0.01 19.941494 5.798269</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8     0.01 -8.170901 4.334123</span></span></code></pre></div>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp SD       SE   median      lower      upper</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6     0.01 59.156851 NA 8.567143 58.98611  43.048420 76.4799251</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7     0.01 19.920086 NA 5.793169 19.65157   9.238422 32.0191140</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8     0.01 -8.176717 NA 4.342052 -8.29918 -16.420039  0.6563953</span></span></code></pre></div>
 <p>With <code>useIonError = FALSE</code>, <code>Ion</code> is treated as
 known:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rec.ion.bayesian.html">rec.ion.bayesian</a></span><span class="op">(</span>calModel <span class="op">=</span> <span class="va">fit</span>, recData <span class="op">=</span> <span class="va">recData</span>, useIonError <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6     0.01 59.160601 8.639737</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7     0.01 19.739268 5.778040</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8     0.01 -8.261234 4.350976</span></span></code></pre></div>
-<p>As for <code><a href="../reference/rec.bayesian.html">rec.bayesian()</a></code>, the error (1 SD) includes the
-uncertainty in the calibration, the scatter around the calibration line,
-and the error in <code>D47</code>.</p>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp SD       SE    median     lower     upper</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6     0.01 59.118286 NA 8.613112 58.910189  43.18238 77.029470</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7     0.01 19.722917 NA 5.792888 19.650943   8.92384 31.400810</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8     0.01 -8.261464 NA 4.338728 -8.299877 -16.58234  0.606063</span></span></code></pre></div>
+<p>The columns are the same as in <code><a href="../reference/rec.bayesian.html">rec.bayesian()</a></code>.
+<code>meanTemp</code> is the posterior mean temperature in °C, and
+<code>SE</code> is its standard error. <code>SD</code> is
+<code>NA</code> here because the dataset has neither <code>N</code> nor
+<code>D47sd</code>. Add one of them to get the uncertainty of a single
+replicate. <code>median</code>, <code>lower</code>, and
+<code>upper</code> describe the 95% posterior interval, based on
+<code>SE</code>. The uncertainty includes the calibration, the scatter
+around the calibration line, and the error in <code>D47</code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

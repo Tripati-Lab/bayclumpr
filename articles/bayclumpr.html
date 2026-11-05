@@ -34,15 +34,16 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/bayclumpr.html">Get started</a></li>
-<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
+<li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/bayesian.html">3. Bayesian calibrations and reconstructions</a></li>
     <li><a class="dropdown-item" href="../articles/covariates.html">4. Calibrations with a second predictor</a></li>
-    <li><a class="dropdown-item" href="../articles/frequentist.html">2. Frequentist calibrations and reconstructions</a></li>
+    <li><a class="dropdown-item" href="../articles/comparison.html">5. Comparing frequentist and Bayesian approaches</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -88,6 +89,10 @@ calibrations, priors, model comparison, and reconstructions.</li>
 <li>
 <code><a href="../articles/covariates.html">vignette("covariates", package = "bayclumpr")</a></code>: Bayesian
 calibrations with a second predictor.</li>
+<li>
+<code><a href="../articles/comparison.html">vignette("comparison", package = "bayclumpr")</a></code>:
+frequentist and Bayesian approaches on the same dataset, with plots of
+parameters and reconstructions.</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bayclump.tripatilab.epss.ucla.edu/" class="external-link">bayclumpr</a></span><span class="op">)</span></span></code></pre></div>
@@ -96,7 +101,8 @@ calibrations with a second predictor.</li>
 </h2>
 <p>Every analysis has two steps. First, we fit a calibration. The result
 is a table with many plausible values of the intercept
-(<code>alpha</code>) and slope (<code>beta</code>). Second, we use that
+(<code>alpha</code>), the slope (<code>beta</code>), and the scatter
+around the calibration line (<code>sigma</code>). Second, we use that
 table to reconstruct temperatures for new samples. Frequentist functions
 get these values by bootstrapping. Bayesian functions get them from the
 posterior distribution.</p>
@@ -124,8 +130,8 @@ posterior distribution.</p>
 </td>
 </tr>
 <tr class="even">
-<td align="left">2. Get the table of <code>alpha</code> and
-<code>beta</code>
+<td align="left">2. Get the table of <code>alpha</code>,
+<code>beta</code>, and <code>sigma</code>
 </td>
 <td align="left">Returned by the functions above</td>
 <td align="left"><code><a href="../reference/cal.draws.html">cal.draws()</a></code></td>
@@ -183,30 +189,48 @@ models</td>
 <code>D47</code> is the mean of several replicates,
 <code>D47error</code> should be the standard error of that mean. The
 same applies to <code>TempError</code>.</p>
-<p>Temperatures are often reported in °C. To convert them, we use T in
-kelvin. For the error, the SD of 10<sup>6</sup>/T<sup>2</sup> is about 2
-× 10<sup>6</sup> × SD(T) / T<sup>3</sup>:</p>
+</div>
+<div class="section level3">
+<h3 id="converting-temperatures">Converting temperatures<a class="anchor" aria-label="anchor" href="#converting-temperatures"></a>
+</h3>
+<p>Temperatures are often reported in °C. <code><a href="../reference/temp2x.html">temp2x()</a></code> converts
+them to 10<sup>6</sup>/T<sup>2</sup> and propagates their errors. The
+result has the column names that the calibration functions expect:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tempC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="va">tempErrorC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">tempK</span> <span class="op">&lt;-</span> <span class="va">tempC</span> <span class="op">+</span> <span class="fl">273.15</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  Temperature <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">6</span> <span class="op">/</span> <span class="va">tempK</span><span class="op">^</span><span class="fl">2</span>,</span>
-<span>  TempError <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">10</span><span class="op">^</span><span class="fl">6</span> <span class="op">*</span> <span class="va">tempErrorC</span> <span class="op">/</span> <span class="va">tempK</span><span class="op">^</span><span class="fl">3</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/temp2x.html">temp2x</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span>, tempError <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Temperature  TempError</span></span>
 <span><span class="co">#&gt; 1   12.925337 0.04646894</span></span>
 <span><span class="co">#&gt; 2   11.249426 0.03773076</span></span>
 <span><span class="co">#&gt; 3    9.576166 0.05926762</span></span></code></pre></div>
+<p><code><a href="../reference/temp2x.html">x2temp()</a></code> converts them back to °C.</p>
+</div>
+<div class="section level3">
+<h3 id="averaging-replicates">Averaging replicates<a class="anchor" aria-label="anchor" href="#averaging-replicates"></a>
+</h3>
+<p>When each sample has several replicate measurements,
+<code><a href="../reference/avg.replicates.html">avg.replicates()</a></code> averages them and returns the standard
+error of each mean as <code>D47error</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.601</span>, <span class="fl">0.598</span>, <span class="fl">0.605</span>, <span class="fl">0.702</span>, <span class="fl">0.695</span>, <span class="fl">0.699</span><span class="op">)</span>,</span>
+<span>  Material <span class="op">=</span> <span class="st">"calcite"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/avg.replicates.html">avg.replicates</a></span><span class="op">(</span><span class="va">reps</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   Sample       D47       D47sd N    D47error Material</span></span>
+<span><span class="co">#&gt; 1      A 0.6013333 0.003511885 3 0.002027588  calcite</span></span>
+<span><span class="co">#&gt; 2      B 0.6986667 0.003511885 3 0.002027588  calcite</span></span></code></pre></div>
+<p>By default, the SE comes from the SD of each sample’s replicates.
+With few replicates, this SD is poorly constrained. The
+<code>pooledSD</code> argument uses a common SD instead, such as the
+long-term SD of standards measured in the same lab.</p>
 </div>
 <div class="section level3">
 <h3 id="reconstruction-data">Reconstruction data<a class="anchor" aria-label="anchor" href="#reconstruction-data"></a>
 </h3>
 <p>Reconstruction datasets need <code>Sample</code>, <code>D47</code>,
 and <code>D47error</code>. Mixed models also need <code>Material</code>,
-with the same labels used in the calibration. Reconstructed temperatures
-are always returned in °C.</p>
+with the same labels used in the calibration.</p>
 </div>
 </div>
 <div class="section level2">
@@ -218,7 +242,7 @@ There are three error scenarios: low (<code>"S1"</code>), intermediate
 (<code>"S2"</code>), and high (<code>"S3"</code>). The columns
 <code>x_TRUE</code> and <code>y_TRUE</code> hold the true values before
 measurement error.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ds</span><span class="op">)</span></span>
@@ -235,36 +259,59 @@ measurement error.</p>
 </h2>
 <p>We fit an OLS calibration with 1,000 bootstrap replicates. Each row
 of the result is one replicate.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ols</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ols.html">cal.ols</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ols</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       alpha       beta</span></span>
-<span><span class="co">#&gt; 1 0.2551112 0.03805364</span></span>
-<span><span class="co">#&gt; 2 0.2645517 0.03720573</span></span>
-<span><span class="co">#&gt; 3 0.2739421 0.03638998</span></span>
-<span><span class="co">#&gt; 4 0.2675038 0.03681503</span></span>
-<span><span class="co">#&gt; 5 0.2896745 0.03498087</span></span>
-<span><span class="co">#&gt; 6 0.2682990 0.03664613</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">ols</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      alpha       beta </span></span>
-<span><span class="co">#&gt; 0.27022607 0.03660694</span></span></code></pre></div>
-<p>Next, we create a reconstruction dataset for three samples and
-reconstruct their temperatures:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt;       alpha       beta      sigma</span></span>
+<span><span class="co">#&gt; 1 0.2551112 0.03805364 0.01270688</span></span>
+<span><span class="co">#&gt; 2 0.2645517 0.03720573 0.01338969</span></span>
+<span><span class="co">#&gt; 3 0.2739421 0.03638998 0.01147219</span></span>
+<span><span class="co">#&gt; 4 0.2675038 0.03681503 0.01205161</span></span>
+<span><span class="co">#&gt; 5 0.2896745 0.03498087 0.01064595</span></span>
+<span><span class="co">#&gt; 6 0.2682990 0.03664613 0.01425720</span></span></code></pre></div>
+<p><code><a href="../reference/cal.summary.html">cal.summary()</a></code> summarizes any calibration in the same
+way:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cal.summary.html">cal.summary</a></span><span class="op">(</span><span class="va">ols</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   parameter   estimate           SE     median      lower      upper</span></span>
+<span><span class="co">#&gt; 1     alpha 0.27022607 0.0106035367 0.27029091 0.24894691 0.29123768</span></span>
+<span><span class="co">#&gt; 2      beta 0.03660694 0.0009469391 0.03662508 0.03469022 0.03850465</span></span>
+<span><span class="co">#&gt; 3     sigma 0.01298611 0.0011871156 0.01299158 0.01067024 0.01526967</span></span></code></pre></div>
+<p><code>estimate</code> is the mean of each parameter and
+<code>SE</code> is its standard error, which is the SD of the bootstrap
+replicates. <code>sigma</code> is itself an SD: the scatter of
+individual samples around the calibration line.</p>
+<p>Next, we create a reconstruction dataset for three samples, each
+measured three times, and reconstruct their temperatures:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">recData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sample 1"</span>, <span class="st">"Sample 2"</span>, <span class="st">"Sample 3"</span><span class="op">)</span>,</span>
 <span>  D47 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>  D47error <span class="op">=</span> <span class="fl">0.01</span></span>
+<span>  D47error <span class="op">=</span> <span class="fl">0.006</span>,</span>
+<span>  N <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/rec.clumped.html">rec.clumped</a></span><span class="op">(</span>recData <span class="op">=</span> <span class="va">recData</span>, obCal <span class="op">=</span> <span class="va">ols</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     Sample D47 D47error  meanTemp    error</span></span>
-<span><span class="co">#&gt; 1 Sample 1 0.6     0.01  60.02587 5.278902</span></span>
-<span><span class="co">#&gt; 2 Sample 2 0.7     0.01  18.70133 3.477849</span></span>
-<span><span class="co">#&gt; 3 Sample 3 0.8     0.01 -10.28279 2.663233</span></span></code></pre></div>
-<p><code>meanTemp</code> is the reconstructed temperature in °C.
-<code>error</code> is its uncertainty (1 SD). It combines the error in
-<code>D47</code> with the uncertainty in the calibration.</p>
+<span><span class="co">#&gt;     Sample D47 D47error  meanTemp       SD       SE    median     lower</span></span>
+<span><span class="co">#&gt; 1 Sample 1 0.6    0.006  60.02587 5.451499 3.329676  59.99816  53.70975</span></span>
+<span><span class="co">#&gt; 2 Sample 2 0.7    0.006  18.70133 3.574933 2.155759  18.68351  14.60380</span></span>
+<span><span class="co">#&gt; 3 Sample 3 0.8    0.006 -10.28279 2.761595 1.739932 -10.27637 -13.73321</span></span>
+<span><span class="co">#&gt;       upper</span></span>
+<span><span class="co">#&gt; 1 66.796937</span></span>
+<span><span class="co">#&gt; 2 23.005687</span></span>
+<span><span class="co">#&gt; 3 -6.900347</span></span></code></pre></div>
+<p>All temperatures are in °C. <code>meanTemp</code> is the temperature
+from the mean slope and intercept. <code>SE</code> is the standard error
+of the temperature, based on <code>D47error</code>, the standard error
+of the mean D47. <code>SD</code> is the uncertainty of the temperature
+of a single replicate, based on the SD of the replicates
+(<code>D47error</code> × sqrt(<code>N</code>)). Both include the
+uncertainty in the calibration. <code>SD</code> is <code>NA</code> when
+the dataset has neither <code>N</code> nor <code>D47sd</code>.</p>
+<p><code>median</code>, <code>lower</code>, and <code>upper</code> are
+the median and the limits of the 95% interval, based on <code>SE</code>.
+Temperature is a nonlinear function of D47, so the interval is not
+symmetric around the median.</p>
 <p>From here,
 <code><a href="../articles/frequentist.html">vignette("frequentist", package = "bayclumpr")</a></code> compares the
 four frequentist models.

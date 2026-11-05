@@ -1,11 +1,14 @@
 # Fit Deming regression models on a given calibration dataset
 
-Fit Deming regression models on a given calibration dataset
+Fits a Deming regression of D47 on temperature to bootstrap replicates
+of the calibration dataset, using
+[`deming::deming()`](https://rdrr.io/pkg/deming/man/deming.html). The
+errors in both variables are used for each observation.
 
 ## Usage
 
 ``` r
-cal.deming(data, replicates, samples = NULL)
+cal.deming(data, replicates = 1000, samples = NULL)
 ```
 
 ## Arguments
@@ -22,4 +25,22 @@ cal.deming(data, replicates, samples = NULL)
 
 - samples:
 
-  Number of samples per bootstrap replicate
+  Number of samples per bootstrap replicate. Defaults to the number of
+  rows in `data`.
+
+## Value
+
+A `data.frame` with one row per replicate and the columns `alpha`
+(intercept), `beta` (slope), and `sigma` (residual SD of D47 around the
+fitted line, including measurement error). Failed replicates are removed
+with a warning.
+
+## Examples
+
+``` r
+ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
+dem <- cal.deming(ds, replicates = 100)
+colMeans(dem)
+#>      alpha       beta      sigma 
+#> 0.26851348 0.03672763 0.01194865 
+```
