@@ -8,7 +8,7 @@
 
 #' Return a compiled Stan model
 #'
-#' Uses the models compiled at install time when the package was set up with rstantools. Otherwise it compiles the model from inst/stan once per session.
+#' Compiles the model from inst/stan the first time it's used in a session. If the package was set up with rstantools, it uses the models compiled at install time instead.
 #'
 #' @noRd
 .get_model <- function(name) {
@@ -21,15 +21,42 @@
     if (!nzchar(file)) {
       stop("The Stan model ", name, ".stan was not found in the installed package. Check that inst/stan in the package source has the six .stan files, then reinstall bayclumpr.")
     }
-    # Compiling at run time needs BH, RcppEigen, and StanHeaders, which binary installs of rstan don't include
-    .models[[name]] <- tryCatch(
-      rstan::stan_model(file = file, model_name = name),
-      error = function(e) {
-        stop("Compiling the Stan model ", name, " failed: ", conditionMessage(e), " Install bayclumpr from source so the models are compiled at install time, or install the packages BH, RcppEigen, and StanHeaders.", call. = FALSE)
-      }
-    )
+
+    # Compiling needs these packages, which binary installs of rstan don't include
+    needed <- c("BH", "RcppEigen", "StanHeaders")
+    missing <- needed[!sapply(needed, requireNamespace, quietly = TRUE)]
+    if (length(missing) > 0) {
+      stop("Compiling the Stan models needs these packages: ", paste(missing, collapse = ", "), ". Install them with install.packages(c(\"", paste(missing, collapse = "\", \""), "\")).", call. = FALSE)
+    }
+
+    message("Compiling the Stan model ", name, ". This happens once per session and can take a minute or two.")
+    .models[[name]] <- rstan::stan_model(file = file, model_name = name)
   }
   .models[[name]]
+}
+
+#' Return the stanfit for a model in a result from cal.bayesian() or cal.ion.bayesian()
+#'
+#' @noRd
+.get_stanfit <- function(fit, model = NULL) {
+  if (inherits(fit, "bayclump_cal")) {
+    if (is.null(model)) {
+      if (length(fit) > 1) {
+        stop("Choose a model with the model argument: ", paste(names(fit), collapse = ", "), ".")
+      }
+      model <- names(fit)[1]
+    }
+    if (model == "mixed") model <- "mixed_noerrors"
+    key <- if (model %in% names(.model_names)) .model_names[[model]] else model
+    if (!key %in% names(fit)) {
+      stop("The model ", model, " was not fit.")
+    }
+    fit <- fit[[key]]
+  }
+  if (!inherits(fit, "stanfit")) {
+    stop("fit must be a result from cal.bayesian() or cal.ion.bayesian(), or a stanfit from it.")
+  }
+  fit
 }
 
 #' Return prior means and SDs for alpha and beta, or NULL for flat priors

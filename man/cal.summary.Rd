@@ -14,13 +14,15 @@ cal.summary(fit, model = NULL, level = 0.95)
 \item{level}{Probability covered by the interval.}
 }
 \value{
-A \code{data.frame} with one row per parameter and the columns \code{parameter}, \code{estimate} (mean), \code{SE}, \code{median}, \code{lower}, and \code{upper}. Mixed models also have a \code{Material} column.
+A \code{data.frame} with one row per parameter and the columns \code{parameter}, \code{estimate} (mean), \code{SE}, \code{median}, \code{lower}, \code{upper}, \code{ESS}, and \code{Rhat}. Mixed models also have a \code{Material} column.
 }
 \description{
 Summarizes the intercept, slope, and residual SD of a calibration. It works the same way for bootstrap calibrations (\code{cal.ols()} and others) and Bayesian calibrations (\code{cal.bayesian()} and \code{cal.ion.bayesian()}).
 }
 \details{
 \code{SE} is the standard error of each estimate. It is the SD of the bootstrap replicates or of the posterior draws. \code{sigma} is itself an SD: the scatter of individual samples around the calibration line. Its \code{SE} describes how well that scatter is known.
+
+For Bayesian fits, \code{ESS} is the effective sample size (\code{n_eff}) and \code{Rhat} the potential scale reduction factor of each parameter, as reported by \code{rstan}. Look for \code{Rhat} at or below 1.01 and at least 100 effective draws per chain. They are \code{NA} for bootstrap replicates, which are independent draws, and for a \code{data.frame} of posterior draws, which no longer records the chains.
 }
 \examples{
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)

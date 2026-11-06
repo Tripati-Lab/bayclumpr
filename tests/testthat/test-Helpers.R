@@ -39,7 +39,8 @@ test_that("cal.summary reports estimates and standard errors", {
   ols <- cal.ols(ds, replicates = 200)
   a <- cal.summary(ols)
   expect_equal(a$parameter, c("alpha", "beta", "sigma"))
-  expect_equal(colnames(a), c("parameter", "estimate", "SE", "median", "lower", "upper"))
+  expect_equal(colnames(a), c("parameter", "estimate", "SE", "median", "lower", "upper", "ESS", "Rhat"))
+  expect_true(all(is.na(a$ESS)))
   expect_equal(a$SE[2], sd(ols$beta))
 
   # Mixed draws are summarized by material

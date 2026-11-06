@@ -53,7 +53,7 @@ fit <- cal.bayesian(calibrationData = ds, models = "errors")
 fit
 ```
 
-The first table is the same summary given by `cal.summary()`. `estimate` is the posterior mean of each parameter and `SE` is its standard error, which is the SD of the posterior draws. `sigma` is itself an SD: the scatter of individual samples around the calibration line. The second table checks convergence. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
+The first table is the same summary given by `cal.summary()`. `estimate` is the posterior mean of each parameter and `SE` is its standard error, which is the SD of the posterior draws. `sigma` is itself an SD: the scatter of individual samples around the calibration line. `ESS` and `Rhat` show how well each parameter was sampled. The second table checks convergence for each model as a whole. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
 
 ## Choosing priors
 

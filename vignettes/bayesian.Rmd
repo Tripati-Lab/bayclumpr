@@ -48,22 +48,23 @@ We start with the errors model:
 
 ``` r
 fit <- cal.bayesian(calibrationData = ds, models = "errors")
+#> Compiling the Stan model errors. This happens once per session and can take a minute or two.
 fit
 #> Bayesian clumped isotope calibration
 #> Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)
 #> 
 #> BLM1_fit
-#>  parameter estimate       SE  median   lower   upper
-#>      alpha  0.25881 0.020695 0.25869 0.21710 0.29843
-#>       beta  0.03750 0.001717 0.03749 0.03419 0.04095
-#>      sigma  0.02463 0.002906 0.02439 0.01948 0.03066
+#>  parameter estimate       SE  median   lower   upper  ESS   Rhat
+#>      alpha  0.25881 0.020695 0.25869 0.21710 0.29843 4058 0.9997
+#>       beta  0.03750 0.001717 0.03749 0.03419 0.04095 3997 0.9995
+#>      sigma  0.02463 0.002906 0.02439 0.01948 0.03066 4750 0.9991
 #> 
 #> Convergence
 #>     model max_Rhat min_ESS divergences
 #>  BLM1_fit   0.9997    3997           0
 ```
 
-The first table is the same summary given by `cal.summary()`. `estimate` is the posterior mean of each parameter and `SE` is its standard error, which is the SD of the posterior draws. `sigma` is itself an SD: the scatter of individual samples around the calibration line. The second table checks convergence. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
+The first table is the same summary given by `cal.summary()`. `estimate` is the posterior mean of each parameter and `SE` is its standard error, which is the SD of the posterior draws. `sigma` is itself an SD: the scatter of individual samples around the calibration line. `ESS` and `Rhat` show how well each parameter was sampled. The second table checks convergence for each model as a whole. We look for `max_Rhat` at or below 1.01, `min_ESS` of at least 100 per chain, and no divergences. `cal.bayesian()` gives a warning when a model fails any of these checks. When that happens, try a larger `numSavedSteps` and check the data for outliers or wrong units.
 
 ## Choosing priors
 
@@ -116,6 +117,7 @@ We can fit several models at once and compare them with `cal.compare()`. It uses
 
 ``` r
 fits <- cal.bayesian(calibrationData = ds, models = c("errors", "noerrors"))
+#> Compiling the Stan model noerrors. This happens once per session and can take a minute or two.
 cal.compare(fits)
 #>              model elpd_diff se_diff p_worse diag_diff diag_elpd
 #>  BLM1_fit_NoErrors       0.0     0.0      NA                    
@@ -141,10 +143,12 @@ ds2$Material <- 2
 dsMixed <- rbind(ds1, ds2)
 
 fitMixed <- cal.bayesian(calibrationData = dsMixed, models = c("mixed_errors", "mixed_noerrors"))
+#> Compiling the Stan model mixed_errors. This happens once per session and can take a minute or two.
 #> Warning: There were 24 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
 #> Warning: Examine the pairs() plot to diagnose sampling problems
+#> Compiling the Stan model mixed_noerrors. This happens once per session and can take a minute or two.
 #> Warning: There were 23 divergent transitions after warmup. See
 #> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 #> to find out why this is a problem and how to eliminate them.
@@ -162,22 +166,22 @@ fitMixed
 #> Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)
 #> 
 #> BLM3_fit_Errors
-#>  Material parameter estimate       SE  median   lower   upper
-#>         1     alpha  0.26988 0.016214 0.26962 0.23926 0.30229
-#>         1      beta  0.03747 0.001399 0.03748 0.03463 0.04016
-#>         1     sigma  0.02435 0.001956 0.02421 0.02084 0.02837
-#>         2     alpha  0.26863 0.021463 0.26867 0.22481 0.31017
-#>         2      beta  0.03833 0.001765 0.03833 0.03483 0.04192
-#>         2     sigma  0.02435 0.001956 0.02421 0.02084 0.02837
+#>  Material parameter estimate       SE  median   lower   upper  ESS   Rhat
+#>         1     alpha  0.26988 0.016214 0.26962 0.23926 0.30229 2692 1.0018
+#>         1      beta  0.03747 0.001399 0.03748 0.03463 0.04016 2708 1.0017
+#>         1     sigma  0.02435 0.001956 0.02421 0.02084 0.02837 3976 1.0006
+#>         2     alpha  0.26863 0.021463 0.26867 0.22481 0.31017 2938 0.9994
+#>         2      beta  0.03833 0.001765 0.03833 0.03483 0.04192 2946 0.9994
+#>         2     sigma  0.02435 0.001956 0.02421 0.02084 0.02837 3976 1.0006
 #> 
 #> BLM3_fit
-#>  Material parameter estimate       SE  median   lower   upper
-#>         1     alpha  0.27035 0.016371 0.26990 0.23813 0.30256
-#>         1      beta  0.03744 0.001407 0.03745 0.03462 0.04016
-#>         1     sigma  0.02570 0.001887 0.02558 0.02224 0.02966
-#>         2     alpha  0.26913 0.021344 0.26930 0.22539 0.31011
-#>         2      beta  0.03828 0.001749 0.03827 0.03488 0.04184
-#>         2     sigma  0.02570 0.001887 0.02558 0.02224 0.02966
+#>  Material parameter estimate       SE  median   lower   upper  ESS   Rhat
+#>         1     alpha  0.27035 0.016371 0.26990 0.23813 0.30256 2891 0.9995
+#>         1      beta  0.03744 0.001407 0.03745 0.03462 0.04016 2947 0.9997
+#>         1     sigma  0.02570 0.001887 0.02558 0.02224 0.02966 1739 1.0034
+#>         2     alpha  0.26913 0.021344 0.26930 0.22539 0.31011 2812 0.9992
+#>         2      beta  0.03828 0.001749 0.03827 0.03488 0.04184 2897 0.9993
+#>         2     sigma  0.02570 0.001887 0.02558 0.02224 0.02966 1739 1.0034
 #> 
 #> Convergence
 #>            model max_Rhat min_ESS divergences

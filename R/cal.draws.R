@@ -18,23 +18,7 @@
 #' @export
 
 cal.draws <- function(fit, model = NULL, newMaterial = FALSE) {
-  if (inherits(fit, "bayclump_cal")) {
-    if (is.null(model)) {
-      if (length(fit) > 1) {
-        stop("Choose a model with the model argument: ", paste(names(fit), collapse = ", "), ".")
-      }
-      model <- names(fit)[1]
-    }
-    if (model == "mixed") model <- "mixed_noerrors"
-    key <- if (model %in% names(.model_names)) .model_names[[model]] else model
-    if (!key %in% names(fit)) {
-      stop("The model ", model, " was not fit.")
-    }
-    fit <- fit[[key]]
-  }
-  if (!inherits(fit, "stanfit")) {
-    stop("fit must be a result from cal.bayesian() or cal.ion.bayesian(), or a stanfit from it.")
-  }
+  fit <- .get_stanfit(fit, model)
 
   # Draws for a material that is not in the calibration
   if (newMaterial) {
