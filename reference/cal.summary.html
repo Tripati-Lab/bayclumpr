@@ -66,11 +66,12 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>data.frame</code> with one row per parameter and the columns <code>parameter</code>, <code>estimate</code> (mean), <code>SE</code>, <code>median</code>, <code>lower</code>, and <code>upper</code>. Mixed models also have a <code>Material</code> column.</p>
+    <p>A <code>data.frame</code> with one row per parameter and the columns <code>parameter</code>, <code>estimate</code> (mean), <code>SE</code>, <code>median</code>, <code>lower</code>, <code>upper</code>, <code>ESS</code>, and <code>Rhat</code>. Mixed models also have a <code>Material</code> column.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>SE</code> is the standard error of each estimate. It is the SD of the bootstrap replicates or of the posterior draws. <code>sigma</code> is itself an SD: the scatter of individual samples around the calibration line. Its <code>SE</code> describes how well that scatter is known.</p>
+<p>For Bayesian fits, <code>ESS</code> is the effective sample size (<code>n_eff</code>) and <code>Rhat</code> the potential scale reduction factor of each parameter, as reported by <code>rstan</code>. Look for <code>Rhat</code> at or below 1.01 and at least 100 effective draws per chain. They are <code>NA</code> for bootstrap replicates, which are independent draws, and for a <code>data.frame</code> of posterior draws, which no longer records the chains.</p>
     </div>
 
     <div class="section level2">
@@ -78,10 +79,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ols</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.ols.html">cal.ols</a></span><span class="op">(</span><span class="va">ds</span>, replicates <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cal.summary</span><span class="op">(</span><span class="va">ols</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   parameter   estimate           SE     median       lower      upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 0.26952294 0.0112427446 0.26848511 0.249811220 0.29615864</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      beta 0.03664000 0.0008750491 0.03672634 0.034499765 0.03827147</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     sigma 0.01202395 0.0013887962 0.01205333 0.009551602 0.01495939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   parameter   estimate           SE     median       lower      upper ESS Rhat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 0.26952294 0.0112427446 0.26848511 0.249811220 0.29615864  NA   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      beta 0.03664000 0.0008750491 0.03672634 0.034499765 0.03827147  NA   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     sigma 0.01202395 0.0013887962 0.01205333 0.009551602 0.01495939  NA   NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

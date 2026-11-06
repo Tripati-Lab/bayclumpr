@@ -70,8 +70,23 @@ is reported for `Temperature` = 0 and `Ion` = 0.
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 ds$Ion <- rnorm(nrow(ds))
 fit <- cal.ion.bayesian(ds, IonError = 0.1, numSavedSteps = 1000)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+#> Compiling the Stan model ion_errors. This happens once per session and can take a minute or two.
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
 fit
-#> Error: object 'fit' not found
+#> Bayesian clumped isotope calibration
+#> Priors: Flat 
+#> 
+#> BLM1_fit
+#>  parameter estimate       SE   median    lower    upper    ESS   Rhat
+#>      alpha 0.269171 0.012994 0.269376  0.24379 0.293605  982.9 0.9982
+#>       beta 0.036663 0.001057 0.036662  0.03467 0.038730  969.8 0.9987
+#>      gamma 0.001084 0.001651 0.001072 -0.00210 0.004249 1147.6 1.0007
+#>      sigma 0.012306 0.001364 0.012178  0.01001 0.015404 2290.9 0.9981
+#> 
+#> Convergence
+#>     model max_Rhat min_ESS divergences
+#>  BLM1_fit    1.001   969.8           0
 # }
 ```

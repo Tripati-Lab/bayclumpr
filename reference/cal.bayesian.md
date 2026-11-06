@@ -131,8 +131,22 @@ transitions.
 # \donttest{
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 fit <- cal.bayesian(ds, models = "errors", numSavedSteps = 1000)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+#> Compiling the Stan model errors. This happens once per session and can take a minute or two.
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
 fit
-#> Error: object 'fit' not found
+#> Bayesian clumped isotope calibration
+#> Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)
+#> 
+#> BLM1_fit
+#>  parameter estimate       SE  median    lower  upper    ESS   Rhat
+#>      alpha  0.26481 0.012424 0.26532 0.238824 0.2877  956.4 1.0027
+#>       beta  0.03701 0.001009 0.03698 0.035185 0.0391  956.2 1.0024
+#>      sigma  0.01220 0.001320 0.01209 0.009836 0.0150 2168.2 0.9972
+#> 
+#> Convergence
+#>     model max_Rhat min_ESS divergences
+#>  BLM1_fit    1.003   956.2           0
 # }
 ```

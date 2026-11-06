@@ -151,15 +151,16 @@ The true values are <code>alpha</code> = 0.268 and <code>beta</code> =
 <p>We start with the errors model:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, models <span class="op">=</span> <span class="st">"errors"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling the Stan model errors. This happens once per session and can take a minute or two.</span></span>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Bayesian clumped isotope calibration</span></span>
 <span><span class="co">#&gt; Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM1_fit</span></span>
-<span><span class="co">#&gt;  parameter estimate       SE  median   lower   upper</span></span>
-<span><span class="co">#&gt;      alpha  0.25881 0.020695 0.25869 0.21710 0.29843</span></span>
-<span><span class="co">#&gt;       beta  0.03750 0.001717 0.03749 0.03419 0.04095</span></span>
-<span><span class="co">#&gt;      sigma  0.02463 0.002906 0.02439 0.01948 0.03066</span></span>
+<span><span class="co">#&gt;  parameter estimate       SE  median   lower   upper  ESS   Rhat</span></span>
+<span><span class="co">#&gt;      alpha  0.25881 0.020695 0.25869 0.21710 0.29843 4058 0.9997</span></span>
+<span><span class="co">#&gt;       beta  0.03750 0.001717 0.03749 0.03419 0.04095 3997 0.9995</span></span>
+<span><span class="co">#&gt;      sigma  0.02463 0.002906 0.02439 0.01948 0.03066 4750 0.9991</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>
@@ -168,13 +169,14 @@ The true values are <code>alpha</code> = 0.268 and <code>beta</code> =
 <code><a href="../reference/cal.summary.html">cal.summary()</a></code>. <code>estimate</code> is the posterior mean
 of each parameter and <code>SE</code> is its standard error, which is
 the SD of the posterior draws. <code>sigma</code> is itself an SD: the
-scatter of individual samples around the calibration line. The second
-table checks convergence. We look for <code>max_Rhat</code> at or below
-1.01, <code>min_ESS</code> of at least 100 per chain, and no
-divergences. <code><a href="../reference/cal.bayesian.html">cal.bayesian()</a></code> gives a warning when a model
-fails any of these checks. When that happens, try a larger
-<code>numSavedSteps</code> and check the data for outliers or wrong
-units.</p>
+scatter of individual samples around the calibration line.
+<code>ESS</code> and <code>Rhat</code> show how well each parameter was
+sampled. The second table checks convergence for each model as a whole.
+We look for <code>max_Rhat</code> at or below 1.01, <code>min_ESS</code>
+of at least 100 per chain, and no divergences.
+<code><a href="../reference/cal.bayesian.html">cal.bayesian()</a></code> gives a warning when a model fails any of
+these checks. When that happens, try a larger <code>numSavedSteps</code>
+and check the data for outliers or wrong units.</p>
 </div>
 <div class="section level2">
 <h2 id="choosing-priors">Choosing priors<a class="anchor" aria-label="anchor" href="#choosing-priors"></a>
@@ -241,6 +243,7 @@ slopes:</p>
 cross-validation.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"errors"</span>, <span class="st">"noerrors"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling the Stan model noerrors. This happens once per session and can take a minute or two.</span></span>
 <span><span class="fu"><a href="../reference/cal.compare.html">cal.compare</a></span><span class="op">(</span><span class="va">fits</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              model elpd_diff se_diff p_worse diag_diff diag_elpd</span></span>
 <span><span class="co">#&gt;  BLM1_fit_NoErrors       0.0     0.0      NA                    </span></span>
@@ -266,10 +269,12 @@ values that are 0.02 higher:</p>
 <span><span class="va">dsMixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">ds1</span>, <span class="va">ds2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fitMixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">dsMixed</span>, models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mixed_errors"</span>, <span class="st">"mixed_noerrors"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling the Stan model mixed_errors. This happens once per session and can take a minute or two.</span></span>
 <span><span class="co">#&gt; Warning: There were 24 divergent transitions after warmup. See</span></span>
 <span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
 <span><span class="co">#&gt; to find out why this is a problem and how to eliminate them.</span></span>
 <span><span class="co">#&gt; Warning: Examine the pairs() plot to diagnose sampling problems</span></span>
+<span><span class="co">#&gt; Compiling the Stan model mixed_noerrors. This happens once per session and can take a minute or two.</span></span>
 <span><span class="co">#&gt; Warning: There were 23 divergent transitions after warmup. See</span></span>
 <span><span class="co">#&gt; https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span></span>
 <span><span class="co">#&gt; to find out why this is a problem and how to eliminate them.</span></span>
@@ -287,22 +292,22 @@ values that are 0.02 higher:</p>
 <span><span class="co">#&gt; Priors: alpha ~ N(0.231, 0.065), beta ~ N(0.039, 0.004)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM3_fit_Errors</span></span>
-<span><span class="co">#&gt;  Material parameter estimate       SE  median   lower   upper</span></span>
-<span><span class="co">#&gt;         1     alpha  0.26988 0.016214 0.26962 0.23926 0.30229</span></span>
-<span><span class="co">#&gt;         1      beta  0.03747 0.001399 0.03748 0.03463 0.04016</span></span>
-<span><span class="co">#&gt;         1     sigma  0.02435 0.001956 0.02421 0.02084 0.02837</span></span>
-<span><span class="co">#&gt;         2     alpha  0.26863 0.021463 0.26867 0.22481 0.31017</span></span>
-<span><span class="co">#&gt;         2      beta  0.03833 0.001765 0.03833 0.03483 0.04192</span></span>
-<span><span class="co">#&gt;         2     sigma  0.02435 0.001956 0.02421 0.02084 0.02837</span></span>
+<span><span class="co">#&gt;  Material parameter estimate       SE  median   lower   upper  ESS   Rhat</span></span>
+<span><span class="co">#&gt;         1     alpha  0.26988 0.016214 0.26962 0.23926 0.30229 2692 1.0018</span></span>
+<span><span class="co">#&gt;         1      beta  0.03747 0.001399 0.03748 0.03463 0.04016 2708 1.0017</span></span>
+<span><span class="co">#&gt;         1     sigma  0.02435 0.001956 0.02421 0.02084 0.02837 3976 1.0006</span></span>
+<span><span class="co">#&gt;         2     alpha  0.26863 0.021463 0.26867 0.22481 0.31017 2938 0.9994</span></span>
+<span><span class="co">#&gt;         2      beta  0.03833 0.001765 0.03833 0.03483 0.04192 2946 0.9994</span></span>
+<span><span class="co">#&gt;         2     sigma  0.02435 0.001956 0.02421 0.02084 0.02837 3976 1.0006</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM3_fit</span></span>
-<span><span class="co">#&gt;  Material parameter estimate       SE  median   lower   upper</span></span>
-<span><span class="co">#&gt;         1     alpha  0.27035 0.016371 0.26990 0.23813 0.30256</span></span>
-<span><span class="co">#&gt;         1      beta  0.03744 0.001407 0.03745 0.03462 0.04016</span></span>
-<span><span class="co">#&gt;         1     sigma  0.02570 0.001887 0.02558 0.02224 0.02966</span></span>
-<span><span class="co">#&gt;         2     alpha  0.26913 0.021344 0.26930 0.22539 0.31011</span></span>
-<span><span class="co">#&gt;         2      beta  0.03828 0.001749 0.03827 0.03488 0.04184</span></span>
-<span><span class="co">#&gt;         2     sigma  0.02570 0.001887 0.02558 0.02224 0.02966</span></span>
+<span><span class="co">#&gt;  Material parameter estimate       SE  median   lower   upper  ESS   Rhat</span></span>
+<span><span class="co">#&gt;         1     alpha  0.27035 0.016371 0.26990 0.23813 0.30256 2891 0.9995</span></span>
+<span><span class="co">#&gt;         1      beta  0.03744 0.001407 0.03745 0.03462 0.04016 2947 0.9997</span></span>
+<span><span class="co">#&gt;         1     sigma  0.02570 0.001887 0.02558 0.02224 0.02966 1739 1.0034</span></span>
+<span><span class="co">#&gt;         2     alpha  0.26913 0.021344 0.26930 0.22539 0.31011 2812 0.9992</span></span>
+<span><span class="co">#&gt;         2      beta  0.03828 0.001749 0.03827 0.03488 0.04184 2897 0.9993</span></span>
+<span><span class="co">#&gt;         2     sigma  0.02570 0.001887 0.02558 0.02224 0.02966 1739 1.0034</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;            model max_Rhat min_ESS divergences</span></span>

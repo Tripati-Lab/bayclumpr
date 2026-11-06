@@ -36,8 +36,8 @@ cal.summary(fit, model = NULL, level = 0.95)
 ## Value
 
 A `data.frame` with one row per parameter and the columns `parameter`,
-`estimate` (mean), `SE`, `median`, `lower`, and `upper`. Mixed models
-also have a `Material` column.
+`estimate` (mean), `SE`, `median`, `lower`, `upper`, `ESS`, and `Rhat`.
+Mixed models also have a `Material` column.
 
 ## Details
 
@@ -46,14 +46,21 @@ bootstrap replicates or of the posterior draws. `sigma` is itself an SD:
 the scatter of individual samples around the calibration line. Its `SE`
 describes how well that scatter is known.
 
+For Bayesian fits, `ESS` is the effective sample size (`n_eff`) and
+`Rhat` the potential scale reduction factor of each parameter, as
+reported by `rstan`. Look for `Rhat` at or below 1.01 and at least 100
+effective draws per chain. They are `NA` for bootstrap replicates, which
+are independent draws, and for a `data.frame` of posterior draws, which
+no longer records the chains.
+
 ## Examples
 
 ``` r
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 ols <- cal.ols(ds, replicates = 200)
 cal.summary(ols)
-#>   parameter   estimate           SE     median       lower      upper
-#> 1     alpha 0.26952294 0.0112427446 0.26848511 0.249811220 0.29615864
-#> 2      beta 0.03664000 0.0008750491 0.03672634 0.034499765 0.03827147
-#> 3     sigma 0.01202395 0.0013887962 0.01205333 0.009551602 0.01495939
+#>   parameter   estimate           SE     median       lower      upper ESS Rhat
+#> 1     alpha 0.26952294 0.0112427446 0.26848511 0.249811220 0.29615864  NA   NA
+#> 2      beta 0.03664000 0.0008750491 0.03672634 0.034499765 0.03827147  NA   NA
+#> 3     sigma 0.01202395 0.0013887962 0.01205333 0.009551602 0.01495939  NA   NA
 ```

@@ -83,9 +83,12 @@ the calibration (`sigma`), `D47error`, and `IonError` when used.
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 ds$Ion <- rnorm(nrow(ds))
 fit <- cal.ion.bayesian(ds, IonError = 0.1, numSavedSteps = 1000)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
 recData <- data.frame(Sample = "A", D47 = 0.6, D47error = 0.01, Ion = 0, IonError = 0.1)
 rec.ion.bayesian(fit, recData, useIonError = TRUE)
-#> Error: object 'fit' not found
+#>   Sample D47 D47error meanTemp SD       SE   median  lower    upper
+#> 1      A 0.6     0.01 60.18383 NA 8.312444 59.80111 44.721 77.49003
 # }
 ```

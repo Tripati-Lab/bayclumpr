@@ -74,9 +74,17 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.dataset.html">cal.dataset</a></span><span class="op">(</span>error <span class="op">=</span> <span class="st">"S1"</span>, nobs <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="cal.bayesian.html">cal.bayesian</a></span><span class="op">(</span><span class="va">ds</span>, models <span class="op">=</span> <span class="st">"errors"</span>, numSavedSteps <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bulk-ess</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">cal.draws</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fit' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       alpha       beta      sigma</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2700057 0.03667362 0.01019158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.2799087 0.03587386 0.01068777</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.2660060 0.03657070 0.01263002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.2619720 0.03721020 0.01096346</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.2426378 0.03872507 0.01203537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.2849338 0.03548324 0.01145433</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

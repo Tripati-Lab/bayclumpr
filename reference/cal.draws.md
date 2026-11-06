@@ -51,8 +51,16 @@ column. With `newMaterial = TRUE`, there is a single set of draws and no
 # \donttest{
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 fit <- cal.bayesian(ds, models = "errors", numSavedSteps = 1000)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
 head(cal.draws(fit))
-#> Error: object 'fit' not found
+#>       alpha       beta      sigma
+#> 1 0.2700057 0.03667362 0.01019158
+#> 2 0.2799087 0.03587386 0.01068777
+#> 3 0.2660060 0.03657070 0.01263002
+#> 4 0.2619720 0.03721020 0.01096346
+#> 5 0.2426378 0.03872507 0.01203537
+#> 6 0.2849338 0.03548324 0.01145433
 # }
 ```

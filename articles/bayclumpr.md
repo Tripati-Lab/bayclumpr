@@ -155,10 +155,10 @@ summarizes any calibration in the same way:
 ``` r
 
 cal.summary(ols)
-#>   parameter   estimate           SE     median      lower      upper
-#> 1     alpha 0.27022607 0.0106035367 0.27029091 0.24894691 0.29123768
-#> 2      beta 0.03660694 0.0009469391 0.03662508 0.03469022 0.03850465
-#> 3     sigma 0.01298611 0.0011871156 0.01299158 0.01067024 0.01526967
+#>   parameter   estimate           SE     median      lower      upper ESS Rhat
+#> 1     alpha 0.27022607 0.0106035367 0.27029091 0.24894691 0.29123768  NA   NA
+#> 2      beta 0.03660694 0.0009469391 0.03662508 0.03469022 0.03850465  NA   NA
+#> 3     sigma 0.01298611 0.0011871156 0.01299158 0.01067024 0.01526967  NA   NA
 ```
 
 `estimate` is the mean of each parameter and `SE` is its standard error,

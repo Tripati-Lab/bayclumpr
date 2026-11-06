@@ -129,25 +129,25 @@ way. We combine the six summaries into one table:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fits</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>method <span class="op">=</span> <span class="va">m</span>, <span class="fu"><a href="../reference/cal.summary.html">cal.summary</a></span><span class="op">(</span><span class="va">fits</span><span class="op">[[</span><span class="va">m</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">pars</span></span>
-<span><span class="co">#&gt;           method parameter   estimate          SE     median      lower      upper</span></span>
-<span><span class="co">#&gt; 1            OLS     alpha 0.26938557 0.020490783 0.26939826 0.22882908 0.31002973</span></span>
-<span><span class="co">#&gt; 2            OLS      beta 0.03662650 0.001835708 0.03667476 0.03298794 0.04025965</span></span>
-<span><span class="co">#&gt; 3            OLS     sigma 0.02481634 0.002303671 0.02480963 0.01999532 0.02932177</span></span>
-<span><span class="co">#&gt; 4           WOLS     alpha 0.26424805 0.018430253 0.26535566 0.22318837 0.30313896</span></span>
-<span><span class="co">#&gt; 5           WOLS      beta 0.03705470 0.001693005 0.03694955 0.03368568 0.04075382</span></span>
-<span><span class="co">#&gt; 6           WOLS     sigma 0.02497436 0.002315616 0.02507140 0.02032563 0.02921380</span></span>
-<span><span class="co">#&gt; 7         Deming     alpha 0.26123043 0.021732629 0.26122114 0.21868252 0.30506100</span></span>
-<span><span class="co">#&gt; 8         Deming      beta 0.03731127 0.001950126 0.03734394 0.03346909 0.04101653</span></span>
-<span><span class="co">#&gt; 9         Deming     sigma 0.02474485 0.002331213 0.02479259 0.01972943 0.02906708</span></span>
-<span><span class="co">#&gt; 10          York     alpha 0.26060948 0.020739581 0.26119824 0.21832058 0.30031487</span></span>
-<span><span class="co">#&gt; 11          York      beta 0.03736634 0.001864008 0.03732117 0.03372884 0.04112536</span></span>
-<span><span class="co">#&gt; 12          York     sigma 0.02483864 0.002223530 0.02481953 0.02053769 0.02914216</span></span>
-<span><span class="co">#&gt; 13   BayesErrors     alpha 0.26730177 0.024543403 0.26759312 0.21768550 0.31483752</span></span>
-<span><span class="co">#&gt; 14   BayesErrors      beta 0.03679598 0.002041054 0.03678283 0.03286877 0.04090155</span></span>
-<span><span class="co">#&gt; 15   BayesErrors     sigma 0.02463271 0.002759222 0.02451672 0.01981052 0.03052497</span></span>
-<span><span class="co">#&gt; 16 BayesNoErrors     alpha 0.26859589 0.026828592 0.26913052 0.21286998 0.32134552</span></span>
-<span><span class="co">#&gt; 17 BayesNoErrors      beta 0.03668889 0.002237532 0.03666659 0.03231665 0.04126362</span></span>
-<span><span class="co">#&gt; 18 BayesNoErrors     sigma 0.02607393 0.002772372 0.02584695 0.02128824 0.03199959</span></span></code></pre></div>
+<span><span class="co">#&gt;           method parameter   estimate          SE     median      lower      upper ESS Rhat</span></span>
+<span><span class="co">#&gt; 1            OLS     alpha 0.26938557 0.020490783 0.26939826 0.22882908 0.31002973  NA   NA</span></span>
+<span><span class="co">#&gt; 2            OLS      beta 0.03662650 0.001835708 0.03667476 0.03298794 0.04025965  NA   NA</span></span>
+<span><span class="co">#&gt; 3            OLS     sigma 0.02481634 0.002303671 0.02480963 0.01999532 0.02932177  NA   NA</span></span>
+<span><span class="co">#&gt; 4           WOLS     alpha 0.26424805 0.018430253 0.26535566 0.22318837 0.30313896  NA   NA</span></span>
+<span><span class="co">#&gt; 5           WOLS      beta 0.03705470 0.001693005 0.03694955 0.03368568 0.04075382  NA   NA</span></span>
+<span><span class="co">#&gt; 6           WOLS     sigma 0.02497436 0.002315616 0.02507140 0.02032563 0.02921380  NA   NA</span></span>
+<span><span class="co">#&gt; 7         Deming     alpha 0.26123043 0.021732629 0.26122114 0.21868252 0.30506100  NA   NA</span></span>
+<span><span class="co">#&gt; 8         Deming      beta 0.03731127 0.001950126 0.03734394 0.03346909 0.04101653  NA   NA</span></span>
+<span><span class="co">#&gt; 9         Deming     sigma 0.02474485 0.002331213 0.02479259 0.01972943 0.02906708  NA   NA</span></span>
+<span><span class="co">#&gt; 10          York     alpha 0.26060948 0.020739581 0.26119824 0.21832058 0.30031487  NA   NA</span></span>
+<span><span class="co">#&gt; 11          York      beta 0.03736634 0.001864008 0.03732117 0.03372884 0.04112536  NA   NA</span></span>
+<span><span class="co">#&gt; 12          York     sigma 0.02483864 0.002223530 0.02481953 0.02053769 0.02914216  NA   NA</span></span>
+<span><span class="co">#&gt; 13   BayesErrors     alpha 0.26730177 0.024543403 0.26759312 0.21768550 0.31483752  NA   NA</span></span>
+<span><span class="co">#&gt; 14   BayesErrors      beta 0.03679598 0.002041054 0.03678283 0.03286877 0.04090155  NA   NA</span></span>
+<span><span class="co">#&gt; 15   BayesErrors     sigma 0.02463271 0.002759222 0.02451672 0.01981052 0.03052497  NA   NA</span></span>
+<span><span class="co">#&gt; 16 BayesNoErrors     alpha 0.26859589 0.026828592 0.26913052 0.21286998 0.32134552  NA   NA</span></span>
+<span><span class="co">#&gt; 17 BayesNoErrors      beta 0.03668889 0.002237532 0.03666659 0.03231665 0.04126362  NA   NA</span></span>
+<span><span class="co">#&gt; 18 BayesNoErrors     sigma 0.02607393 0.002772372 0.02584695 0.02128824 0.03199959  NA   NA</span></span></code></pre></div>
 <p>To plot them, we use a small function that draws the median and the
 95% interval of each method:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -337,19 +337,32 @@ earlier calibration in the same reference frame would look like.</li>
 <span></span>
 <span><span class="va">smallPars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">smallFits</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>method <span class="op">=</span> <span class="va">m</span>, <span class="fu"><a href="../reference/cal.summary.html">cal.summary</a></span><span class="op">(</span><span class="va">smallFits</span><span class="op">[[</span><span class="va">m</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">smallPars</span></span>
-<span><span class="co">#&gt;              method parameter   estimate          SE     median      lower      upper</span></span>
-<span><span class="co">#&gt; 1               OLS     alpha 0.30750311 0.070589913 0.31772707 0.12542545 0.40574002</span></span>
-<span><span class="co">#&gt; 2               OLS      beta 0.03434248 0.006538214 0.03318122 0.02497593 0.05095105</span></span>
-<span><span class="co">#&gt; 3               OLS     sigma 0.03045302 0.007089762 0.03151556 0.01276731 0.04084255</span></span>
-<span><span class="co">#&gt; 4         BayesWeak     alpha 0.31531704 0.079516741 0.31549133 0.15718241 0.47302565</span></span>
-<span><span class="co">#&gt; 5         BayesWeak      beta 0.03356455 0.007521755 0.03356495 0.01861357 0.04858040</span></span>
-<span><span class="co">#&gt; 6         BayesWeak     sigma 0.04049678 0.013035279 0.03788493 0.02349542 0.07553981</span></span>
-<span><span class="co">#&gt; 7  BayesInformative     alpha 0.26320642 0.033901102 0.26355254 0.19502135 0.33032058</span></span>
-<span><span class="co">#&gt; 8  BayesInformative      beta 0.03848014 0.003102341 0.03852054 0.03219750 0.04455822</span></span>
-<span><span class="co">#&gt; 9  BayesInformative     sigma 0.03939186 0.011818486 0.03722380 0.02318438 0.06872334</span></span>
-<span><span class="co">#&gt; 10     BayesMatched     alpha 0.28401429 0.032761749 0.28402868 0.22036974 0.34778233</span></span>
-<span><span class="co">#&gt; 11     BayesMatched      beta 0.03650246 0.003002458 0.03647967 0.03082584 0.04238859</span></span>
-<span><span class="co">#&gt; 12     BayesMatched     sigma 0.03843304 0.011774738 0.03630002 0.02298066 0.06737819</span></span></code></pre></div>
+<span><span class="co">#&gt;              method parameter   estimate          SE     median      lower      upper ESS</span></span>
+<span><span class="co">#&gt; 1               OLS     alpha 0.30750311 0.070589913 0.31772707 0.12542545 0.40574002  NA</span></span>
+<span><span class="co">#&gt; 2               OLS      beta 0.03434248 0.006538214 0.03318122 0.02497593 0.05095105  NA</span></span>
+<span><span class="co">#&gt; 3               OLS     sigma 0.03045302 0.007089762 0.03151556 0.01276731 0.04084255  NA</span></span>
+<span><span class="co">#&gt; 4         BayesWeak     alpha 0.31531704 0.079516741 0.31549133 0.15718241 0.47302565  NA</span></span>
+<span><span class="co">#&gt; 5         BayesWeak      beta 0.03356455 0.007521755 0.03356495 0.01861357 0.04858040  NA</span></span>
+<span><span class="co">#&gt; 6         BayesWeak     sigma 0.04049678 0.013035279 0.03788493 0.02349542 0.07553981  NA</span></span>
+<span><span class="co">#&gt; 7  BayesInformative     alpha 0.26320642 0.033901102 0.26355254 0.19502135 0.33032058  NA</span></span>
+<span><span class="co">#&gt; 8  BayesInformative      beta 0.03848014 0.003102341 0.03852054 0.03219750 0.04455822  NA</span></span>
+<span><span class="co">#&gt; 9  BayesInformative     sigma 0.03939186 0.011818486 0.03722380 0.02318438 0.06872334  NA</span></span>
+<span><span class="co">#&gt; 10     BayesMatched     alpha 0.28401429 0.032761749 0.28402868 0.22036974 0.34778233  NA</span></span>
+<span><span class="co">#&gt; 11     BayesMatched      beta 0.03650246 0.003002458 0.03647967 0.03082584 0.04238859  NA</span></span>
+<span><span class="co">#&gt; 12     BayesMatched     sigma 0.03843304 0.011774738 0.03630002 0.02298066 0.06737819  NA</span></span>
+<span><span class="co">#&gt;    Rhat</span></span>
+<span><span class="co">#&gt; 1    NA</span></span>
+<span><span class="co">#&gt; 2    NA</span></span>
+<span><span class="co">#&gt; 3    NA</span></span>
+<span><span class="co">#&gt; 4    NA</span></span>
+<span><span class="co">#&gt; 5    NA</span></span>
+<span><span class="co">#&gt; 6    NA</span></span>
+<span><span class="co">#&gt; 7    NA</span></span>
+<span><span class="co">#&gt; 8    NA</span></span>
+<span><span class="co">#&gt; 9    NA</span></span>
+<span><span class="co">#&gt; 10   NA</span></span>
+<span><span class="co">#&gt; 11   NA</span></span>
+<span><span class="co">#&gt; 12   NA</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">9</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">p</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alpha"</span>, <span class="st">"beta"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>

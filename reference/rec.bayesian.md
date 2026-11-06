@@ -94,9 +94,13 @@ samples. For models without them, it includes it.
 # \donttest{
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 fit <- cal.bayesian(ds, models = "errors", numSavedSteps = 1000)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
 recData <- data.frame(Sample = c("A", "B"), D47 = c(0.6, 0.7), D47error = 0.01, N = 3)
 rec.bayesian(fit, recData)
-#> Error: object 'fit' not found
+#>   Sample D47 D47error meanTemp        SD       SE   median    lower    upper
+#> 1      A 0.6     0.01 59.42824 10.889156 8.119676 59.10102 44.24167 76.50797
+#> 2      B 0.7     0.01 18.64228  7.146598 5.449535 18.49977  8.62019 29.88454
 # }
 ```

@@ -37,8 +37,24 @@ unreliable.
 # \donttest{
 ds <- cal.dataset(error = "S1", nobs = 50, seed = 1)
 fit <- cal.bayesian(ds, models = c("errors", "noerrors"), numSavedSteps = 1000)
-#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'sampling': Boost not found; call install.packages('BH')
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
+#> Compiling the Stan model noerrors. This happens once per session and can take a minute or two.
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
+#> Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#tail-ess
+#> Warning: Check convergence for: BLM1_fit_NoErrors. Print the result for details.
 cal.compare(fit)
-#> Error: object 'fit' not found
+#>              model elpd_diff se_diff p_worse diag_diff diag_elpd
+#>  BLM1_fit_NoErrors       0.0     0.0      NA                    
+#>           BLM1_fit       0.0     0.1    0.61   N < 100          
+#> 
+#> Diagnostic flags present.
+#> See ?`loo-glossary` (sections `diag_diff` and `diag_elpd`)
+#> or https://mc-stan.org/loo/reference/loo-glossary.html.
 # }
 ```

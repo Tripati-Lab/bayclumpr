@@ -40,16 +40,17 @@ be a single value for all samples or one value per sample.
 ``` r
 
 fit <- cal.ion.bayesian(calibrationData = ds, IonError = ds$IonError)
+#> Compiling the Stan model ion_errors. This happens once per session and can take a minute or two.
 fit
 #> Bayesian clumped isotope calibration
 #> Priors: Flat 
 #> 
 #> BLM1_fit
-#>  parameter estimate        SE   median    lower    upper
-#>      alpha 0.272221 0.0101978 0.272289 0.252790 0.292457
-#>       beta 0.036662 0.0008437 0.036654 0.035025 0.038262
-#>      gamma 0.005016 0.0012738 0.005045 0.002435 0.007419
-#>      sigma 0.013616 0.0010132 0.013565 0.011776 0.015795
+#>  parameter estimate        SE   median    lower    upper  ESS   Rhat
+#>      alpha 0.272221 0.0101978 0.272289 0.252790 0.292457 2540 0.9995
+#>       beta 0.036662 0.0008437 0.036654 0.035025 0.038262 2474 0.9995
+#>      gamma 0.005016 0.0012738 0.005045 0.002435 0.007419 2731 0.9996
+#>      sigma 0.013616 0.0010132 0.013565 0.011776 0.015795 3771 0.9997
 #> 
 #> Convergence
 #>     model max_Rhat min_ESS divergences
@@ -64,16 +65,17 @@ When `Ion` is known without error, we leave out `IonError`:
 ``` r
 
 fitKnown <- cal.ion.bayesian(calibrationData = ds)
+#> Compiling the Stan model ion_noerrors. This happens once per session and can take a minute or two.
 fitKnown
 #> Bayesian clumped isotope calibration
 #> Priors: Flat 
 #> 
 #> BLM1_fit
-#>  parameter estimate        SE   median    lower    upper
-#>      alpha 0.272166 0.0097646 0.272049 0.253372 0.291367
-#>       beta 0.036670 0.0008032 0.036674 0.035068 0.038200
-#>      gamma 0.005044 0.0012516 0.005059 0.002507 0.007482
-#>      sigma 0.013589 0.0010361 0.013542 0.011749 0.015711
+#>  parameter estimate        SE   median    lower    upper  ESS   Rhat
+#>      alpha 0.272166 0.0097646 0.272049 0.253372 0.291367 3068 0.9991
+#>       beta 0.036670 0.0008032 0.036674 0.035068 0.038200 3028 0.9991
+#>      gamma 0.005044 0.0012516 0.005059 0.002507 0.007482 2634 0.9997
+#>      sigma 0.013589 0.0010361 0.013542 0.011749 0.015711 4353 0.9997
 #> 
 #> Convergence
 #>     model max_Rhat min_ESS divergences

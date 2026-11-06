@@ -106,16 +106,17 @@ error to <code>Ion</code> with an SD of 0.1.</p>
 per sample.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ion.bayesian.html">cal.ion.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span>, IonError <span class="op">=</span> <span class="va">ds</span><span class="op">$</span><span class="va">IonError</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling the Stan model ion_errors. This happens once per session and can take a minute or two.</span></span>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Bayesian clumped isotope calibration</span></span>
 <span><span class="co">#&gt; Priors: Flat </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM1_fit</span></span>
-<span><span class="co">#&gt;  parameter estimate        SE   median    lower    upper</span></span>
-<span><span class="co">#&gt;      alpha 0.272221 0.0101978 0.272289 0.252790 0.292457</span></span>
-<span><span class="co">#&gt;       beta 0.036662 0.0008437 0.036654 0.035025 0.038262</span></span>
-<span><span class="co">#&gt;      gamma 0.005016 0.0012738 0.005045 0.002435 0.007419</span></span>
-<span><span class="co">#&gt;      sigma 0.013616 0.0010132 0.013565 0.011776 0.015795</span></span>
+<span><span class="co">#&gt;  parameter estimate        SE   median    lower    upper  ESS   Rhat</span></span>
+<span><span class="co">#&gt;      alpha 0.272221 0.0101978 0.272289 0.252790 0.292457 2540 0.9995</span></span>
+<span><span class="co">#&gt;       beta 0.036662 0.0008437 0.036654 0.035025 0.038262 2474 0.9995</span></span>
+<span><span class="co">#&gt;      gamma 0.005016 0.0012738 0.005045 0.002435 0.007419 2731 0.9996</span></span>
+<span><span class="co">#&gt;      sigma 0.013616 0.0010132 0.013565 0.011776 0.015795 3771 0.9997</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>
@@ -126,16 +127,17 @@ should be close to the simulated value of 0.005.</p>
 <code>IonError</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fitKnown</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cal.ion.bayesian.html">cal.ion.bayesian</a></span><span class="op">(</span>calibrationData <span class="op">=</span> <span class="va">ds</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiling the Stan model ion_noerrors. This happens once per session and can take a minute or two.</span></span>
 <span><span class="va">fitKnown</span></span>
 <span><span class="co">#&gt; Bayesian clumped isotope calibration</span></span>
 <span><span class="co">#&gt; Priors: Flat </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; BLM1_fit</span></span>
-<span><span class="co">#&gt;  parameter estimate        SE   median    lower    upper</span></span>
-<span><span class="co">#&gt;      alpha 0.272166 0.0097646 0.272049 0.253372 0.291367</span></span>
-<span><span class="co">#&gt;       beta 0.036670 0.0008032 0.036674 0.035068 0.038200</span></span>
-<span><span class="co">#&gt;      gamma 0.005044 0.0012516 0.005059 0.002507 0.007482</span></span>
-<span><span class="co">#&gt;      sigma 0.013589 0.0010361 0.013542 0.011749 0.015711</span></span>
+<span><span class="co">#&gt;  parameter estimate        SE   median    lower    upper  ESS   Rhat</span></span>
+<span><span class="co">#&gt;      alpha 0.272166 0.0097646 0.272049 0.253372 0.291367 3068 0.9991</span></span>
+<span><span class="co">#&gt;       beta 0.036670 0.0008032 0.036674 0.035068 0.038200 3028 0.9991</span></span>
+<span><span class="co">#&gt;      gamma 0.005044 0.0012516 0.005059 0.002507 0.007482 2634 0.9997</span></span>
+<span><span class="co">#&gt;      sigma 0.013589 0.0010361 0.013542 0.011749 0.015711 4353 0.9997</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Convergence</span></span>
 <span><span class="co">#&gt;     model max_Rhat min_ESS divergences</span></span>

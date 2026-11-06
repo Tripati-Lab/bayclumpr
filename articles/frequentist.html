@@ -154,19 +154,32 @@ models into one table:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sums</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fits</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">m</span>, <span class="fu"><a href="../reference/cal.summary.html">cal.summary</a></span><span class="op">(</span><span class="va">fits</span><span class="op">[[</span><span class="va">m</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">sums</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     model parameter   estimate          SE     median      lower      upper</span></span>
-<span><span class="co">#&gt; 1     OLS     alpha 0.26938557 0.020490783 0.26939826 0.22882908 0.31002973</span></span>
-<span><span class="co">#&gt; 2     OLS      beta 0.03662650 0.001835708 0.03667476 0.03298794 0.04025965</span></span>
-<span><span class="co">#&gt; 3     OLS     sigma 0.02481634 0.002303671 0.02480963 0.01999532 0.02932177</span></span>
-<span><span class="co">#&gt; 4    WOLS     alpha 0.26424805 0.018430253 0.26535566 0.22318837 0.30313896</span></span>
-<span><span class="co">#&gt; 5    WOLS      beta 0.03705470 0.001693005 0.03694955 0.03368568 0.04075382</span></span>
-<span><span class="co">#&gt; 6    WOLS     sigma 0.02497436 0.002315616 0.02507140 0.02032563 0.02921380</span></span>
-<span><span class="co">#&gt; 7  Deming     alpha 0.26123043 0.021732629 0.26122114 0.21868252 0.30506100</span></span>
-<span><span class="co">#&gt; 8  Deming      beta 0.03731127 0.001950126 0.03734394 0.03346909 0.04101653</span></span>
-<span><span class="co">#&gt; 9  Deming     sigma 0.02474485 0.002331213 0.02479259 0.01972943 0.02906708</span></span>
-<span><span class="co">#&gt; 10   York     alpha 0.26060948 0.020739581 0.26119824 0.21832058 0.30031487</span></span>
-<span><span class="co">#&gt; 11   York      beta 0.03736634 0.001864008 0.03732117 0.03372884 0.04112536</span></span>
-<span><span class="co">#&gt; 12   York     sigma 0.02483864 0.002223530 0.02481953 0.02053769 0.02914216</span></span></code></pre></div>
+<span><span class="co">#&gt;     model parameter   estimate          SE     median      lower      upper ESS</span></span>
+<span><span class="co">#&gt; 1     OLS     alpha 0.26938557 0.020490783 0.26939826 0.22882908 0.31002973  NA</span></span>
+<span><span class="co">#&gt; 2     OLS      beta 0.03662650 0.001835708 0.03667476 0.03298794 0.04025965  NA</span></span>
+<span><span class="co">#&gt; 3     OLS     sigma 0.02481634 0.002303671 0.02480963 0.01999532 0.02932177  NA</span></span>
+<span><span class="co">#&gt; 4    WOLS     alpha 0.26424805 0.018430253 0.26535566 0.22318837 0.30313896  NA</span></span>
+<span><span class="co">#&gt; 5    WOLS      beta 0.03705470 0.001693005 0.03694955 0.03368568 0.04075382  NA</span></span>
+<span><span class="co">#&gt; 6    WOLS     sigma 0.02497436 0.002315616 0.02507140 0.02032563 0.02921380  NA</span></span>
+<span><span class="co">#&gt; 7  Deming     alpha 0.26123043 0.021732629 0.26122114 0.21868252 0.30506100  NA</span></span>
+<span><span class="co">#&gt; 8  Deming      beta 0.03731127 0.001950126 0.03734394 0.03346909 0.04101653  NA</span></span>
+<span><span class="co">#&gt; 9  Deming     sigma 0.02474485 0.002331213 0.02479259 0.01972943 0.02906708  NA</span></span>
+<span><span class="co">#&gt; 10   York     alpha 0.26060948 0.020739581 0.26119824 0.21832058 0.30031487  NA</span></span>
+<span><span class="co">#&gt; 11   York      beta 0.03736634 0.001864008 0.03732117 0.03372884 0.04112536  NA</span></span>
+<span><span class="co">#&gt; 12   York     sigma 0.02483864 0.002223530 0.02481953 0.02053769 0.02914216  NA</span></span>
+<span><span class="co">#&gt;    Rhat</span></span>
+<span><span class="co">#&gt; 1    NA</span></span>
+<span><span class="co">#&gt; 2    NA</span></span>
+<span><span class="co">#&gt; 3    NA</span></span>
+<span><span class="co">#&gt; 4    NA</span></span>
+<span><span class="co">#&gt; 5    NA</span></span>
+<span><span class="co">#&gt; 6    NA</span></span>
+<span><span class="co">#&gt; 7    NA</span></span>
+<span><span class="co">#&gt; 8    NA</span></span>
+<span><span class="co">#&gt; 9    NA</span></span>
+<span><span class="co">#&gt; 10   NA</span></span>
+<span><span class="co">#&gt; 11   NA</span></span>
+<span><span class="co">#&gt; 12   NA</span></span></code></pre></div>
 <p><code>SE</code> is the standard error of each estimate, which is the
 SD of the bootstrap replicates. <code>sigma</code> is itself an SD: the
 scatter of individual samples around the calibration line.</p>
